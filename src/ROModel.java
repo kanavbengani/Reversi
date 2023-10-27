@@ -1,5 +1,5 @@
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class ROModel implements IROModel {
@@ -7,7 +7,7 @@ public class ROModel implements IROModel {
   protected final Player player1;
   protected final Player player2;
   protected Player currentPlayer;
-  protected Map<HexPosn, Optional<Player>> board;
+  protected List<List<Optional<Player>>> board;
   private final int rings;
 
   public ROModel(Player player1, Player player2, int rings) {
@@ -24,25 +24,21 @@ public class ROModel implements IROModel {
   }
 
   private void initializeBoard(int rings) {
-    this.board = new HashMap<>();
-
-    for (int q = -rings; q <= rings; q++) {
-      int r1 = Math.max(-rings, -q - rings);
-      int r2 = Math.min(rings, -q + rings);
-
-      for (int r = r1; r <= r2; r++) {
-        HexPosn hp = new HexPosn(q, r);
-        this.board.put(hp, Optional.empty());
+    this.board = new ArrayList<>();
+    for (int i = 0; i < this.rings * 2 + 1; i++) {
+      List<Optional<Player>> row = new ArrayList<>();
+      // Adds correct number of empty Optionals
+      for (int j = 0; j < this.rings * ; j++) {
+        row.add(Optional.empty());
       }
+      this.board.add(row);
     }
 
     this.initializePlayers();
   }
 
   private void initializePlayers() {
-    for (int i = 0; i < HexPosn.OFFSETS.size(); i += 1) {
-      this.board.put(HexPosn.OFFSETS.get(i), Optional.of(i % 2 == 0 ? player1 : player2));
-    }
+    // TODO
   }
 
   @Override

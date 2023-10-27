@@ -7,7 +7,7 @@ public class ReversiTests {
   @Test
   public void testDeque() {
     System.out.println(new TextualView(new ROModel(new AIPlayer(Color.WHITE),
-            new AIPlayer(Color.BLACK), 3)));
+            new AIPlayer(Color.BLACK), 2)));
 
   }
 }
