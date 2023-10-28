@@ -12,10 +12,16 @@ public interface IModel extends IROModel {
    * @throws IllegalStateException if it is not the player's turn
    * @throws IllegalArgumentException if the passed in hexagonal position is out of bounds
    */
-  void playMove(Player player, HexPosn hp) throws IllegalStateException, IllegalArgumentException;
+  void playMove(Player player, Posn hp) throws IllegalStateException, IllegalArgumentException;
 
   /**
    * Switches the current turn to the next player, allowing for the progression of the game.
    */
   void switchTurn();
+
+  /**
+   * Returns a read-only version of this model that can safely be passed to the view.
+   * @return A read-only version of this model
+   */
+  IROModel getReadOnlyModel();
 }

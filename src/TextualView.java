@@ -1,27 +1,40 @@
+import java.util.Optional;
 public class TextualView {
-  private final ROModel m;
+  private final IROModel m;
 
-  TextualView(ROModel m) {
+  TextualView(IROModel m) {
     this.m = m;
   }
 
   @Override
   public String toString() {
+    int rings = this.m.getRings();
+    int totalRows = rings * 2 + 1;
     StringBuilder str = new StringBuilder();
 
-    for (int i = 0; i < this.m.getRings() * 2 + 1; i++) {
-      int num = Math.abs(this.m.getRings() - i);
-      // adds correct number of spaces before each line
-      for (int j = 0; j < num; j++) {
+    for (int i = 0; i < totalRows; i++) {
+      int numSpaces = Math.abs(rings - i);
+
+      for (int j = 0; j < numSpaces; j++) {
         str.append(" ");
       }
-      str.append("_");
-      for (int k = 0; k < (this.m.getRings() * 2 + 1) - num - 1; k++) {
-        str.append(" _");
+
+      for (int j = 0; j < totalRows; j++) {
+        try {
+          Optional<Player> cell = this.m.getCell(new Posn(j, i));
+          if (cell.isEmpty()) {
+            str.append("_");
+          } else {
+            Player p = cell.get();
+            str.append(p);
+          }
+          str.append(" ");
+        } catch (IllegalArgumentException ignored) {
+        }
       }
       str.append("\n");
     }
 
-    return str.toString();
+    return str.toString().stripTrailing();
   }
 }
