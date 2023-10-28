@@ -21,7 +21,7 @@ public class TextualView {
 
       for (int j = 0; j < totalRows; j++) {
         try {
-          Optional<Player> cell = this.m.getCell(new Posn(j, i));
+          Optional<Player> cell = this.m.getPlayerAt(new Posn(j, i));
           if (cell.isEmpty()) {
             str.append("_");
           } else {

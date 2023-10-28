@@ -9,6 +9,14 @@ public class AIPlayer implements Player {
   }
 
   @Override
+  public Posn getNextMove(IROModel model) {
+    for (Posn p : model.getAllPosn()) {
+
+    }
+    return new Posn(0, 0);
+  }
+
+  @Override
   public String toString() {
     if (color.equals(Color.BLACK)) {
       return "X";

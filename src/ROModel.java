@@ -1,8 +1,10 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public class ROModel implements IROModel {
   protected final Player player1;
@@ -12,7 +14,7 @@ public class ROModel implements IROModel {
   private final int rings;
 
   public ROModel(Player player1, Player player2, int rings) {
-    if (rings < 2) {
+    if (rings < 1) {
       throw new IllegalArgumentException("Number of rings must be at least 2.");
     }
 
@@ -61,14 +63,20 @@ public class ROModel implements IROModel {
   @Override
   public boolean isGameOver() {
     for (Posn point : this.board.keySet()) {
-      try {
-        if (!this.validateMove(this.player1, point).isEmpty() || !this.validateMove(this.player2,
-                point).isEmpty()) {
-          return false;
-        }
-      } catch (IllegalStateException ignored) {}
+      if (isMoveValid(player1, point) || isMoveValid(player2, point)) {
+        return false;
+      }
     }
     return true;
+  }
+
+  // Checking if the given move is valid with the given player
+  private boolean isMoveValid(Player player, Posn point) {
+    try {
+      return !validateMove(player, point).isEmpty();
+    } catch (IllegalStateException | IllegalArgumentException ignored) {
+      return false;
+    }
   }
 
   @Override
@@ -96,17 +104,18 @@ public class ROModel implements IROModel {
 
 
   @Override
-  public Optional<Player> getCell(Posn hp) throws IllegalArgumentException {
-    if (!this.board.containsKey(hp)) {
+  public Optional<Player> getPlayerAt(Posn p) throws IllegalArgumentException {
+    if (!this.board.containsKey(p)) {
       throw new IllegalArgumentException("Invalid coordinate passed in");
     }
 
-    return this.board.get(hp);
+    return this.board.get(p);
   }
 
   // Validates if the given hexagonal position can place this player assuming given hexagonal
   // position is in-bounds.
-  protected List<Posn> validateMove(Player player, Posn hp) throws IllegalStateException {
+  protected List<Posn> validateMove(Player player, Posn hp)
+          throws IllegalStateException, IllegalArgumentException {
     if (this.board.get(hp).isPresent()) {
       throw new IllegalStateException("Chip cannot be placed in an already occupied cell.");
     }
@@ -119,7 +128,6 @@ public class ROModel implements IROModel {
 
     for (Posn offset : Posn.OFFSETS) {
       Posn tempHp = hp.add(offset);
-      System.out.println(tempHp);
       int counter = 0;
       List<Posn> tempPoints = new ArrayList<>();
       while (this.board.getOrDefault(tempHp, Optional.empty()).isPresent()) {
@@ -160,5 +168,10 @@ public class ROModel implements IROModel {
   @Override
   public int getRings() {
     return this.rings;
+  }
+
+  @Override
+  public Set<Posn> getAllPosn() {
+    return new HashSet<>(this.board.keySet());
   }
 }

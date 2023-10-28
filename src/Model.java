@@ -1,23 +1,21 @@
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.List;
 
 public class Model extends ROModel implements IModel {
-
   public Model(Player player1, Player player2, int rings) {
     super(player1, player2, rings);
   }
 
   @Override
-  public void playMove(Player player, Posn hp) throws IllegalStateException,
-          IllegalArgumentException {
-    if (!super.board.containsKey(hp)) {
-      throw new IllegalArgumentException("The passed-in hexagonal position is out of bounds.");
+  public void playMove(Player player, Posn p)
+          throws IllegalStateException, IllegalArgumentException {
+    if (!super.board.containsKey(p)) {
+      throw new IllegalArgumentException("The passed-in position is out of bounds.");
     }
 
-    List<Posn> points = super.validateMove(player, hp);
+    List<Posn> points = super.validateMove(player, p);
 
-    super.board.put(hp, Optional.of(player));
+    super.board.put(p, Optional.of(player));
 
     for (Posn posn : points) {
       super.board.put(posn, Optional.of(player));
