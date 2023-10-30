@@ -1,6 +1,8 @@
+package model;
+
+import player.Player;
+
 import java.util.Optional;
-import java.util.List;
-import java.util.Set;
 
 /**
  * The `ROModel` interface defines the read-only model for a Reversi game. This
@@ -50,11 +52,4 @@ public interface IROModel {
    * @return The number of rings in the hexagonal grid.
    */
   int getRings();
-
-  /**
-   * Returns a set of all the possible positions on the board.
-   *
-   * @return The set of all the positions on the board
-   */
-  Set<Posn> getAllPosn();
 }

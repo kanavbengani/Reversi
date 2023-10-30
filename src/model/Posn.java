@@ -1,3 +1,5 @@
+package model;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -28,7 +30,7 @@ public class Posn {
 
 
   /**
-   * Constructs a new `Posn` object with the specified cube coordinates (q, r, s).
+   * Constructs a new `Posn` object with the specified cube coordinates (x, y).
    *
    * @param x The x-coordinate representing horizontal positioning.
    * @param y The y-coordinate representing vertical positioning.
@@ -82,7 +84,7 @@ public class Posn {
   }
 
   /**
-   * Returns a string representation of this `Posn` object in the format "(q, r, s)".
+   * Returns a string representation of this `Posn` object in the format "(x, y)".
    *
    * @return A string representation of this `Posn` object.
    */

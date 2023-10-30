@@ -1,3 +1,7 @@
+package model;
+
+import player.Player;
+
 /**
  * The `IModel` interface extends the `IROModel` interface and defines additional methods for
  * modifying the Reversi game state.
