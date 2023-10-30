@@ -16,7 +16,7 @@ public class Model extends ROModel implements IModel {
    * @param player2 The second player.
    * @param numRings The number of rings on the game board.
    * @throws IllegalArgumentException if the number of rings is less than 2 or if any player is
-   * null.
+   *         null.
    */
   public Model(Player player1, Player player2, int numRings) {
     super(player1, player2, numRings);

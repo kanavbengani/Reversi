@@ -19,7 +19,8 @@ public class Posn {
   public final int y;
   
   /**
-   * A list of six predefined `Posn` offsets representing the six neighboring positions in a hexagonal grid.
+   * A list of six predefined `Posn` offsets representing the six neighboring positions in a
+   * hexagonal grid.
    */
   public static final List<Posn> OFFSETS =
           new ArrayList<>(List.of(

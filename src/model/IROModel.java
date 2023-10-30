@@ -22,7 +22,7 @@ public interface IROModel {
    * over or if it's a draw, the `Optional` will be empty.
    *
    * @return An `Optional` containing the winning player if there is one, or an empty `Optional`
-   * if the game is not over or if it's a draw.
+   *         if the game is not over or if it's a draw.
    * @throws IllegalStateException if the game is not over.
    */
   Optional<Player> getWinner() throws IllegalStateException;
@@ -32,9 +32,9 @@ public interface IROModel {
    *
    * @param hp The position of the cell on the Reversi board.
    * @return An `Optional` containing the player at the specified cell position, or an empty
-   * `Optional` if the position is empty.
+   *         `Optional` if the position is empty.
    * @throws IllegalArgumentException if the provided `Posn` is not a valid position on the
-   * board.
+   *         board.
    */
   Optional<Player> getPlayerAt(Posn hp) throws IllegalArgumentException;
 

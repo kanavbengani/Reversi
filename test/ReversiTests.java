@@ -1,16 +1,16 @@
-import model.IModel;
-import model.IROModel;
-import model.Model;
-import model.Posn;
-import model.ROModel;
-import player.Player;
-import player.MockPlayer;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Optional;
+
+import model.IModel;
+import model.IROModel;
+import model.Model;
+import model.Posn;
+import model.ROModel;
+import player.MockPlayer;
+import player.Player;
 
 /**
  * Represents a set of JUnit tests that test the functionality of the model.
@@ -44,7 +44,7 @@ public class ReversiTests {
             new MockPlayer(new StringBuilder()), this.numRings));
 
     Assert.assertThrows(IllegalArgumentException.class,
-            () -> new ROModel(new MockPlayer(new StringBuilder()), null, this.numRings));
+        () -> new ROModel(new MockPlayer(new StringBuilder()), null, this.numRings));
 
     Assert.assertThrows(IllegalArgumentException.class, () -> new ROModel(null, null,
             this.numRings));
@@ -115,15 +115,15 @@ public class ReversiTests {
   public void testROMGetPlayerAtInvalidCoordinates() {
     // Not in the HashMap but on the top left of the 2D array representation
     Assert.assertThrows(IllegalArgumentException.class,
-            () -> this.roModel.getPlayerAt(new Posn(0, 0)));
+        () -> this.roModel.getPlayerAt(new Posn(0, 0)));
 
     // Not in the HashMap but on the bottom right of the 2D array representation
     Assert.assertThrows(IllegalArgumentException.class,
-            () -> this.roModel.getPlayerAt(new Posn(5, 5)));
+        () -> this.roModel.getPlayerAt(new Posn(5, 5)));
 
     // Not in the HashMap or the 2D array representation
     Assert.assertThrows(IllegalArgumentException.class,
-            () -> this.roModel.getPlayerAt(new Posn(100, 100)));
+        () -> this.roModel.getPlayerAt(new Posn(100, 100)));
   }
 
   @Test
@@ -172,7 +172,7 @@ public class ReversiTests {
             new MockPlayer(new StringBuilder()), this.numRings));
 
     Assert.assertThrows(IllegalArgumentException.class,
-            () -> new Model(new MockPlayer(new StringBuilder()), null, this.numRings));
+        () -> new Model(new MockPlayer(new StringBuilder()), null, this.numRings));
 
     Assert.assertThrows(IllegalArgumentException.class, () -> new Model(null, null,
             this.numRings));

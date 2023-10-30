@@ -1,7 +1,6 @@
 package player;
 
 import model.IModel;
-import model.IROModel;
 
 /**
  * The Player interface represents a player in a Reversi game. Implementing classes of this
@@ -18,7 +17,7 @@ public interface Player {
    *
    * @param model The game model (IROModel) representing the current state of the Reversi game.
    * @throws IllegalArgumentException If the selected move is invalid or the player cannot make a
-   * move.
+   *         move.
    */
   void playMove(IModel model);
 }

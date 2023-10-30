@@ -27,7 +27,8 @@ public class ROModel implements IROModel {
    * @param player1 The first player.
    * @param player2 The second player.
    * @param numRings   The number of rings on the game board.
-   * @throws IllegalArgumentException if the number of rings is less than 2 or if any player is null.
+   * @throws IllegalArgumentException if the number of rings is less than 2 or if any player is
+   *         null.
    */
   public ROModel(Player player1, Player player2, int numRings) {
     if (numRings < 1) {
