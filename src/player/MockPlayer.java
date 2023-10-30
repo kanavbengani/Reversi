@@ -1,42 +1,23 @@
 package player;
 
-import java.awt.Color;
-import java.util.Objects;
-
-import model.IROModel;
+import model.IModel;
 
 public class MockPlayer implements Player {
-  private final Color color;
-  private final String str;
 
-  public MockPlayer(Color color, String str) {
-    this.color = color;
-    this.str = str;
+  private final StringBuilder log;
+
+  public MockPlayer(StringBuilder log) {
+    this.log = log;
   }
 
   @Override
-  public void playMove(IROModel model) {
+  public void playMove(IModel model) {
+    this.log.append("playMove called");
   }
 
   @Override
   public String toString() {
+    this.log.append("toString called");
     return "_";
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    MockPlayer mockPlayer = (MockPlayer) o;
-    return this.color.equals(mockPlayer.color) && this.str.equals(mockPlayer.str);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(this.color, this.str);
   }
 }

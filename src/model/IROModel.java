@@ -51,5 +51,5 @@ public interface IROModel {
    *
    * @return The number of rings in the hexagonal grid.
    */
-  int getRings();
+  int getNumRings();
 }

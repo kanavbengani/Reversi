@@ -16,19 +16,22 @@ public class ROModel implements IROModel {
   protected final Player player2;
   protected Player currentPlayer;
   protected final Map<Posn, Optional<Player>> board;
-  private final int rings;
+  private final int numRings;
+
+  // CLASS INVARIANT: The number of key-value pairs in `board` is equal to `3 * numRings *
+  // (numRings + 1) + 1`.
 
   /**
    * Constructs a read-only model with the given players and number of rings.
    *
    * @param player1 The first player.
    * @param player2 The second player.
-   * @param rings   The number of rings on the game board.
+   * @param numRings   The number of rings on the game board.
    * @throws IllegalArgumentException if the number of rings is less than 2 or if any player is null.
    */
-  public ROModel(Player player1, Player player2, int rings) {
-    if (rings < 2) {
-      throw new IllegalArgumentException("Number of rings must be at least 2.");
+  public ROModel(Player player1, Player player2, int numRings) {
+    if (numRings < 1) {
+      throw new IllegalArgumentException("Number of rings must be at least 1.");
     }
 
     if (player1 == null || player2 == null) {
@@ -38,17 +41,18 @@ public class ROModel implements IROModel {
     this.player1 = player1;
     this.player2 = player2;
     this.currentPlayer = player1;
-    this.rings = rings;
+    this.numRings = numRings;
     this.board = new LinkedHashMap<>();
 
-    initializeBoard(rings);
+    this.initializeBoard();
   }
 
-  private void initializeBoard(int rings) {
-    int start = rings;
-    int end = 2 * rings;
+  // initializes board based on number of rings initialized earlier in the constructor
+  private void initializeBoard() {
+    int start = this.numRings;
+    int end = 2 * this.numRings;
 
-    for (int i = 0; i <= rings * 2; i++) {
+    for (int i = 0; i <= this.numRings * 2; i++) {
       for (int j = start; j <= end; j++) {
         Posn posn = new Posn(j, i);
         this.board.put(posn, Optional.empty());
@@ -64,8 +68,9 @@ public class ROModel implements IROModel {
     this.initializePlayers();
   }
 
+  // initializes the player chips on the board around the center (in an alternate matter).
   private void initializePlayers() {
-    Posn center = new Posn(this.rings, this.rings);
+    Posn center = new Posn(this.numRings, this.numRings);
 
     for (int i = 0; i < Posn.OFFSETS.size(); i++) {
       this.board.put(center.add(Posn.OFFSETS.get(i)), Optional.of(i % 2 == 0 ? player1 : player2));
@@ -179,7 +184,7 @@ public class ROModel implements IROModel {
   }
 
   @Override
-  public int getRings() {
-    return this.rings;
+  public int getNumRings() {
+    return this.numRings;
   }
 }

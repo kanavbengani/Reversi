@@ -27,7 +27,7 @@ public class TextualView {
    */
   @Override
   public String toString() {
-    int rings = this.model.getRings();
+    int rings = this.model.getNumRings();
     int totalRows = rings * 2 + 1;
     StringBuilder str = new StringBuilder();
 

@@ -21,7 +21,7 @@ public interface IModel extends IROModel {
   /**
    * Switches the current turn to the next player, allowing for the progression of the game.
    */
-  void switchTurn();
+  void switchTurn() throws IllegalStateException;
 
   /**
    * Returns a read-only version of this model that can safely be passed to the view.

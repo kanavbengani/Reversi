@@ -5,15 +5,16 @@ import model.Posn;
 import model.ROModel;
 import player.Player;
 import player.MockPlayer;
-import view.TextualView;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.awt.Color;
 import java.util.Optional;
 
+/**
+ * Represents a set of JUnit tests that test the functionality of the model.
+ */
 public class ReversiTests {
   private Player player1;
   private Player player2;
@@ -23,11 +24,10 @@ public class ReversiTests {
 
   @Before
   public void initTest() {
-    this.player1 = new MockPlayer(Color.WHITE, "O");
-    this.player2 = new MockPlayer(Color.BLACK, "X");
+    this.player1 = new MockPlayer(new StringBuilder());
+    this.player2 = new MockPlayer(new StringBuilder());
     this.model = new Model(this.player1, this.player2, this.numRings);
     this.roModel = this.model.getReadOnlyModel();
-    System.out.println(new TextualView(this.roModel));
   }
 
   // Model.IROModel Tests (Observation Methods)
@@ -41,10 +41,10 @@ public class ReversiTests {
   @Test
   public void testROMConstructorNullPlayerPassedIn() {
     Assert.assertThrows(IllegalArgumentException.class, () -> new ROModel(null,
-            new MockPlayer(Color.WHITE, "O"), this.numRings));
+            new MockPlayer(new StringBuilder()), this.numRings));
 
     Assert.assertThrows(IllegalArgumentException.class,
-            () -> new ROModel(new MockPlayer(Color.BLACK, "X"), null, this.numRings));
+            () -> new ROModel(new MockPlayer(new StringBuilder()), null, this.numRings));
 
     Assert.assertThrows(IllegalArgumentException.class, () -> new ROModel(null, null,
             this.numRings));
@@ -52,7 +52,7 @@ public class ReversiTests {
 
   @Test
   public void testROMConstructorWorks() {
-    Assert.assertEquals(this.roModel.getRings(), this.numRings);
+    Assert.assertEquals(this.roModel.getNumRings(), this.numRings);
     Assert.assertEquals(this.roModel.getTurn(), this.player1);
   }
 
@@ -155,7 +155,7 @@ public class ReversiTests {
   // GetRings
   @Test
   public void testROMGetRingsCorrectReturnValue() {
-    Assert.assertEquals(this.numRings, this.roModel.getRings());
+    Assert.assertEquals(this.numRings, this.roModel.getNumRings());
   }
 
   // Model.IModel Tests (Operations Methods)
@@ -169,10 +169,10 @@ public class ReversiTests {
   @Test
   public void testMConstructorNullPlayerPassedIn() {
     Assert.assertThrows(IllegalArgumentException.class, () -> new Model(null,
-            new MockPlayer(Color.WHITE, "O"), this.numRings));
+            new MockPlayer(new StringBuilder()), this.numRings));
 
     Assert.assertThrows(IllegalArgumentException.class,
-            () -> new Model(new MockPlayer(Color.BLACK, "X"), null, this.numRings));
+            () -> new Model(new MockPlayer(new StringBuilder()), null, this.numRings));
 
     Assert.assertThrows(IllegalArgumentException.class, () -> new Model(null, null,
             this.numRings));
@@ -180,7 +180,7 @@ public class ReversiTests {
 
   @Test
   public void testMConstructorWorks() {
-    Assert.assertEquals(this.model.getRings(), this.numRings);
+    Assert.assertEquals(this.model.getNumRings(), this.numRings);
     Assert.assertEquals(this.model.getTurn(), this.player1);
   }
 
@@ -213,6 +213,14 @@ public class ReversiTests {
   }
 
   @Test
+  public void testMPlayMoveAfterGameOver() {
+    this.numRings = 1;
+    this.initTest();
+    Assert.assertThrows(IllegalStateException.class, () -> this.model.playMove(this.player1,
+            new Posn(1, 1)));
+  }
+
+  @Test
   public void testMPlayMoveValidMoveCorrectlyUpdatesBoard() {
     // Updates 1 piece in between
     Assert.assertEquals(this.model.getPlayerAt(new Posn(1, 1)), Optional.empty());
@@ -239,7 +247,14 @@ public class ReversiTests {
 
   // SwitchTurn
   @Test
-  public void testMSwitchesTurn() {
+  public void testMSwitchTurnWhenGameIsOver() {
+    this.numRings = 1;
+    this.initTest();
+    Assert.assertThrows(IllegalStateException.class, () -> this.model.switchTurn());
+  }
+
+  @Test
+  public void testMSwitchTurn() {
     Assert.assertEquals(this.model.getTurn(), this.player1);
     this.model.switchTurn();
     Assert.assertEquals(this.model.getTurn(), this.player2);
