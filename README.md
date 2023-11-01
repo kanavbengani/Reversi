@@ -8,7 +8,7 @@ of controllers and views.
 
 ## Quick start
 The game can be played by instantiating a concrete class that implements `IModel` (such as `Model`) 
-with the number of rings as a parameter and two players (`MockPlayer` for now). 
+with the number of rings as a parameter. 
 
 ## Invariant
 - The number of key-value pairs in `board` is equal to `3 * numRings * (numRings + 1) + 1`.
@@ -20,31 +20,28 @@ with the number of rings as a parameter and two players (`MockPlayer` for now).
 as querying the game state.
 - `IModel` -- A mutable interface that allows the user to make observations and operations on the 
 model such as playing a move and switching turns.
-- `ROModel` and `Model` -- Concrete implementations of their respective interfaces.
-- `Posn` -- A Posn represents the x and y coordinates of the hexagonal grid.
+- `ROModel` and `Model` -- Concrete implementations of their respective interfaces. `Model` extends
+the `ROModel` since `Model` adds operational functionality to the observation-only model.
+- `AxialPosn` -- An axial position represents the `q` and `r` coordinates in a hexagonal grid.
 
 **Coordinate System**
-![Coordinate Grid](Coordinate_Grid.png)
-Source: [Red Blob Games](https://www.redblobgames.com/grids/hexagons/)
 
-The y coordinate ranges from  `0` to `numRings * 2` inclusive. The x coordinate varies with each row 
-to form the hexagonal shape. We implemented a dynamically resizing moving window. We can start by 
-initializing a start at `numRings` and end at `numRings * 2`. Every iteration, the window increases 
-in size, moving towards the left (start is decremented). Once it reaches the leftmost position 
-(`0`), the end starts decrementing. This happens until the end reaches `numRings`. The above image 
-shows a detailed representation of how the view would look with the above `x`, `y` coordinate
-system. Note, that internally we are using a `Map` to store the coordinates instead of a 2-D array 
-as shown in the image. This allows us to map each coordinate to an `Optional<Player>`.
+We decided to use the axial coordinate system, using `q` and `r` coordinates. The `q` represents
+the horizontal axis of the hexagon. The `r` represents the top-left to bottom-right diagonal. The
+center of the grid is the origin, or `(0, 0)`. We also use a direction enum which enumerates the
+**6** neighbors of each cell according to the coordinate system. These include the following with
+the given delta `q` and `r`: `UPLEFT` `(0, -1)`, `UPRIGHT` `(1, -1)`, `RIGHT` `(1, 0)`, 
+`DOWNRIGHT` `(0, 1)`, `DOWNLEFT` `(-1, 1)`, `LEFT` `(-1, 0)`.
 
 ### Player
-- The `Player` interface defines only one public method called `playMove` which takes in a mutable
-model. This method will be implemented differently in a human player versus a computer player. In a 
-computer player, this method will compute a valid move and play it by calling the `playMove` 
-method on the mutable model passed in. In a human player, this method will have no action since the
-human move is an asynchronous action that will be triggered by the view. 
+- The `PlayerListener` interface defines only one public method called `itsTheMoveOf` which takes 
+in the currentPieceColor. This method will be implemented in various listener classes that act
+based on this information given by the model. These classes include HumanPlayer, AI, and the views.
+Currently, we have created a MockPlayer that simply logs a message for testing purposes. 
 
 ### View
-- `TextualView` -- A light-weight text-based view to visualize the game of Reversi.
+- `TextualView` -- A light-weight text-based view to visualize the game of Reversi, mostly for
+testing purposes.
 
 ## Source organization
 ```.
@@ -53,14 +50,16 @@ human move is an asynchronous action that will be triggered by the view.
 ├── src
 │       ├── Main.java
 │       ├── model
+│       │       ├── AxialPosn.java
+│       │       ├── Direction.java
 │       │       ├── IModel.java
 │       │       ├── IROModel.java
 │       │       ├── Model.java
-│       │       ├── Posn.java
+│       │       ├── PieceColor.java
 │       │       └── ROModel.java
 │       ├── player
 │       │       ├── MockPlayer.java
-│       │       └── Player.java
+│       │       └── PlayerListener.java
 │       └── view
 │               └── TextualView.java
 └── test
@@ -68,10 +67,10 @@ human move is an asynchronous action that will be triggered by the view.
 ```
 
 This is the organization of all the files in the codebase. All `Model` related files are in a 
-package called `model`. We have also implemented an interface for a `Player` along with a mock for 
-the same in a package called `player`. Finally, we have a simple `TextualView` in a package called
-`view`. This ensures that the code is organized in a logical manner, ensuring suitable visibility
-and encapsulation of each of the components.
+package called `model`. We have also implemented an interface for a `PlayerListener` along with a 
+mock for the same in a package called `MockPlayer`. Finally, we have a simple `TextualView` in a 
+package called `view`. This ensures that the code is organized in a logical manner, ensuring 
+suitable visibility and encapsulation of each of the components.
 
 **Note:** This README file provides a high-level overview of the project. For detailed information 
 about classes, interfaces, and methods, refer to the Javadoc comments within the code.

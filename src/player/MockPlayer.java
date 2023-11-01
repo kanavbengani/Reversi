@@ -1,32 +1,25 @@
 package player;
 
-import model.IModel;
+import model.PieceColor;
 
 /**
- * A mock implementation of the interface for testing and logging purposes.
- * This class allows you to log method calls made to the player for testing and debugging.
+ * The `MockPlayer` class is an implementation of the `PlayerListener` interface that simulates
+ * a player's moves by logging messages to a given log.
  */
-public class MockPlayer implements Player {
-
+public class MockPlayer implements PlayerListener {
   private final StringBuilder log;
 
   /**
-   * Constructs a new MockPlayer with the provided StringBuilder for logging.
+   * Constructs a `MockPlayer` with the specified `StringBuilder` for logging moves.
    *
-   * @param log The StringBuilder to which method calls will be logged.
+   * @param log The `StringBuilder` used for logging player moves.
    */
   public MockPlayer(StringBuilder log) {
     this.log = log;
   }
 
   @Override
-  public void playMove(IModel model) {
-    this.log.append("playMove called");
-  }
-
-  @Override
-  public String toString() {
-    this.log.append("toString called");
-    return "_";
+  public void itsTheMoveOf(PieceColor pieceColor) {
+    this.log.append("it's ").append(pieceColor).append("'s move!\n");
   }
 }

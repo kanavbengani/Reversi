@@ -4,56 +4,58 @@ import org.junit.Test;
 
 import java.util.Optional;
 
+import model.Direction;
 import model.IModel;
 import model.IROModel;
 import model.Model;
-import model.Posn;
-import model.ROModel;
+import model.AxialPosn;
+import model.PieceColor;
 import player.MockPlayer;
-import player.Player;
+import player.PlayerListener;
+import view.TextualView;
 
 /**
  * Represents a set of JUnit tests that test the functionality of the model.
  */
 public class ReversiTests {
-  private Player player1;
-  private Player player2;
   private IModel model;
   private IROModel roModel;
   private int numRings = 2;
 
   @Before
   public void initTest() {
-    this.player1 = new MockPlayer(new StringBuilder());
-    this.player2 = new MockPlayer(new StringBuilder());
-    this.model = new Model(this.player1, this.player2, this.numRings);
+    this.model = new Model(this.numRings);
     this.roModel = this.model.getReadOnlyModel();
   }
 
-  // Model.IROModel Tests (Observation Methods)
-  // Constructor
+  // IROModel Tests (Observation Methods)
+  // isMoveValid
   @Test
-  public void testROMConstructorInvalidRingsNumberTooLow() {
-    Assert.assertThrows(IllegalArgumentException.class, () -> new ROModel(this.player1,
-            this.player2, 0));
+  public void testROMIsMoveValidValidMoves() {
+    Assert.assertTrue(this.roModel.isMoveValid(PieceColor.BLACK, new AxialPosn(-1, -1)));
+    this.model.playMove(PieceColor.BLACK, new AxialPosn(-1, -1));
+
+    Assert.assertTrue(this.roModel.isMoveValid(PieceColor.WHITE, new AxialPosn(1, 1)));
+    this.model.playMove(PieceColor.WHITE, new AxialPosn(1, 1));
+
+    Assert.assertTrue(this.roModel.isMoveValid(PieceColor.BLACK, new AxialPosn(2, -1)));
+    this.model.playMove(PieceColor.BLACK, new AxialPosn(2, -1));
   }
 
   @Test
-  public void testROMConstructorNullPlayerPassedIn() {
-    Assert.assertThrows(IllegalArgumentException.class, () -> new ROModel(null,
-            new MockPlayer(new StringBuilder()), this.numRings));
+  public void testROMIsMoveValidInvalidMoveSameLocation() {
+    Assert.assertTrue(this.roModel.isMoveValid(PieceColor.BLACK, new AxialPosn(-1, -1)));
+    this.model.isMoveValid(PieceColor.BLACK, new AxialPosn(-1, -1));
 
-    Assert.assertThrows(IllegalArgumentException.class,
-        () -> new ROModel(new MockPlayer(new StringBuilder()), null, this.numRings));
-
-    Assert.assertThrows(IllegalArgumentException.class, () -> new ROModel(null, null,
-            this.numRings));
+    Assert.assertFalse(this.roModel.isMoveValid(PieceColor.WHITE, new AxialPosn(-1, 1)));
   }
 
   @Test
-  public void testROMConstructorWorks() {
-    Assert.assertEquals(this.roModel.getNumRings(), this.numRings);
-    Assert.assertEquals(this.roModel.getTurn(), this.player1);
+  public void testROMIsMoveValidInvalidMoveSamePlayer() {
+    Assert.assertTrue(this.roModel.isMoveValid(PieceColor.BLACK, new AxialPosn(-1, -1)));
+    this.model.playMove(PieceColor.BLACK, new AxialPosn(-1, -1));
+
+    Assert.assertFalse(this.roModel.isMoveValid(PieceColor.BLACK, new AxialPosn(1, 1)));
   }
 
   // IsGameOver
@@ -65,17 +67,17 @@ public class ReversiTests {
   @Test
   public void testROMIsGameOverTrueWhenGameIsOver() {
     Assert.assertFalse(this.roModel.isGameOver());
-    this.model.playMove(this.player1, new Posn(1, 1));
+    this.model.playMove(PieceColor.BLACK, new AxialPosn(-1, -1));
     Assert.assertFalse(this.roModel.isGameOver());
-    this.model.playMove(this.player2, new Posn(3, 3));
+    this.model.playMove(PieceColor.WHITE, new AxialPosn(1, 1));
     Assert.assertFalse(this.roModel.isGameOver());
-    this.model.playMove(this.player1, new Posn(4, 1));
+    this.model.playMove(PieceColor.BLACK, new AxialPosn(2, -1));
     Assert.assertFalse(this.roModel.isGameOver());
-    this.model.playMove(this.player2, new Posn(3, 0));
+    this.model.playMove(PieceColor.WHITE, new AxialPosn(1, -2));
     Assert.assertFalse(this.roModel.isGameOver());
-    this.model.playMove(this.player1, new Posn(1, 4));
+    this.model.playMove(PieceColor.BLACK, new AxialPosn(-1, 2));
     Assert.assertFalse(this.roModel.isGameOver());
-    this.model.playMove(this.player2, new Posn(0, 3));
+    this.model.playMove(PieceColor.WHITE, new AxialPosn(-2, 1));
     Assert.assertTrue(this.roModel.isGameOver());
   }
 
@@ -100,56 +102,79 @@ public class ReversiTests {
   }
 
   @Test
-  public void testROMGetWinnerPlayer2Wins() {
-    this.model.playMove(this.player1, new Posn(1, 1));
-    this.model.playMove(this.player2, new Posn(3, 3));
-    this.model.playMove(this.player1, new Posn(4, 1));
-    this.model.playMove(this.player2, new Posn(3, 0));
-    this.model.playMove(this.player1, new Posn(1, 4));
-    this.model.playMove(this.player2, new Posn(0, 3));
-    Assert.assertEquals(this.roModel.getWinner(), Optional.of(this.player2));
+  public void testROMGetWinnerPiece2Wins() {
+    this.model.playMove(PieceColor.BLACK, new AxialPosn(-1, -1));
+    this.model.playMove(PieceColor.WHITE, new AxialPosn(1, 1));
+    this.model.playMove(PieceColor.BLACK, new AxialPosn(2, -1));
+    this.model.playMove(PieceColor.WHITE, new AxialPosn(1, -2));
+    this.model.playMove(PieceColor.BLACK, new AxialPosn(-1, 2));
+    this.model.playMove(PieceColor.WHITE, new AxialPosn(-2, 1));
+    Assert.assertEquals(this.roModel.getWinner(), Optional.of(PieceColor.WHITE));
   }
 
-  // GetPlayerAt
+  // AnyLegalMoves
   @Test
-  public void testROMGetPlayerAtInvalidCoordinates() {
-    // Not in the HashMap but on the top left of the 2D array representation
-    Assert.assertThrows(IllegalArgumentException.class,
-        () -> this.roModel.getPlayerAt(new Posn(0, 0)));
-
-    // Not in the HashMap but on the bottom right of the 2D array representation
-    Assert.assertThrows(IllegalArgumentException.class,
-        () -> this.roModel.getPlayerAt(new Posn(5, 5)));
-
-    // Not in the HashMap or the 2D array representation
-    Assert.assertThrows(IllegalArgumentException.class,
-        () -> this.roModel.getPlayerAt(new Posn(100, 100)));
+  public void testROMAnyLegalMovesStartOfGame() {
+    Assert.assertTrue(this.roModel.anyLegalMoves());
   }
 
   @Test
-  public void testROMGetPlayerReturnsEmptyOptional() {
-    Assert.assertEquals(Optional.empty(), this.roModel.getPlayerAt(new Posn(3, 3)));
+  public void testROMAnyLegalMovesAfterGameOver() {
+    this.model.playMove(PieceColor.BLACK, new AxialPosn(-1, -1));
+    this.model.playMove(PieceColor.WHITE, new AxialPosn(1, 1));
+    this.model.playMove(PieceColor.BLACK, new AxialPosn(2, -1));
+    this.model.playMove(PieceColor.WHITE, new AxialPosn(1, -2));
+    this.model.playMove(PieceColor.BLACK, new AxialPosn(-1, 2));
+    this.model.playMove(PieceColor.WHITE, new AxialPosn(-2, 1));
+    Assert.assertFalse(this.roModel.anyLegalMoves());
+  }
+
+  // GetPieceAt
+  @Test
+  public void testROMGetPieceAtOutOfBounds() {
+    Assert.assertThrows(IllegalArgumentException.class,
+        () -> this.roModel.getPieceAt(new AxialPosn(-2, -2)));
+
+    Assert.assertThrows(IllegalArgumentException.class,
+        () -> this.roModel.getPieceAt(new AxialPosn(2, 2)));
   }
 
   @Test
-  public void testROMGetPlayerReturnsOptionalOfAtPlayer() {
-    Assert.assertEquals(Optional.of(this.player1), this.roModel.getPlayerAt(new Posn(1, 3)));
-    Assert.assertEquals(Optional.of(this.player2), this.roModel.getPlayerAt(new Posn(1, 2)));
+  public void testROMGetPieceReturnsEmptyOptional() {
+    Assert.assertEquals(Optional.empty(),
+            this.roModel.getPieceAt(new AxialPosn(0, 0)));
+  }
+
+  @Test
+  public void testROMGetPieceReturnsOptionalOfAtPiece() {
+    Assert.assertEquals(Optional.of(PieceColor.BLACK),
+            this.roModel.getPieceAt(new AxialPosn(0, -1)));
+    Assert.assertEquals(Optional.of(PieceColor.WHITE),
+            this.roModel.getPieceAt(new AxialPosn(1, -1)));
+    Assert.assertEquals(Optional.of(PieceColor.BLACK),
+            this.roModel.getPieceAt(new AxialPosn(1, 0)));
+    Assert.assertEquals(Optional.of(PieceColor.WHITE),
+            this.roModel.getPieceAt(new AxialPosn(0, 1)));
+    Assert.assertEquals(Optional.of(PieceColor.BLACK),
+            this.roModel.getPieceAt(new AxialPosn(-1, 1)));
+    Assert.assertEquals(Optional.of(PieceColor.WHITE),
+            this.roModel.getPieceAt(new AxialPosn(-1, 0)));
+
   }
 
   // GetTurn
   @Test
   public void testROMGetTurnAfterSwitchingTurn() {
-    Assert.assertEquals(this.player1, this.roModel.getTurn());
-    this.model.switchTurn();
-    Assert.assertEquals(this.player2, this.roModel.getTurn());
+    Assert.assertEquals(PieceColor.BLACK, this.roModel.getTurn());
+    this.model.pass(PieceColor.BLACK);
+    Assert.assertEquals(PieceColor.WHITE, this.roModel.getTurn());
   }
 
   @Test
-  public void testROMGetTurnAfterMovingPlayer() {
-    Assert.assertEquals(this.player1, this.roModel.getTurn());
-    this.model.playMove(this.player1, new Posn(1, 1));
-    Assert.assertEquals(this.player2, this.roModel.getTurn());
+  public void testROMGetTurnAfterMovingPiece() {
+    Assert.assertEquals(PieceColor.BLACK, this.roModel.getTurn());
+    this.model.playMove(PieceColor.BLACK, new AxialPosn(1, 1));
+    Assert.assertEquals(PieceColor.WHITE, this.roModel.getTurn());
   }
 
   // GetRings
@@ -158,108 +183,156 @@ public class ReversiTests {
     Assert.assertEquals(this.numRings, this.roModel.getNumRings());
   }
 
-  // Model.IModel Tests (Operations Methods)
-  // Constructor
+  // GetScore
   @Test
-  public void testMConstructorInvalidRingsNumberTooLow() {
-    Assert.assertThrows(IllegalArgumentException.class, () -> new Model(this.player1,
-            this.player2, 0));
+  public void testROMGetScoreForEmptyBoard() {
+    Assert.assertEquals(this.roModel.getScore(PieceColor.BLACK), 3);
+    Assert.assertEquals(this.roModel.getScore(PieceColor.WHITE), 3);
   }
 
   @Test
-  public void testMConstructorNullPlayerPassedIn() {
-    Assert.assertThrows(IllegalArgumentException.class, () -> new Model(null,
-            new MockPlayer(new StringBuilder()), this.numRings));
+  public void testROMGetScoreAfterPlayingSomeMoves() {
+    this.model.playMove(PieceColor.BLACK, new AxialPosn(-1, -1));
+    this.model.playMove(PieceColor.WHITE, new AxialPosn(1, 1));
+    this.model.playMove(PieceColor.BLACK, new AxialPosn(2, -1));
+    this.model.playMove(PieceColor.WHITE, new AxialPosn(1, -2));
+    Assert.assertEquals(this.roModel.getScore(PieceColor.BLACK), 5);
+    Assert.assertEquals(this.roModel.getScore(PieceColor.WHITE), 5);
+  }
 
-    Assert.assertThrows(IllegalArgumentException.class,
-        () -> new Model(new MockPlayer(new StringBuilder()), null, this.numRings));
-
-    Assert.assertThrows(IllegalArgumentException.class, () -> new Model(null, null,
-            this.numRings));
+  // IModel Tests (Operations Methods)
+  // Constructor
+  @Test
+  public void testMConstructorInvalidRingsNumberTooLow() {
+    Assert.assertThrows(IllegalArgumentException.class, () -> new Model(0));
   }
 
   @Test
   public void testMConstructorWorks() {
     Assert.assertEquals(this.model.getNumRings(), this.numRings);
-    Assert.assertEquals(this.model.getTurn(), this.player1);
+    Assert.assertEquals(this.model.getTurn(), PieceColor.BLACK);
   }
 
   // PlayMove
   @Test
   public void testMPlayMoveInvalidCoordinatesOutOfBounds() {
-    // Not in the HashMap but on the top left of the 2D array representation
-    Assert.assertThrows(IllegalArgumentException.class, () -> this.model.playMove(this.player1,
-            new Posn(0, 0)));
+    Assert.assertThrows(IllegalArgumentException.class, () -> this.model.playMove(PieceColor.BLACK,
+            new AxialPosn(-2, -2)));
 
-    // Not in the HashMap but on the bottom right of the 2D array representation
-    Assert.assertThrows(IllegalArgumentException.class, () -> this.model.playMove(this.player1,
-            new Posn(5, 5)));
-
-    // Not in the HashMap or the 2D array representation
-    Assert.assertThrows(IllegalArgumentException.class, () -> this.model.playMove(this.player1,
-            new Posn(100, 100)));
+    Assert.assertThrows(IllegalArgumentException.class, () -> this.model.playMove(PieceColor.BLACK,
+            new AxialPosn(2, 2)));
   }
 
   @Test
   public void testMPlayMoveInvalidPlacingOnOccupiedCell() {
-    Assert.assertThrows(IllegalStateException.class, () -> this.model.playMove(this.player1,
-            new Posn(1, 2)));
+    Assert.assertThrows(IllegalStateException.class, () -> this.model.playMove(PieceColor.BLACK,
+            new AxialPosn(0, -1)));
   }
 
   @Test
-  public void testMPlayMoveEmptyButInvalidCoordinates() {
-    Assert.assertThrows(IllegalStateException.class, () -> this.model.playMove(this.player1,
-            new Posn(2, 2)));
+  public void testMPlayMoveInvalidIllegalCoordinates() {
+    Assert.assertThrows(IllegalStateException.class, () -> this.model.playMove(PieceColor.BLACK,
+            new AxialPosn(0, 0)));
   }
 
   @Test
-  public void testMPlayMoveAfterGameOver() {
+  public void testMPlayMoveInvalidIllegalPlayer() {
+    Assert.assertThrows(IllegalArgumentException.class, () -> this.model.playMove(PieceColor.WHITE,
+            new AxialPosn(1, 1)));
+  }
+
+  @Test
+  public void testMPlayMoveInvalidAfterGameOver() {
     this.numRings = 1;
     this.initTest();
-    Assert.assertThrows(IllegalStateException.class, () -> this.model.playMove(this.player1,
-            new Posn(1, 1)));
+    Assert.assertThrows(IllegalStateException.class, () -> this.model.playMove(PieceColor.BLACK,
+            new AxialPosn(1, 1)));
   }
 
   @Test
-  public void testMPlayMoveValidMoveCorrectlyUpdatesBoard() {
-    // Updates 1 piece in between
-    Assert.assertEquals(this.model.getPlayerAt(new Posn(1, 1)), Optional.empty());
-    this.model.playMove(this.player1, new Posn(1, 1));
-    Assert.assertEquals(this.model.getPlayerAt(new Posn(1, 1)), Optional.of(this.player1));
-    Assert.assertEquals(this.model.getPlayerAt(new Posn(1, 2)), Optional.of(this.player1));
+  public void testMPlayMoveValidMoveCorrectlyUpdatesCapturedPiece() {
+    this.model.playMove(PieceColor.BLACK, new AxialPosn(-1, -1));
+    Assert.assertEquals(this.model.getPieceAt(new AxialPosn(-1, -1)),
+            Optional.of(PieceColor.BLACK));
+    Assert.assertEquals(this.model.getPieceAt(new AxialPosn(-1, 0)),
+            Optional.of(PieceColor.BLACK));
+  }
 
-    this.model.playMove(this.player2, new Posn(0, 3));
-    this.model.playMove(this.player1, new Posn(4, 1));
+  @Test
+  public void testMPlayMoveValidMoveCorrectlyUpdatesMultipleCapturedPieces() {
+    // Initial moves
+    this.model.playMove(PieceColor.BLACK, new AxialPosn(-1, -1));
+    this.model.playMove(PieceColor.WHITE, new AxialPosn(-2, 1));
+    this.model.playMove(PieceColor.BLACK, new AxialPosn(2, -1));
+    this.model.playMove(PieceColor.WHITE, new AxialPosn(1, 1));
+    this.model.playMove(PieceColor.BLACK, new AxialPosn(-1, 2));
 
-    // Updates 2 pieces in between
-    this.model.playMove(this.player2, new Posn(3, 0));
-    Assert.assertEquals(this.model.getPlayerAt(new Posn(3, 0)), Optional.of(this.player2));
-    Assert.assertEquals(this.model.getPlayerAt(new Posn(2, 1)), Optional.of(this.player2));
-    Assert.assertEquals(this.model.getPlayerAt(new Posn(1, 2)), Optional.of(this.player2));
+    // Check to see if all pieces are switched in color
+    this.model.playMove(PieceColor.WHITE, new AxialPosn(1, -2));
+    Assert.assertEquals(this.model.getPieceAt(new AxialPosn(1, -2)),
+            Optional.of(PieceColor.WHITE));
+    Assert.assertEquals(this.model.getPieceAt(new AxialPosn(0, -1)),
+            Optional.of(PieceColor.WHITE));
+    Assert.assertEquals(this.model.getPieceAt(new AxialPosn(-1, 0)),
+            Optional.of(PieceColor.WHITE));
+    Assert.assertEquals(this.model.getPieceAt(new AxialPosn(1, -1)),
+            Optional.of(PieceColor.WHITE));
+    Assert.assertEquals(this.model.getPieceAt(new AxialPosn(1, 0)),
+            Optional.of(PieceColor.WHITE));
+
   }
 
   @Test
   public void testMPlayMoveSwitchesTurn() {
-    Assert.assertEquals(this.model.getTurn(), this.player1);
-    this.model.playMove(this.player1, new Posn(1, 1));
-    Assert.assertEquals(this.model.getTurn(), this.player2);
+    Assert.assertEquals(this.model.getTurn(), PieceColor.BLACK);
+    this.model.playMove(PieceColor.BLACK, new AxialPosn(1, 1));
+    Assert.assertEquals(this.model.getTurn(), PieceColor.WHITE);
   }
 
-  // SwitchTurn
   @Test
-  public void testMSwitchTurnWhenGameIsOver() {
+  public void testMPlayMoveCallsPlayerListener() {
+    StringBuilder log = new StringBuilder();
+    this.model.addListener(new MockPlayer(log));
+
+    this.model.playMove(PieceColor.BLACK, new AxialPosn(-1, -1));
+    Assert.assertEquals(log.toString(), "it's O's move!\n");
+
+    this.model.playMove(PieceColor.WHITE, new AxialPosn(1, 1));
+    Assert.assertEquals(log.toString(), "it's O's move!\nit's X's move!\n");
+  }
+
+  // Pass
+  @Test
+  public void testMPassWhenGameIsOver() {
     this.numRings = 1;
     this.initTest();
-    Assert.assertThrows(IllegalStateException.class, () -> this.model.switchTurn());
+    Assert.assertThrows(IllegalStateException.class, () -> this.model.pass(PieceColor.BLACK));
   }
 
   @Test
-  public void testMSwitchTurn() {
-    Assert.assertEquals(this.model.getTurn(), this.player1);
-    this.model.switchTurn();
-    Assert.assertEquals(this.model.getTurn(), this.player2);
-    this.model.switchTurn();
-    Assert.assertEquals(this.model.getTurn(), this.player1);
+  public void testMPassInvalidTurn() {
+    Assert.assertThrows(IllegalStateException.class, () -> this.model.pass(PieceColor.WHITE));
+  }
+
+  @Test
+  public void testMPassValid() {
+    Assert.assertEquals(this.model.getTurn(), PieceColor.BLACK);
+    this.model.pass(PieceColor.BLACK);
+    Assert.assertEquals(this.model.getTurn(), PieceColor.WHITE);
+    this.model.pass(PieceColor.WHITE);
+    Assert.assertEquals(this.model.getTurn(), PieceColor.BLACK);
+  }
+
+  @Test
+  public void testMPassCallsPlayerListener() {
+    StringBuilder log = new StringBuilder();
+    this.model.addListener(new MockPlayer(log));
+
+    this.model.pass(PieceColor.BLACK);
+    Assert.assertEquals(log.toString(), "it's O's move!\n");
+
+    this.model.pass(PieceColor.WHITE);
+    Assert.assertEquals(log.toString(), "it's O's move!\nit's X's move!\n");
   }
 
   // GetReadOnlyModel
@@ -268,26 +341,72 @@ public class ReversiTests {
     Assert.assertEquals(this.model.getReadOnlyModel(), this.roModel);
   }
 
-  // Posn Tests
+  // AddListener
+  @Test
+  public void testMAddListener() {
+    StringBuilder log = new StringBuilder();
+    this.model.addListener(new MockPlayer(log));
+
+    StringBuilder log2 = new StringBuilder();
+    this.model.addListener(new MockPlayer(log2));
+
+    this.model.pass(PieceColor.BLACK);
+    Assert.assertEquals(log.toString(), "it's O's move!\n");
+    Assert.assertEquals(log2.toString(), "it's O's move!\n");
+
+    this.model.pass(PieceColor.WHITE);
+    Assert.assertEquals(log.toString(), "it's O's move!\nit's X's move!\n");
+    Assert.assertEquals(log2.toString(), "it's O's move!\nit's X's move!\n");
+  }
+
+  // AxialPosn Tests
   // Add
   @Test
-  public void testPosnAdd() {
-    Assert.assertEquals(new Posn(0, 0).add(new Posn(1, 1)), new Posn(1, 1));
-    Assert.assertEquals(new Posn(-1, 4).add(new Posn(3, -5)), new Posn(2, -1));
+  public void testAxialPosnAdd() {
+    Assert.assertEquals(new AxialPosn(0, 0).add(Direction.LEFT), new AxialPosn(-1, 0));
+    Assert.assertEquals(new AxialPosn(-1, 0).add(Direction.DOWNRIGHT),
+            new AxialPosn(-1 , 1));
   }
 
   // Equals
   @Test
-  public void testPosnEquals() {
-    Assert.assertNotEquals("(0, 0)", new Posn(0, 0));
-    Assert.assertNotEquals(new Posn(0, 1), new Posn(1, 0));
-    Assert.assertEquals(new Posn(0, 0), new Posn(0, 0));
+  public void testAxialPosnEquals() {
+    Assert.assertNotEquals("(0, 0)", new AxialPosn(0, 0));
+    Assert.assertNotEquals(new AxialPosn(0, 1), new AxialPosn(1, 0));
+    Assert.assertEquals(new AxialPosn(0, 0), new AxialPosn(0, 0));
   }
 
   // toString
   @Test
-  public void testPosnToString() {
-    Assert.assertEquals(new Posn(0, 0).toString(), "(0, 0)");
-    Assert.assertEquals(new Posn(0, 1).toString(), "(0, 1)");
+  public void testAxialPosnToString() {
+    Assert.assertEquals(new AxialPosn(0, 0).toString(), "(0, 0)");
+    Assert.assertEquals(new AxialPosn(0, 1).toString(), "(0, 1)");
+  }
+
+  // MockPlayer
+  @Test
+  public void testMockPlayer() {
+    StringBuilder log = new StringBuilder();
+    PlayerListener m1 = new MockPlayer(log);
+    this.model.addListener(new MockPlayer(log));
+
+    m1.itsTheMoveOf(PieceColor.BLACK);
+    Assert.assertEquals(log.toString(), "it's X's move!\n");
+
+    m1.itsTheMoveOf(PieceColor.WHITE);
+    Assert.assertEquals(log.toString(), "it's X's move!\nit's O's move!\n");
+  }
+
+  // TextualView
+  @Test
+  public void testTextualView() {
+    TextualView view = new TextualView(this.roModel);
+
+    Assert.assertEquals(view.toString(),
+            "  _ _ _ \n"
+            + " _ X O _ \n"
+            + "_ O _ X _ \n"
+            + " _ X O _ \n"
+            + "  _ _ _");
   }
 }

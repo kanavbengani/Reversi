@@ -1,9 +1,9 @@
 package view;
 
-import player.Player;
-import model.Posn;
+import model.AxialPosn;
 import java.util.Optional;
 import model.IROModel;
+import model.PieceColor;
 
 /**
  * The TextualView class provides a textual representation of a read-only model.
@@ -31,18 +31,18 @@ public class TextualView {
     int totalRows = rings * 2 + 1;
     StringBuilder str = new StringBuilder();
 
-    for (int i = 0; i < totalRows; i++) {
-      int numSpaces = Math.abs(rings - i);
+    for (int r = -rings; r <= rings; r++) {
+      int numSpaces = Math.abs(r);
 
       str.append(" ".repeat(Math.max(0, numSpaces)));
 
-      for (int j = 0; j < totalRows; j++) {
+      for (int q = -rings; q <= rings; q++) {
         try {
-          Optional<Player> cell = this.model.getPlayerAt(new Posn(j, i));
+          Optional<PieceColor> cell = this.model.getPieceAt(new AxialPosn(q, r));
           if (cell.isEmpty()) {
             str.append("_");
           } else {
-            Player p = cell.get();
+            PieceColor p = cell.get();
             str.append(p);
           }
           str.append(" ");

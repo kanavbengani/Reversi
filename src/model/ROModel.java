@@ -1,176 +1,132 @@
 package model;
 
-import player.Player;
-
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 /**
- * The `ROModel` class represents a read-only game model.
+ * The `ROModel` class represents a read-only game model that allows observations such as
+ * determining if the game is over, retrieving the piece color of a particular cell, and checking
+ * the availability of legal moves for the current player.
+ * This class provides a read-only view of a game board, allowing clients to query various aspects
+ * of the game state without modifying it. It includes methods for checking the validity of moves,
+ * determining the game's end condition, finding the winner, and retrieving information about the
+ * current game state.
  */
 public class ROModel implements IROModel {
-  protected final Player player1;
-  protected final Player player2;
-  protected Player currentPlayer;
-  protected final Map<Posn, Optional<Player>> board;
+  protected final PieceColor pieceColor1;
+  protected final PieceColor pieceColor2;
+  protected PieceColor currentPieceColor;
+  protected final Map<AxialPosn, Optional<PieceColor>> board;
   private final int numRings;
 
   // CLASS INVARIANT: The number of key-value pairs in `board` is equal to `3 * numRings *
   // (numRings + 1) + 1`.
 
   /**
-   * Constructs a read-only model with the given players and number of rings.
+   * Constructs a read-only model with the given number of rings.
    *
-   * @param player1 The first player.
-   * @param player2 The second player.
    * @param numRings   The number of rings on the game board.
-   * @throws IllegalArgumentException if the number of rings is less than 2 or if any player is
-   *         null.
+   * @throws IllegalArgumentException if the number of rings is less than 2.
    */
-  public ROModel(Player player1, Player player2, int numRings) {
+  protected ROModel(int numRings) {
     if (numRings < 1) {
       throw new IllegalArgumentException("Number of rings must be at least 1.");
     }
 
-    if (player1 == null || player2 == null) {
-      throw new IllegalArgumentException("Passed-in players cannot be null.");
-    }
-
-    this.player1 = player1;
-    this.player2 = player2;
-    this.currentPlayer = player1;
+    this.pieceColor1 = PieceColor.BLACK;
+    this.pieceColor2 = PieceColor.WHITE;
+    this.currentPieceColor = this.pieceColor1;
     this.numRings = numRings;
-    this.board = new LinkedHashMap<>();
+    this.board = new HashMap<>();
 
     this.initializeBoard();
   }
 
-  // initializes board based on number of rings initialized earlier in the constructor
-  private void initializeBoard() {
-    int start = this.numRings;
-    int end = 2 * this.numRings;
-
-    for (int i = 0; i <= this.numRings * 2; i++) {
-      for (int j = start; j <= end; j++) {
-        Posn posn = new Posn(j, i);
-        this.board.put(posn, Optional.empty());
-      }
-
-      if (start == 0) {
-        end--;
-      } else {
-        start--;
-      }
-    }
-
-    this.initializePlayers();
-  }
-
-  // initializes the player chips on the board around the center (in an alternate matter).
-  private void initializePlayers() {
-    Posn center = new Posn(this.numRings, this.numRings);
-
-    for (int i = 0; i < Posn.OFFSETS.size(); i++) {
-      this.board.put(center.add(Posn.OFFSETS.get(i)), Optional.of(i % 2 == 0 ? player1 : player2));
-    }
-  }
-
   @Override
-  public boolean isGameOver() {
-    for (Posn point : this.board.keySet()) {
-      if (isMoveValid(player1, point) || isMoveValid(player2, point)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  // Checking if the given move is valid with the given player
-  private boolean isMoveValid(Player player, Posn point) {
+  public boolean isMoveValid(PieceColor pieceColor, AxialPosn ap) {
     try {
-      return !validateMove(player, point).isEmpty();
+      return !this.getAllCapturedPieces(pieceColor, ap).isEmpty();
     } catch (IllegalStateException | IllegalArgumentException ignored) {
       return false;
     }
   }
 
   @Override
-  public Optional<Player> getWinner() throws IllegalStateException {
+  public boolean isGameOver() {
+    return !(this.anyLegalMoves(this.pieceColor1) || this.anyLegalMoves(this.pieceColor2));
+  }
+
+  @Override
+  public Optional<PieceColor> getWinner() throws IllegalStateException {
     if (!isGameOver()) {
       throw new IllegalStateException("The game is not over.");
     }
 
-    long player1Count = countPlayerChips(player1);
-    long player2Count = countPlayerChips(player2);
+    int piece1Count = this.getScore(this.pieceColor1);
+    int piece2Count = this.getScore(this.pieceColor2);
 
-    if (player1Count > player2Count) {
-      return Optional.of(player1);
-    } else if (player2Count > player1Count) {
-      return Optional.of(player2);
+    if (piece1Count > piece2Count) {
+      return Optional.of(this.pieceColor1);
+    } else if (piece2Count > piece1Count) {
+      return Optional.of(this.pieceColor2);
     }
 
     return Optional.empty();
   }
 
-  // counts the number of chips for the given player on the board.
-  private long countPlayerChips(Player player) {
-    return this.board.values().stream()
-            .filter(optional -> optional.equals(Optional.of(player)))
+  @Override
+  public Optional<PieceColor> getPieceAt(AxialPosn ap) throws IllegalArgumentException {
+    if (!this.board.containsKey(ap)) {
+      throw new IllegalArgumentException("Invalid coordinate passed in");
+    }
+
+    return this.board.get(ap);
+  }
+
+  @Override
+  public PieceColor getTurn() {
+    return this.currentPieceColor;
+  }
+
+  @Override
+  public int getNumRings() {
+    return this.numRings;
+  }
+
+  @Override
+  public int getScore(PieceColor pieceColor) {
+    return (int) this.board.values().stream()
+            .filter(optional -> optional.equals(Optional.of(pieceColor)))
             .count();
   }
 
   @Override
-  public Optional<Player> getPlayerAt(Posn p) throws IllegalArgumentException {
-    if (!this.board.containsKey(p)) {
-      throw new IllegalArgumentException("Invalid coordinate passed in");
-    }
-
-    return this.board.get(p);
+  public boolean anyLegalMoves() {
+    return this.anyLegalMoves(this.currentPieceColor);
   }
 
-  // Validates if the given hexagonal position can place this player assuming the given hexagonal
+  // Returns whether there are any valid moves for the passed in color.
+  private boolean anyLegalMoves(PieceColor color) {
+    return board.keySet().stream()
+            .anyMatch(ap -> isMoveValid(color, ap));
+  }
+
+  // Validates if the given hexagonal position can place this piece assuming the given hexagonal
   // position is in-bounds.
-  protected List<Posn> validateMove(Player player, Posn hp)
+  protected List<AxialPosn> getAllCapturedPieces(PieceColor pieceColor, AxialPosn ap)
           throws IllegalStateException, IllegalArgumentException {
-    if (this.board.get(hp).isPresent()) {
+    if (this.board.getOrDefault(ap, Optional.empty()).isPresent()) {
       throw new IllegalStateException("Chip cannot be placed in an already occupied cell.");
     }
 
-    if (!player.equals(this.currentPlayer)) {
-      throw new IllegalArgumentException("Not the player's turn.");
+    if (!pieceColor.equals(this.currentPieceColor)) {
+      throw new IllegalArgumentException("Not the piece's turn.");
     }
 
-    List<Posn> finalPoints = new ArrayList<>();
-
-    for (Posn offset : Posn.OFFSETS) {
-      Posn tempHp = hp.add(offset);
-      int counter = 0;
-      List<Posn> tempPoints = new ArrayList<>();
-      while (this.board.getOrDefault(tempHp, Optional.empty()).isPresent()) {
-        tempPoints.add(tempHp);
-        if (this.board.get(tempHp).isEmpty()) {
-          break;
-        }
-
-        Player p = this.board.get(tempHp).get();
-
-        if (p.equals(player)) {
-          if (counter == 0) {
-            tempHp = tempHp.add(offset);
-            counter += 1;
-            continue;
-          }
-          finalPoints.addAll(tempPoints);
-          break;
-        }
-
-        tempHp = tempHp.add(offset);
-        counter += 1;
-      }
-    }
+    List<AxialPosn> finalPoints = this.validateAllDirections(pieceColor, ap);
 
     if (finalPoints.isEmpty()) {
       throw new IllegalStateException("Move is not valid.");
@@ -179,13 +135,68 @@ public class ROModel implements IROModel {
     return finalPoints;
   }
 
-  @Override
-  public Player getTurn() {
-    return this.currentPlayer;
+  // Validating whether a move is possible in all directions
+  private List<AxialPosn> validateAllDirections(PieceColor pieceColor, AxialPosn ap) {
+    List<AxialPosn> finalPoints = new ArrayList<>();
+    for (Direction offset : Direction.values()) {
+      AxialPosn tempAp = ap.add(offset);
+      int counter = 0;
+      List<AxialPosn> tempPoints = new ArrayList<>();
+      while (this.board.getOrDefault(tempAp, Optional.empty()).isPresent()) {
+        tempPoints.add(tempAp);
+        if (this.board.get(tempAp).isEmpty()) {
+          break;
+        }
+
+        PieceColor p = this.board.get(tempAp).get();
+
+        if (p.equals(pieceColor)) {
+          if (counter == 0) {
+            tempAp = tempAp.add(offset);
+            counter += 1;
+            continue;
+          }
+          finalPoints.addAll(tempPoints);
+          break;
+        }
+
+        tempAp = tempAp.add(offset);
+        counter += 1;
+      }
+    }
+
+    return finalPoints;
   }
 
-  @Override
-  public int getNumRings() {
-    return this.numRings;
+  // Initializes board based on number of rings initialized earlier in the constructor
+  private void initializeBoard() {
+    int start = 0;
+    int end = this.numRings;
+
+    for (int r = -this.numRings; r <= this.numRings; r++) {
+      for (int q = start; q <= end; q++) {
+        AxialPosn ap = new AxialPosn(q, r);
+        this.board.put(ap, Optional.empty());
+      }
+
+      if (start == -this.numRings) {
+        end--;
+      } else {
+        start--;
+      }
+    }
+
+    this.initializePieces();
+  }
+
+  // Initializes the pieces on the board around the center (in an alternate matter).
+  private void initializePieces() {
+    AxialPosn center = new AxialPosn(0, 0);
+
+    for (int i = 0; i < Direction.values().length; i++) {
+      this.board.put(center.add(Direction.values()[i]), Optional.of(i % 2 == 0
+              ? PieceColor.BLACK
+              : PieceColor.WHITE));
+    }
   }
 }
