@@ -6,49 +6,60 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.swing.JPanel;
 import javax.swing.event.MouseInputAdapter;
 
-import cs3500.reversi.Reversi;
-import cs3500.reversi.view.CartesianPosn;
 import cs3500.reversi.model.AxialPosn;
 import cs3500.reversi.model.IROModel;
 import cs3500.reversi.model.PieceColor;
-import cs3500.reversi.player.PlayerListener;
+import cs3500.reversi.model.ModelFeatures;
 
 /**
  * A ReversiPanel will draw all the colors, allow users to play the game.
  */
-public class ReversiPanel extends JPanel implements PlayerListener {
-  private final IROModel model;
-  private final int numRings;
-  private final List<ViewFeatures> featuresListeners;
-  private final PieceColor pieceColor;
-  private final double hexagonRadius;
-  private boolean mouseIsDown = false;
-
-  private static final int PADDING = 50;
+class ReversiPanel extends JPanel implements ModelFeatures {
+  private static final int PADDING = 0;
   private static final int HEIGHT = 800;
   private static final int WIDTH = 800;
-  private CartesianPosn highlightedHex = null;
+
+  private final IROModel model;
+  private final int numRings;
+  private final List<ViewFeatures> featuresListeners = new ArrayList<>();
+  private final PieceColor pieceColor;
+  private final double hexagonRadius;
+  private boolean myTurn = false;
+  private Optional<AxialPosn> highlightedHex = Optional.empty();
 
   public ReversiPanel(IROModel model, PieceColor pieceColor) {
     this.model = Objects.requireNonNull(model);
     this.numRings = this.model.getNumRings();
     this.pieceColor = pieceColor;
-    this.featuresListeners = new ArrayList<>();
     this.hexagonRadius = this.computeHexagonRadius();
 
-    MouseEventsListener listener = new MouseEventsListener();
-    this.addMouseListener(listener);
-    this.addMouseMotionListener(listener);
+    // adds this as a listener to the model.
+    this.model.addListener(this);
+
+    // adds mouse and key listeners
+    MouseAdapter mouse = new MouseEventsListener();
+    this.addMouseListener(mouse);
+    this.addMouseMotionListener(mouse);
+    KeyListener keyboard = new ReversiPanel.KeyboardEventListener();
+    this.addKeyListener(keyboard);
+    this.setFocusable(true);
+    this.requestFocus();
 
     this.setBackground(Color.DARK_GRAY);
   }
@@ -64,21 +75,19 @@ public class ReversiPanel extends JPanel implements PlayerListener {
     return Math.min(horizontalMaxRadius, verticalMaxRadius);
   }
 
-
   @Override
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
     Graphics2D g2d = (Graphics2D) g.create();
 
     // Invert coordinates so origin is in the middle and +y is upwards and +x is to the right.
-    g2d.translate(this.getWidth() / 2, this.getHeight() / 2);
+    g2d.translate(WIDTH / 2, HEIGHT / 2);
     g2d.scale(1, -1);
 
     this.drawBoard(g2d);
 
-    if (this.highlightedHex != null) {
-      this.makeHexagon(g2d, this.highlightedHex, Color.CYAN);
-    }
+    this.highlightedHex.ifPresent(axialPosn -> this.makeHexagon(g2d,
+            this.transformLogicalToPhysical(axialPosn), Color.CYAN));
   }
 
   private void drawBoard(Graphics2D g2d) {
@@ -89,13 +98,13 @@ public class ReversiPanel extends JPanel implements PlayerListener {
 
     for (int r = -this.numRings; r <= this.numRings; r++) {
       for (int q = start; q <= end; q++) {
-        AxialPosn ap = new AxialPosn(q, r);
-        CartesianPosn p = this.findCartesianCenter(ap);
+        AxialPosn axialPosn = new AxialPosn(q, r);
+        CartesianPosn p = this.transformLogicalToPhysical(axialPosn);
 
         this.makeHexagon(g2d, p, Color.LIGHT_GRAY);
-        if (this.model.getPieceAt(new AxialPosn(q, r)).isPresent()) {
-          this.makeCircle(g2d, p, (int) this.hexagonRadius / 2,
-                  this.model.getPieceAt(ap).get().color);
+        if (this.model.getPieceAt(axialPosn).isPresent()) {
+          this.makeCircle(g2d, p, this.hexagonRadius / 2,
+                  this.model.getPieceAt(axialPosn).get().color);
         }
       }
 
@@ -140,7 +149,7 @@ public class ReversiPanel extends JPanel implements PlayerListener {
     path.closePath();
     g2d.fill(path);
     g2d.setColor(Color.BLACK);
-    g2d.setStroke(new BasicStroke((float) this.hexagonRadius * 0.06f));
+    g2d.setStroke(new BasicStroke((float) this.hexagonRadius * 0.02f));
     g2d.draw(path);
 
     g2d.setColor(oldColor);
@@ -155,16 +164,8 @@ public class ReversiPanel extends JPanel implements PlayerListener {
 
   @Override
   public void itsTheMoveOf(PieceColor pieceColor) {
-    if (this.pieceColor.equals(pieceColor)) {
-      // PROMPT USER IT'S THEIR TURN
-      this.repaint();
-      throw new IllegalArgumentException("STUB");
-    }
-    else {
-      // REMOVE THE PROMPTING OF USER
-      this.repaint();
-      throw new IllegalArgumentException("STUB");
-    }
+    this.myTurn = this.pieceColor.equals(pieceColor);
+    this.repaint();
   }
 
   @Override
@@ -172,68 +173,92 @@ public class ReversiPanel extends JPanel implements PlayerListener {
     return new Dimension(ReversiPanel.WIDTH, ReversiPanel.HEIGHT);
   }
 
-  CartesianPosn findCartesianCenter(AxialPosn axial) {
+  /**
+   * Converts a given physical point assuming the origin is in the middle of the screen into a
+   * logical coordinate (in axial).
+   * @param physicalP the physical coordinate on the screen in cartesian coordinates
+   * @return the corresponding axial position of the given physical coordinate.
+   */
+  private AxialPosn transformPhysicalToLogical(CartesianPosn physicalP) {
+    double x = physicalP.x;
+    double y = physicalP.y;
+
+    double q = (Math.sqrt(3)/3 * x  -  1./3 * y) / this.hexagonRadius;
+    double r = (2./3 * y) / this.hexagonRadius;
+    double s = -q - r;
+
+    double qRounded = Math.round(q);
+    double rRounded = Math.round(r);
+    double sRounded = Math.round(-q - r);
+
+    double q_diff = Math.abs(qRounded - q);
+    double r_diff = Math.abs(rRounded - r);
+    double s_diff = Math.abs(sRounded - s);
+
+    if (q_diff > r_diff && q_diff > s_diff) {
+      qRounded = -rRounded - sRounded;
+    } else if (r_diff > s_diff) {
+      rRounded = -qRounded - sRounded;
+    }
+
+    return new AxialPosn((int) qRounded, (int) rRounded);
+  }
+
+  private CartesianPosn transformLogicalToPhysical(AxialPosn axial) {
     double x = this.hexagonRadius * (Math.sqrt(3) * axial.q + Math.sqrt(3) / 2 * axial.r);
     double y = this.hexagonRadius * (3.0 / 2.0 * axial.r);
 
-    // To account for float-point inaccuracy
     return new CartesianPosn(x, -y);
+  }
+
+  private class KeyboardEventListener extends KeyAdapter {
+    @Override
+    public void keyPressed(KeyEvent e) {
+      for (ViewFeatures l : ReversiPanel.this.featuresListeners) {
+        if (e.getKeyCode() == KeyEvent.VK_P) {
+          l.pass(ReversiPanel.this.pieceColor);
+        }
+        if (e.getKeyCode() == KeyEvent.VK_ENTER && ReversiPanel.this.highlightedHex.isPresent()) {
+          l.move(ReversiPanel.this.pieceColor,ReversiPanel.this.highlightedHex.get());
+        }
+      }
+    }
   }
 
   private class MouseEventsListener extends MouseInputAdapter {
     @Override
-    public void mousePressed(MouseEvent e) {
-      ReversiPanel.this.mouseIsDown = true;
-      this.mouseDragged(e);
-    }
-
-    @Override
     public void mouseReleased(MouseEvent e) {
-      ReversiPanel.this.mouseIsDown = false;
       Point physicalP = e.getPoint();
-      AxialPosn axialPosn = this.convertToAxial(new CartesianPosn(physicalP.x, physicalP.y));
+      physicalP.x -= ReversiPanel.WIDTH / 2;
+      physicalP.y -= ReversiPanel.HEIGHT / 2;
+
+      AxialPosn axialPosn =
+              ReversiPanel.this.transformPhysicalToLogical(new CartesianPosn(physicalP));
+
+      // Showing axial coordinate that has been clicked to System.out
+      try {
+        ReversiPanel.this.model.getPieceAt(axialPosn);
+        System.out.println(axialPosn);
+      } catch (IllegalArgumentException ignored) {}
+
+      // Highlight/Dehighlight logic
       try {
         if (ReversiPanel.this.model.getPieceAt(axialPosn).isEmpty()) {
-          ReversiPanel.this.highlightedHex = ReversiPanel.this.findCartesianCenter(axialPosn);
+          if (ReversiPanel.this.highlightedHex.isPresent() &&
+                  ReversiPanel.this.transformLogicalToPhysical(axialPosn)
+                          .equals(ReversiPanel.this.highlightedHex.get())) {
+            throw new IllegalArgumentException("Cell is already highlighted.");
+          }
+          ReversiPanel.this.highlightedHex =
+                  Optional.of(axialPosn);
         }
         else {
-          ReversiPanel.this.highlightedHex = null;
+          throw new IllegalArgumentException("There is already a chip there.");
         }
       } catch (IllegalArgumentException ia) {
-        ReversiPanel.this.highlightedHex = null;
+        ReversiPanel.this.highlightedHex = Optional.empty();
       }
       ReversiPanel.this.repaint();
     }
-
-    @Override
-    public void mouseDragged(MouseEvent e) {
-      Point physicalP = e.getPoint();
-    }
-
-    private AxialPosn convertToAxial(CartesianPosn physicalP) {
-      double x = physicalP.x - (double) ReversiPanel.WIDTH / 2;
-      double y = physicalP.y - (double) ReversiPanel.HEIGHT / 2;
-
-      double q = (Math.sqrt(3)/3 * x  -  1./3 * y) / ReversiPanel.this.hexagonRadius;
-      double r = (2./3 * y) / ReversiPanel.this.hexagonRadius;
-      double s = -q - r;
-
-      double qRounded = Math.round(q);
-      double rRounded = Math.round(r);
-      double sRounded = Math.round(-q - r);
-
-      double q_diff = Math.abs(qRounded - q);
-      double r_diff = Math.abs(rRounded - r);
-      double s_diff = Math.abs(sRounded - s);
-
-      if (q_diff > r_diff && q_diff > s_diff) {
-        qRounded = -rRounded - sRounded;
-      } else if (r_diff > s_diff) {
-        rRounded = -qRounded - sRounded;
-      }
-
-      return new AxialPosn((int) qRounded, (int) rRounded);
-    }
-
   }
 }

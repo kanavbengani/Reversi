@@ -1,7 +1,5 @@
 package cs3500.reversi.model;
 
-import cs3500.reversi.player.PlayerListener;
-
 /**
  * The `IModel` interface extends the `IROModel` interface and defines additional methods for
  * modifying the Reversi game state.
@@ -28,10 +26,4 @@ public interface IModel extends IROModel {
    * @return A read-only version of this cs3500.reversi.model
    */
   IROModel getReadOnlyModel();
-
-  /**
-   * Adds the given features class to be added as a listener to when the cs3500.reversi.model triggers an event.
-   * @param playerListener is a listener class that will be added to the features list.
-   */
-  void addListener(PlayerListener playerListener);
 }

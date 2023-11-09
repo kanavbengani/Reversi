@@ -25,7 +25,8 @@ public enum PieceColor {
   /**
    * Constructs a `PieceColor` with the specified `String` representation.
    *
-   * @param s The `String` representation of the piece color.
+   * @param str The `String` representation of the piece color.
+   * @param color The `Color` representation of the piece color.
    */
   PieceColor(String str, Color color) {
     this.str = str;

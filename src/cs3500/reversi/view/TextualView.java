@@ -28,7 +28,6 @@ public class TextualView {
   @Override
   public String toString() {
     int rings = this.model.getNumRings();
-    int totalRows = rings * 2 + 1;
     StringBuilder str = new StringBuilder();
 
     for (int r = -rings; r <= rings; r++) {
@@ -43,7 +42,7 @@ public class TextualView {
             str.append("_");
           } else {
             PieceColor p = cell.get();
-            str.append(p);
+            str.append(p.str);
           }
           str.append(" ");
         } catch (IllegalArgumentException ignored) {

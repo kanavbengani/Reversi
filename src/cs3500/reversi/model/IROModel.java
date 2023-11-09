@@ -3,7 +3,7 @@ package cs3500.reversi.model;
 import java.util.Optional;
 
 /**
- * The `ROModel` interface defines the read-only cs3500.reversi.model for a Reversi game. This
+ * The `Model` interface defines the read-only cs3500.reversi.model for a Reversi game. This
  * interface specifies methods for querying the state and status of the game.
  */
 public interface IROModel {
@@ -37,13 +37,13 @@ public interface IROModel {
   /**
    * Gets an optional representing the piece color at a specific cell position on the Reversi board.
    *
-   * @param hp The position of the cell on the Reversi board.
+   * @param axialPosn The position of the cell on the Reversi board.
    * @return An `Optional` containing the piece color at the specified cell position, or an empty
    *         `Optional` if the position is empty.
    * @throws IllegalArgumentException if the provided `AxialPosn` is not a valid position on the
    *         board.
    */
-  Optional<PieceColor> getPieceAt(AxialPosn hp) throws IllegalArgumentException;
+  Optional<PieceColor> getPieceAt(AxialPosn axialPosn) throws IllegalArgumentException;
 
   /**
    * Gets the piece color whose turn it currently is in the Reversi game.
@@ -74,4 +74,10 @@ public interface IROModel {
    * @return Whether the current piece color has any legal moves.
    */
   boolean anyLegalMoves();
+
+  /**
+   * Adds the given features class to be added as a listener to when the cs3500.reversi.model triggers an event.
+   * @param modelFeatures is a listener class that will be added to the features list.
+   */
+  void addListener(ModelFeatures modelFeatures);
 }
