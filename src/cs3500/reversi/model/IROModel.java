@@ -1,9 +1,9 @@
-package model;
+package cs3500.reversi.model;
 
 import java.util.Optional;
 
 /**
- * The `ROModel` interface defines the read-only model for a Reversi game. This
+ * The `ROModel` interface defines the read-only cs3500.reversi.model for a Reversi game. This
  * interface specifies methods for querying the state and status of the game.
  */
 public interface IROModel {
@@ -25,7 +25,7 @@ public interface IROModel {
   boolean isGameOver();
 
   /**
-   * Gets an optional representing the piece color of the player who has won the Reversi game. If
+   * Gets an optional representing the piece color of the cs3500.reversi.player who has won the Reversi game. If
    * the game is not yet over or if it's a draw, the `Optional` will be empty.
    *
    * @return An `Optional` containing the winning color if there is one, or an empty `Optional`

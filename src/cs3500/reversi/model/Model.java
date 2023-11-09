@@ -1,31 +1,37 @@
-package model;
+package cs3500.reversi.model;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Optional;
 import java.util.List;
 
-import player.PlayerListener;
+import cs3500.reversi.player.PlayerListener;
 
 /**
- * The `Model` class represents the mutable game model, allowing players to make moves and switch
+ * The `Model` class represents the mutable game cs3500.reversi.model, allowing players to make moves and switch
  * turns. This class extends the `ROModel` and adds mutable game state features to allow players
  * to make moves and control the flow of the game.
  * The `Model` class maintains the game's current state, including the game board, the current
- * player's turn, and the list of player listeners. Players can make moves and switch turns, and
- * the class provides methods to notify listeners when it's a player's turn.
+ * cs3500.reversi.player's turn, and the list of cs3500.reversi.player listeners. Players can make moves and switch turns, and
+ * the class provides methods to notify listeners when it's a cs3500.reversi.player's turn.
  */
 public class Model extends ROModel implements IModel {
-  private final ArrayList<PlayerListener> listeners;
+  private final List<PlayerListener> listeners;
 
   /**
-   * Constructs a game model with the given players and number of rings.
+   * Constructs a game cs3500.reversi.model with the given players and number of rings.
    *
    * @param numRings The number of rings on the game board.
-   * @throws IllegalArgumentException if the number of rings is less than 2 or if any player is
+   * @throws IllegalArgumentException if the number of rings is less than 2 or if any cs3500.reversi.player is
    *         null.
    */
   public Model(int numRings) {
     super(numRings);
+    this.listeners = new ArrayList<>();
+  }
+
+  public Model(Map<AxialPosn, Optional<PieceColor>> board) {
+    super(board);
     this.listeners = new ArrayList<>();
   }
 
@@ -82,7 +88,7 @@ public class Model extends ROModel implements IModel {
                     ? pieceColor2
                     : pieceColor1;
 
-    // Triggering event broadcasting its the given color's move!
+    // Triggering event broadcasting it is the given color's move!
     for (PlayerListener f : this.listeners) {
       f.itsTheMoveOf(super.currentPieceColor);
     }

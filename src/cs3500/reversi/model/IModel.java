@@ -1,6 +1,6 @@
-package model;
+package cs3500.reversi.model;
 
-import player.PlayerListener;
+import cs3500.reversi.player.PlayerListener;
 
 /**
  * The `IModel` interface extends the `IROModel` interface and defines additional methods for
@@ -12,25 +12,25 @@ public interface IModel extends IROModel {
    * piece and hexagonal position.
    *
    * @param pc The piece color for which the move will be played for.
-   * @param ap The hexagonal position where the player wants to make their move.
+   * @param ap The hexagonal position where the cs3500.reversi.player wants to make their move.
    * @throws IllegalStateException if a wrong piece is being placed out of turn
    * @throws IllegalArgumentException if the passed in hexagonal position is out of bounds
    */
   void playMove(PieceColor pc, AxialPosn ap) throws IllegalStateException, IllegalArgumentException;
 
   /**
-   * Switches the current turn to the next player, allowing for the progression of the game.
+   * Switches the current turn to the next cs3500.reversi.player, allowing for the progression of the game.
    */
   void pass(PieceColor pc) throws IllegalStateException;
 
   /**
-   * Returns a read-only version of this model that can safely be passed to the view.
-   * @return A read-only version of this model
+   * Returns a read-only version of this cs3500.reversi.model that can safely be passed to the cs3500.reversi.view.
+   * @return A read-only version of this cs3500.reversi.model
    */
   IROModel getReadOnlyModel();
 
   /**
-   * Adds the given features class to be added as a listener to when the model triggers an event.
+   * Adds the given features class to be added as a listener to when the cs3500.reversi.model triggers an event.
    * @param playerListener is a listener class that will be added to the features list.
    */
   void addListener(PlayerListener playerListener);

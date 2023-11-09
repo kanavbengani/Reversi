@@ -1,4 +1,4 @@
-package model;
+package cs3500.reversi.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,10 +7,10 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * The `ROModel` class represents a read-only game model that allows observations such as
+ * The `ROModel` class represents a read-only game cs3500.reversi.model that allows observations such as
  * determining if the game is over, retrieving the piece color of a particular cell, and checking
- * the availability of legal moves for the current player.
- * This class provides a read-only view of a game board, allowing clients to query various aspects
+ * the availability of legal moves for the current cs3500.reversi.player.
+ * This class provides a read-only cs3500.reversi.view of a game board, allowing clients to query various aspects
  * of the game state without modifying it. It includes methods for checking the validity of moves,
  * determining the game's end condition, finding the winner, and retrieving information about the
  * current game state.
@@ -26,23 +26,29 @@ public class ROModel implements IROModel {
   // (numRings + 1) + 1`.
 
   /**
-   * Constructs a read-only model with the given number of rings.
+   * Constructs a read-only cs3500.reversi.model with the given number of rings.
    *
    * @param numRings   The number of rings on the game board.
    * @throws IllegalArgumentException if the number of rings is less than 2.
    */
   protected ROModel(int numRings) {
-    if (numRings < 1) {
-      throw new IllegalArgumentException("Number of rings must be at least 1.");
-    }
-
     this.pieceColor1 = PieceColor.BLACK;
     this.pieceColor2 = PieceColor.WHITE;
     this.currentPieceColor = this.pieceColor1;
-    this.numRings = numRings;
     this.board = new HashMap<>();
-
+    if (numRings < 1) {
+      throw new IllegalArgumentException("Number of rings must be at least 1.");
+    }
+    this.numRings = numRings;
     this.initializeBoard();
+  }
+
+  protected ROModel(Map<AxialPosn, Optional<PieceColor>> board) {
+    this.pieceColor1 = PieceColor.BLACK;
+    this.pieceColor2 = PieceColor.WHITE;
+    this.currentPieceColor = this.pieceColor1;
+    this.numRings = this.validateBoard(board);
+    this.board = board;
   }
 
   @Override
@@ -114,6 +120,13 @@ public class ROModel implements IROModel {
             .anyMatch(ap -> isMoveValid(color, ap));
   }
 
+  // Returns the number of rings for the board passed in, throws exception if
+  private int validateBoard(Map<AxialPosn, Optional<PieceColor>> board) {
+    int posnCount = board.keySet().size();
+    double numRings = (-3 + Math.sqrt(-3 + 12 * posnCount)) / 6;
+    return (int) numRings;
+  }
+
   // Validates if the given hexagonal position can place this piece assuming the given hexagonal
   // position is in-bounds.
   protected List<AxialPosn> getAllCapturedPieces(PieceColor pieceColor, AxialPosn ap)
@@ -176,6 +189,7 @@ public class ROModel implements IROModel {
     for (int r = -this.numRings; r <= this.numRings; r++) {
       for (int q = start; q <= end; q++) {
         AxialPosn ap = new AxialPosn(q, r);
+        System.out.println(ap);
         this.board.put(ap, Optional.empty());
       }
 

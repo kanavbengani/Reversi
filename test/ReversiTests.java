@@ -4,18 +4,18 @@ import org.junit.Test;
 
 import java.util.Optional;
 
-import model.Direction;
-import model.IModel;
-import model.IROModel;
-import model.Model;
-import model.AxialPosn;
-import model.PieceColor;
-import player.MockPlayer;
-import player.PlayerListener;
-import view.TextualView;
+import cs3500.reversi.model.Direction;
+import cs3500.reversi.model.IModel;
+import cs3500.reversi.model.IROModel;
+import cs3500.reversi.model.Model;
+import cs3500.reversi.model.AxialPosn;
+import cs3500.reversi.model.PieceColor;
+import cs3500.reversi.player.MockPlayer;
+import cs3500.reversi.player.PlayerListener;
+import cs3500.reversi.view.TextualView;
 
 /**
- * Represents a set of JUnit tests that test the functionality of the model.
+ * Represents a set of JUnit tests that test the functionality of the cs3500.reversi.model.
  */
 public class ReversiTests {
   private IModel model;

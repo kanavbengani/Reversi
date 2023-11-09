@@ -1,4 +1,4 @@
-package model;
+package cs3500.reversi.model;
 
 /**
  * An enum of six predefined `AxialPosn` directional offsets representing the six neighboring

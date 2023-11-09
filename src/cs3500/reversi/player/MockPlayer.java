@@ -1,10 +1,10 @@
-package player;
+package cs3500.reversi.player;
 
-import model.PieceColor;
+import cs3500.reversi.model.PieceColor;
 
 /**
  * The `MockPlayer` class is an implementation of the `PlayerListener` interface that simulates
- * a player's moves by logging messages to a given log.
+ * a cs3500.reversi.player's moves by logging messages to a given log.
  */
 public class MockPlayer implements PlayerListener {
   private final StringBuilder log;
@@ -12,7 +12,7 @@ public class MockPlayer implements PlayerListener {
   /**
    * Constructs a `MockPlayer` with the specified `StringBuilder` for logging moves.
    *
-   * @param log The `StringBuilder` used for logging player moves.
+   * @param log The `StringBuilder` used for logging cs3500.reversi.player moves.
    */
   public MockPlayer(StringBuilder log) {
     this.log = log;

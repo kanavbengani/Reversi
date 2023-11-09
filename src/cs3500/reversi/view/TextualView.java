@@ -1,29 +1,29 @@
-package view;
+package cs3500.reversi.view;
 
-import model.AxialPosn;
+import cs3500.reversi.model.AxialPosn;
 import java.util.Optional;
-import model.IROModel;
-import model.PieceColor;
+import cs3500.reversi.model.IROModel;
+import cs3500.reversi.model.PieceColor;
 
 /**
- * The TextualView class provides a textual representation of a read-only model.
+ * The TextualView class provides a textual representation of a read-only cs3500.reversi.model.
  */
 public class TextualView {
   private final IROModel model;
 
   /**
-   * Constructs a TextualView with a given read-only model.
+   * Constructs a TextualView with a given read-only cs3500.reversi.model.
    *
-   * @param model The read-only model to be displayed.
+   * @param model The read-only cs3500.reversi.model to be displayed.
    */
   public TextualView(IROModel model) {
     this.model = model;
   }
 
   /**
-   * Generates a textual representation of the read-only model.
+   * Generates a textual representation of the read-only cs3500.reversi.model.
    *
-   * @return A string representing the read-only model.
+   * @return A string representing the read-only cs3500.reversi.model.
    */
   @Override
   public String toString() {
