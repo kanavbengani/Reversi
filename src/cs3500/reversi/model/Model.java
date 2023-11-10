@@ -1,7 +1,9 @@
 package cs3500.reversi.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -104,9 +106,8 @@ public class Model implements IModel {
     }
   }
 
-  // Validates if the given hexagonal position can place this piece assuming the given hexagonal
-  // position is in-bounds.
-  private List<AxialPosn> getAllCapturedPieces(PieceColor pieceColor, AxialPosn ap)
+  @Override
+  public List<AxialPosn> getAllCapturedPieces(PieceColor pieceColor, AxialPosn ap)
           throws IllegalStateException, IllegalArgumentException {
     if (this.board.getOrDefault(ap, Optional.empty()).isPresent()) {
       throw new IllegalStateException("Chip cannot be placed in an already occupied cell.");
@@ -279,5 +280,10 @@ public class Model implements IModel {
   @Override
   public IROModel getReadOnlyModel() {
     return this;
+  }
+
+  @Override
+  public Iterator<AxialPosn> iterator() {
+    return this.board.keySet().iterator();
   }
 }

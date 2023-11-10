@@ -4,13 +4,13 @@ import cs3500.reversi.model.AxialPosn;
 import cs3500.reversi.model.PieceColor;
 
 public class MockViewListener implements ViewFeatures {
-
   private final StringBuilder log;
 
   public MockViewListener(IView view, StringBuilder log) {
     this.log = log;
     view.addFeatureListener(this);
   }
+
   @Override
   public void pass(PieceColor pieceColor) {
     this.log.append(pieceColor).append(" wants to pass!");

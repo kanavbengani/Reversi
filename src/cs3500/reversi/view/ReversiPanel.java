@@ -13,7 +13,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -24,8 +23,8 @@ import javax.swing.event.MouseInputAdapter;
 
 import cs3500.reversi.model.AxialPosn;
 import cs3500.reversi.model.IROModel;
-import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.model.ModelFeatures;
+import cs3500.reversi.model.PieceColor;
 
 /**
  * A ReversiPanel will draw all the colors, allow users to play the game.
@@ -40,7 +39,6 @@ class ReversiPanel extends JPanel implements ModelFeatures {
   private final List<ViewFeatures> featuresListeners = new ArrayList<>();
   private final PieceColor pieceColor;
   private final double hexagonRadius;
-  private boolean myTurn = false;
   private Optional<AxialPosn> highlightedHex = Optional.empty();
 
   public ReversiPanel(IROModel model, PieceColor pieceColor) {
@@ -131,7 +129,7 @@ class ReversiPanel extends JPanel implements ModelFeatures {
     Color oldColor = g2d.getColor();
     g2d.setColor(fillColor);
 
-    Path2D path  = new Path2D.Double();
+    Path2D path = new Path2D.Double();
 
     double startX = p.x + hexagonRadius * Math.cos(Math.PI / 180 * 30);
     double startY = p.y + hexagonRadius * Math.sin(Math.PI / 180 * 30);
@@ -164,7 +162,6 @@ class ReversiPanel extends JPanel implements ModelFeatures {
 
   @Override
   public void itsTheMoveOf(PieceColor pieceColor) {
-    this.myTurn = this.pieceColor.equals(pieceColor);
     this.repaint();
   }
 
@@ -183,8 +180,8 @@ class ReversiPanel extends JPanel implements ModelFeatures {
     double x = physicalP.x;
     double y = physicalP.y;
 
-    double q = (Math.sqrt(3)/3 * x  -  1./3 * y) / this.hexagonRadius;
-    double r = (2./3 * y) / this.hexagonRadius;
+    double q = (Math.sqrt(3) / 3 * x - 1. / 3 * y) / this.hexagonRadius;
+    double r = (2. / 3 * y) / this.hexagonRadius;
     double s = -q - r;
 
     double qRounded = Math.round(q);
@@ -219,7 +216,7 @@ class ReversiPanel extends JPanel implements ModelFeatures {
           l.pass(ReversiPanel.this.pieceColor);
         }
         if (e.getKeyCode() == KeyEvent.VK_ENTER && ReversiPanel.this.highlightedHex.isPresent()) {
-          l.move(ReversiPanel.this.pieceColor,ReversiPanel.this.highlightedHex.get());
+          l.move(ReversiPanel.this.pieceColor, ReversiPanel.this.highlightedHex.get());
         }
       }
     }
@@ -239,20 +236,19 @@ class ReversiPanel extends JPanel implements ModelFeatures {
       try {
         ReversiPanel.this.model.getPieceAt(axialPosn);
         System.out.println(axialPosn);
-      } catch (IllegalArgumentException ignored) {}
+      } catch (IllegalArgumentException ignored) {
+      }
 
       // Highlight/Dehighlight logic
       try {
         if (ReversiPanel.this.model.getPieceAt(axialPosn).isEmpty()) {
-          if (ReversiPanel.this.highlightedHex.isPresent() &&
-                  ReversiPanel.this.transformLogicalToPhysical(axialPosn)
-                          .equals(ReversiPanel.this.highlightedHex.get())) {
+          if (ReversiPanel.this.highlightedHex.isPresent()
+                  && axialPosn.equals(ReversiPanel.this.highlightedHex.get())) {
             throw new IllegalArgumentException("Cell is already highlighted.");
           }
           ReversiPanel.this.highlightedHex =
                   Optional.of(axialPosn);
-        }
-        else {
+        } else {
           throw new IllegalArgumentException("There is already a chip there.");
         }
       } catch (IllegalArgumentException ia) {

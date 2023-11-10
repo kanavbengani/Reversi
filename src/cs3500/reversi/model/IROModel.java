@@ -1,12 +1,13 @@
 package cs3500.reversi.model;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
  * The `Model` interface defines the read-only cs3500.reversi.model for a Reversi game. This
  * interface specifies methods for querying the state and status of the game.
  */
-public interface IROModel {
+public interface IROModel extends Iterable<AxialPosn> {
   /**
    * Checks if a move is valid for a specific piece color at a given position on the Reversi board.
    *
@@ -25,8 +26,21 @@ public interface IROModel {
   boolean isGameOver();
 
   /**
-   * Gets an optional representing the piece color of the cs3500.reversi.player who has won the Reversi game. If
-   * the game is not yet over or if it's a draw, the `Optional` will be empty.
+   * Retrieves a list of all captured pieces for a specific piece color at a given position on the
+   * Reversi board.
+   *
+   * @param pieceColor The piece color attempting the move.
+   * @param ap The position on the Reversi board where the move is to be made.
+   * @return List of captured pieces.
+   * @throws IllegalStateException If the move is not valid.
+   * @throws IllegalArgumentException If the provided position is not valid on the board.
+   */
+  List<AxialPosn> getAllCapturedPieces(PieceColor pieceColor, AxialPosn ap)
+          throws IllegalStateException, IllegalArgumentException;
+
+  /**
+   * Gets an optional representing the piece color of the cs3500.reversi.player who has won the
+   * Reversi game. If the game is not yet over or if it's a draw, the `Optional` will be empty.
    *
    * @return An `Optional` containing the winning color if there is one, or an empty `Optional`
    *         if it's a draw.
@@ -76,7 +90,8 @@ public interface IROModel {
   boolean anyLegalMoves();
 
   /**
-   * Adds the given features class to be added as a listener to when the cs3500.reversi.model triggers an event.
+   * Adds the given features class to be added as a listener to when the cs3500.reversi.model
+   * triggers an event.
    * @param modelFeatures is a listener class that will be added to the features list.
    */
   void addListener(ModelFeatures modelFeatures);

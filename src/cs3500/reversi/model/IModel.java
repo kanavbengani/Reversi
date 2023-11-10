@@ -17,12 +17,14 @@ public interface IModel extends IROModel {
   void playMove(PieceColor pc, AxialPosn ap) throws IllegalStateException, IllegalArgumentException;
 
   /**
-   * Switches the current turn to the next cs3500.reversi.player, allowing for the progression of the game.
+   * Switches the current turn to the next cs3500.reversi.player, allowing for the progression
+   * of the game.
    */
   void pass(PieceColor pc) throws IllegalStateException;
 
   /**
-   * Returns a read-only version of this cs3500.reversi.model that can safely be passed to the cs3500.reversi.view.
+   * Returns a read-only version of this cs3500.reversi.model that can safely be passed to the
+   * cs3500.reversi.view.
    * @return A read-only version of this cs3500.reversi.model
    */
   IROModel getReadOnlyModel();
