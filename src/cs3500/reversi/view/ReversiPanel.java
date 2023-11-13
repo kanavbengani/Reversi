@@ -6,13 +6,16 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -76,6 +79,7 @@ class ReversiPanel extends JPanel implements ModelFeatures {
   @Override
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
+    System.out.println("here");
     Graphics2D g2d = (Graphics2D) g.create();
 
     // Invert coordinates so origin is in the middle and +y is upwards and +x is to the right.
@@ -91,25 +95,13 @@ class ReversiPanel extends JPanel implements ModelFeatures {
   private void drawBoard(Graphics2D g2d) {
     Color oldColor = g2d.getColor();
 
-    int start = 0;
-    int end = this.numRings;
+    for (AxialPosn axialPosn : this.model.getAllPosn()) {
+      CartesianPosn p = this.transformLogicalToPhysical(axialPosn);
 
-    for (int r = -this.numRings; r <= this.numRings; r++) {
-      for (int q = start; q <= end; q++) {
-        AxialPosn axialPosn = new AxialPosn(q, r);
-        CartesianPosn p = this.transformLogicalToPhysical(axialPosn);
-
-        this.makeHexagon(g2d, p, Color.LIGHT_GRAY);
-        if (this.model.getPieceAt(axialPosn).isPresent()) {
-          this.makeCircle(g2d, p, this.hexagonRadius / 2,
-                  this.model.getPieceAt(axialPosn).get().color);
-        }
-      }
-
-      if (start == -this.numRings) {
-        end--;
-      } else {
-        start--;
+      this.makeHexagon(g2d, p, Color.LIGHT_GRAY);
+      if (this.model.getPieceAt(axialPosn).isPresent()) {
+        this.makeCircle(g2d, p, this.hexagonRadius / 2,
+                this.model.getPieceAt(axialPosn).get().color);
       }
     }
 

@@ -12,6 +12,7 @@ import cs3500.reversi.model.AxialPosn;
 import cs3500.reversi.model.Model;
 import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.model.ModelFeatures;
+import cs3500.reversi.view.ITextualView;
 import cs3500.reversi.view.TextualView;
 
 /**
@@ -407,7 +408,7 @@ public class ReversiTests {
   // TextualView
   @Test
   public void testTextualView() {
-    TextualView view = new TextualView(this.roModel);
+    ITextualView view = new TextualView(this.roModel);
 
     Assert.assertEquals(view.toString(),
             "  _ _ _ \n"

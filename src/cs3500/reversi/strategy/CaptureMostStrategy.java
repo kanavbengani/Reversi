@@ -13,20 +13,20 @@ public class CaptureMostStrategy implements ReversiStrategy {
                                     PieceColor color) {
     int maxCaptured = 0;
     List<AxialPosn> ties = new ArrayList<>();
-
-    Iterable<AxialPosn> it = possibleMoves.isEmpty() ? model : possibleMoves;
+    Iterable<AxialPosn> it = possibleMoves.isEmpty() ? model.getAllPosn() : possibleMoves;
 
     for (AxialPosn ap : it) {
       try {
-        int captured = model.getAllCapturedPieces(color, ap).size();
+        if (model.isMoveValid(color, ap)) {
+          int captured = model.getAllCapturedPieces(color, ap).size();
+          if (maxCaptured < captured) {
+            maxCaptured = captured;
+            ties = new ArrayList<>();
+          }
 
-        if (maxCaptured < captured) {
-          maxCaptured = captured;
-          ties = new ArrayList<>();
-        }
-
-        if (maxCaptured == captured) {
-          ties.add(ap);
+          if (maxCaptured == captured) {
+            ties.add(ap);
+          }
         }
       } catch (IllegalStateException | IllegalArgumentException ignored) {
       }

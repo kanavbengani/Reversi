@@ -4,7 +4,6 @@ import cs3500.reversi.model.IModel;
 import cs3500.reversi.model.Model;
 import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.view.IView;
-import cs3500.reversi.view.MockViewListener;
 import cs3500.reversi.view.View;
 
 public final class Reversi {
@@ -12,7 +11,6 @@ public final class Reversi {
     IModel model = new Model(5);
     IView viewBlack = new View(model.getReadOnlyModel(), PieceColor.BLACK);
 //    IView viewWhite = new View(model.getReadOnlyModel(), PieceColor.WHITE);
-    MockViewListener m = new MockViewListener(viewBlack, new StringBuilder());
 
     viewBlack.display(true);
 //    viewWhite.display(true);

@@ -16,7 +16,7 @@ public class GoCornerStrategy implements ReversiStrategy {
     List<AxialPosn> corners = this.getCorners(model);
     List<AxialPosn> moves = new ArrayList<>();
 
-    Iterable<AxialPosn> it = possibleMoves.isEmpty() ? model : possibleMoves;
+    Iterable<AxialPosn> it = possibleMoves.isEmpty() ? corners : possibleMoves;
 
     for (AxialPosn move : it) {
       if (model.isMoveValid(color, move) && corners.contains(move)) {
@@ -24,6 +24,7 @@ public class GoCornerStrategy implements ReversiStrategy {
       }
     }
 
+    // sorting moves list top most and then left most.
     moves.sort(Comparator.comparingInt((AxialPosn ap) -> ap.r).thenComparingInt(ap -> ap.q));
 
     return moves;

@@ -7,7 +7,7 @@ import java.util.Optional;
  * The `Model` interface defines the read-only cs3500.reversi.model for a Reversi game. This
  * interface specifies methods for querying the state and status of the game.
  */
-public interface IROModel extends Iterable<AxialPosn> {
+public interface IROModel {
   /**
    * Checks if a move is valid for a specific piece color at a given position on the Reversi board.
    *
@@ -95,4 +95,11 @@ public interface IROModel extends Iterable<AxialPosn> {
    * @param modelFeatures is a listener class that will be added to the features list.
    */
   void addListener(ModelFeatures modelFeatures);
+
+  /**
+   * Returns a list of all positions on the board.
+   *
+   * @return a list of all positions on the board.
+   */
+  List<AxialPosn> getAllPosn();
 }
