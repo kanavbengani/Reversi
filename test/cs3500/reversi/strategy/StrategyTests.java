@@ -21,6 +21,8 @@ public class StrategyTests {
   private ReversiStrategy captureMostStrategy;
   private ReversiStrategy avoidEdgesStrategy;
 
+  private ReversiStrategy goCornersStrategy;
+
   @Before
   public void initTest() {
     this.log = new StringBuilder();
@@ -32,6 +34,7 @@ public class StrategyTests {
     this.model = new MockModelForStrategy(this.log, this.posnCaptures, this.numRings);
     this.captureMostStrategy = new CaptureMostStrategy();
     this.avoidEdgesStrategy = new AvoidEdgesStrategy();
+    this.goCornersStrategy = new GoCornerStrategy();
   }
 
   // CaptureMostStrategy
@@ -110,5 +113,89 @@ public class StrategyTests {
 
     Assert.assertEquals(this.avoidEdgesStrategy.chooseMove(new ArrayList<>(),
             this.model, PieceColor.BLACK), List.of(new AxialPosn(0, 1)));
+  }
+
+  @Test
+  public void testAvoidEdgesStrategyCorrectlyAvoidsEdgeWithOptionsProvided() {
+    this.posnCaptures.clear();
+    this.posnCaptures.put(new AxialPosn(0, -2), 1);
+    this.posnCaptures.put(new AxialPosn(0, 1), 1);
+    this.posnCaptures.put(new AxialPosn(-1, 2), 1);
+
+    Assert.assertEquals(this.avoidEdgesStrategy.chooseMove(new ArrayList<>(List.of(new AxialPosn(0, 1))),
+            this.model, PieceColor.BLACK), List.of(new AxialPosn(0, 1)));
+  }
+
+  @Test
+  public void testAvoidEdgesStrategyFindsNoMovesWhenAllMovesAreEdgeAdjacent() {
+    this.posnCaptures.clear();
+    this.posnCaptures.put(new AxialPosn(0, -2), 1);
+    this.posnCaptures.put(new AxialPosn(2, -2), 1);
+    this.posnCaptures.put(new AxialPosn(-2, 2), 1);
+
+    Assert.assertEquals(this.avoidEdgesStrategy.chooseMove(new ArrayList<>(),
+            this.model, PieceColor.BLACK), new ArrayList<>());
+  }
+
+  @Test
+  public void testAvoidEdgesStrategyFindsNoMovesWhenAllMovesAreEdgeAdjacentMovesPassedIn() {
+    this.posnCaptures.clear();
+    this.posnCaptures.put(new AxialPosn(0, -2), 1);
+    this.posnCaptures.put(new AxialPosn(2, -2), 1);
+    this.posnCaptures.put(new AxialPosn(-2, 2), 1);
+
+    Assert.assertEquals(this.avoidEdgesStrategy.chooseMove(new ArrayList<>(List.of(new AxialPosn(-2, 0))),
+            this.model, PieceColor.BLACK), new ArrayList<>());
+  }
+
+  // GoCornerStrategy
+  @Test
+  public void testGoCornerStrategyCallsCorrectMethods() {
+    this.goCornersStrategy.chooseMove(new ArrayList<>(), this.model, PieceColor.BLACK);
+
+    int n = this.numRings;
+    List<AxialPosn> edges = new ArrayList<>(List.of(
+            new AxialPosn(n, 0), new AxialPosn(0, n),
+            new AxialPosn(n, -n), new AxialPosn(0, -n),
+            new AxialPosn(-n, 0), new AxialPosn(-n, n)
+    ));
+
+    for (AxialPosn ap : edges) {
+      Assert.assertTrue(this.log.toString().contains("Calling isMoveValid to check if BLACK can "
+              + "play on " + ap.toString()));
+    }
+  }
+
+  @Test
+  public void testGoCornerStrategyCorrectlyPicksCorner() {
+    this.posnCaptures.clear();
+    this.posnCaptures.put(new AxialPosn(3, 0), 1);
+    this.posnCaptures.put(new AxialPosn(2, 1), 1);
+    this.posnCaptures.put(new AxialPosn(-2, -1), 2);
+
+    Assert.assertEquals(this.goCornersStrategy.chooseMove(new ArrayList<>(),
+            this.model, PieceColor.BLACK), new ArrayList<>(List.of(new AxialPosn(3, 0))));
+  }
+
+  @Test
+  public void testGoCornerStrategyCorrectlySortsResultingList() {
+    this.posnCaptures.clear();
+    this.posnCaptures.put(new AxialPosn(3, 0), 1);
+    this.posnCaptures.put(new AxialPosn(3, -3), 1);
+    this.posnCaptures.put(new AxialPosn(-2, -1), 2);
+
+    Assert.assertEquals(this.goCornersStrategy.chooseMove(new ArrayList<>(),
+            this.model, PieceColor.BLACK), new ArrayList<>(List.of(new AxialPosn(3, -3), new AxialPosn(3, 0))));
+  }
+
+  @Test
+  public void testGoCornerStrategyReturnsEmptyWhenNoCornerMoves() {
+    this.posnCaptures.clear();
+    this.posnCaptures.put(new AxialPosn(2, 0), 1);
+    this.posnCaptures.put(new AxialPosn(-1, -3), 1);
+    this.posnCaptures.put(new AxialPosn(-2, -1), 2);
+
+    Assert.assertEquals(this.goCornersStrategy.chooseMove(new ArrayList<>(),
+            this.model, PieceColor.BLACK), new ArrayList<>());
   }
 }
