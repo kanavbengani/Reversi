@@ -91,7 +91,7 @@ class ReversiPanel extends JPanel implements ModelFeatures {
       AxialPosn posn = this.highlightedHex.get();
       Color color;
 
-      if (this.model.isMoveValid(PieceColor.BLACK, posn) || this.model.isMoveValid(PieceColor.WHITE, posn)) {
+      if (this.model.isMoveValid(this.pieceColor, posn)) {
         color = Color.GREEN;
       } else {
         color = Color.RED;

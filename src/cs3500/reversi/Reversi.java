@@ -9,10 +9,10 @@ import cs3500.reversi.view.View;
 public final class Reversi {
   public static void main(String[] args) {
     IModel model = new Model(5);
-//    IView viewBlack = new View(model.getReadOnlyModel(), PieceColor.BLACK);
-    IView viewWhite = new View(model.getReadOnlyModel(), PieceColor.WHITE);
+    IView viewBlack = new View(model.getReadOnlyModel(), PieceColor.BLACK);
+//    IView viewWhite = new View(model.getReadOnlyModel(), PieceColor.WHITE);
 
-    viewWhite.display(true);
+    viewBlack.display(true);
 //    viewWhite.display(true);
   }
 }
