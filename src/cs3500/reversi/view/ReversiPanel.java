@@ -79,7 +79,6 @@ class ReversiPanel extends JPanel implements ModelFeatures {
   @Override
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
-    System.out.println("here");
     Graphics2D g2d = (Graphics2D) g.create();
 
     // Invert coordinates so origin is in the middle and +y is upwards and +x is to the right.
@@ -88,8 +87,18 @@ class ReversiPanel extends JPanel implements ModelFeatures {
 
     this.drawBoard(g2d);
 
-    this.highlightedHex.ifPresent(axialPosn -> this.makeHexagon(g2d,
-            this.transformLogicalToPhysical(axialPosn), Color.CYAN));
+    if (this.highlightedHex.isPresent()) {
+      AxialPosn posn = this.highlightedHex.get();
+      Color color;
+
+      if (this.model.isMoveValid(PieceColor.BLACK, posn) || this.model.isMoveValid(PieceColor.WHITE, posn)) {
+        color = Color.GREEN;
+      } else {
+        color = Color.RED;
+      }
+
+      this.makeHexagon(g2d, this.transformLogicalToPhysical(posn), color);
+    }
   }
 
   private void drawBoard(Graphics2D g2d) {
