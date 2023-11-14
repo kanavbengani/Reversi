@@ -9,16 +9,15 @@ import cs3500.reversi.model.IROModel;
 import cs3500.reversi.model.PieceColor;
 
 public class CaptureMostStrategy implements ReversiStrategy {
-  public List<AxialPosn> chooseMove(List<AxialPosn> possibleMoves, IROModel model,
-                                    PieceColor color) {
+  public List<AxialPosn> chooseMove(List<AxialPosn> possibleMoves, IROModel model) {
     int maxCaptured = 0;
     List<AxialPosn> ties = new ArrayList<>();
     Iterable<AxialPosn> it = possibleMoves.isEmpty() ? model.getAllPosn() : possibleMoves;
 
     for (AxialPosn ap : it) {
       try {
-        if (model.isMoveValid(color, ap)) {
-          int captured = model.getAllCapturedPieces(color, ap).size();
+        if (model.isMoveValid(model.getTurn(), ap)) {
+          int captured = model.getAllCapturedPieces(model.getTurn(), ap).size();
           if (maxCaptured < captured) {
             maxCaptured = captured;
             ties = new ArrayList<>();

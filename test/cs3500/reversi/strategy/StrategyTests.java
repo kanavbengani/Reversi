@@ -15,12 +15,11 @@ import cs3500.reversi.model.PieceColor;
 
 public class StrategyTests {
   private StringBuilder log;
-  private Map<AxialPosn, Integer> posnCaptures = new HashMap<>();
+  private final Map<AxialPosn, Integer> posnCaptures = new HashMap<>();
   private int numRings;
   private IModel model;
   private ReversiStrategy captureMostStrategy;
   private ReversiStrategy avoidEdgesStrategy;
-
   private ReversiStrategy goCornersStrategy;
 
   @Before
@@ -40,7 +39,7 @@ public class StrategyTests {
   // CaptureMostStrategy
   @Test
   public void testCaptureMostStrategyCallsCorrectMethods() {
-    this.captureMostStrategy.chooseMove(new ArrayList<>(), model, PieceColor.BLACK);
+    this.captureMostStrategy.chooseMove(new ArrayList<>(), model);
 
     for (AxialPosn ap : this.posnCaptures.keySet()) {
       Assert.assertTrue(this.log.toString().contains("getAllCapturedPieces if BLACK plays on " +
@@ -51,8 +50,8 @@ public class StrategyTests {
   @Test
   public void testCaptureMostStrategyMultipleMovesSameNumCaptures() {
     this.posnCaptures.put(new AxialPosn(2, -1), 5);
-    Assert.assertEquals(this.captureMostStrategy.chooseMove(new ArrayList<>(), model,
-                    PieceColor.BLACK), List.of(new AxialPosn(1, -2), new AxialPosn(2, -1)));
+    Assert.assertEquals(this.captureMostStrategy.chooseMove(new ArrayList<>(), model),
+            List.of(new AxialPosn(1, -2), new AxialPosn(2, -1)));
   }
 
   @Test
@@ -60,34 +59,32 @@ public class StrategyTests {
     this.posnCaptures.put(new AxialPosn(2, -1), 5);
     this.posnCaptures.put(new AxialPosn(1, 1), 5);
 
-    Assert.assertEquals(this.captureMostStrategy.chooseMove(new ArrayList<>(), model,
-            PieceColor.BLACK), List.of(new AxialPosn(1, -2), new AxialPosn(2, -1),
+    Assert.assertEquals(this.captureMostStrategy.chooseMove(new ArrayList<>(), model),
+            List.of(new AxialPosn(1, -2), new AxialPosn(2, -1),
             new AxialPosn(1, 1)));
   }
 
   @Test
   public void testCaptureMostStrategyNoCaptures() {
     this.posnCaptures.clear();
-    Assert.assertEquals(this.captureMostStrategy.chooseMove(new ArrayList<>(), this.model,
-            PieceColor.BLACK).size(), 0);
+    Assert.assertEquals(this.captureMostStrategy.chooseMove(new ArrayList<>(), this.model).size(), 0);
   }
 
   @Test
   public void testCaptureMostStrategyTakesPossibleMoves() {
-    Assert.assertEquals(this.captureMostStrategy.chooseMove(List.of(new AxialPosn(2, -1)), this.model,
-            PieceColor.BLACK), List.of(new AxialPosn(2, -1)));
+    Assert.assertEquals(this.captureMostStrategy.chooseMove(List.of(new AxialPosn(2, -1)), this.model), List.of(new AxialPosn(2, -1)));
   }
 
   @Test
   public void testCaptureMostStrategyDisjointMovesAndValidMoves() {
     Assert.assertEquals(this.captureMostStrategy.chooseMove(List.of(new AxialPosn(3, -2)),
-            this.model, PieceColor.BLACK).size(), 0);
+            this.model).size(), 0);
   }
 
   // AvoidEdgesStrategy
   @Test
   public void testAvoidEdgesStrategyCallsCorrectMethods() {
-    this.avoidEdgesStrategy.chooseMove(new ArrayList<>(), this.model, PieceColor.BLACK);
+    this.avoidEdgesStrategy.chooseMove(new ArrayList<>(), this.model);
 
     int n = this.numRings;
     List<AxialPosn> edges = new ArrayList<>(List.of(
@@ -112,7 +109,7 @@ public class StrategyTests {
     this.posnCaptures.put(new AxialPosn(0, 1), 1);
 
     Assert.assertEquals(this.avoidEdgesStrategy.chooseMove(new ArrayList<>(),
-            this.model, PieceColor.BLACK), List.of(new AxialPosn(0, 1)));
+            this.model), List.of(new AxialPosn(0, 1)));
   }
 
   @Test
@@ -123,7 +120,7 @@ public class StrategyTests {
     this.posnCaptures.put(new AxialPosn(-1, 2), 1);
 
     Assert.assertEquals(this.avoidEdgesStrategy.chooseMove(new ArrayList<>(List.of(new AxialPosn(0, 1))),
-            this.model, PieceColor.BLACK), List.of(new AxialPosn(0, 1)));
+            this.model), List.of(new AxialPosn(0, 1)));
   }
 
   @Test
@@ -134,7 +131,7 @@ public class StrategyTests {
     this.posnCaptures.put(new AxialPosn(-2, 2), 1);
 
     Assert.assertEquals(this.avoidEdgesStrategy.chooseMove(new ArrayList<>(),
-            this.model, PieceColor.BLACK), new ArrayList<>());
+            this.model), new ArrayList<>());
   }
 
   @Test
@@ -145,22 +142,22 @@ public class StrategyTests {
     this.posnCaptures.put(new AxialPosn(-2, 2), 1);
 
     Assert.assertEquals(this.avoidEdgesStrategy.chooseMove(new ArrayList<>(List.of(new AxialPosn(-2, 0))),
-            this.model, PieceColor.BLACK), new ArrayList<>());
+            this.model), new ArrayList<>());
   }
 
   // GoCornerStrategy
   @Test
   public void testGoCornerStrategyCallsCorrectMethods() {
-    this.goCornersStrategy.chooseMove(new ArrayList<>(), this.model, PieceColor.BLACK);
+    this.goCornersStrategy.chooseMove(new ArrayList<>(), this.model);
 
     int n = this.numRings;
-    List<AxialPosn> edges = new ArrayList<>(List.of(
+    List<AxialPosn> corners = new ArrayList<>(List.of(
             new AxialPosn(n, 0), new AxialPosn(0, n),
             new AxialPosn(n, -n), new AxialPosn(0, -n),
             new AxialPosn(-n, 0), new AxialPosn(-n, n)
     ));
 
-    for (AxialPosn ap : edges) {
+    for (AxialPosn ap : corners) {
       Assert.assertTrue(this.log.toString().contains("Calling isMoveValid to check if BLACK can "
               + "play on " + ap.toString()));
     }
@@ -174,7 +171,7 @@ public class StrategyTests {
     this.posnCaptures.put(new AxialPosn(-2, -1), 2);
 
     Assert.assertEquals(this.goCornersStrategy.chooseMove(new ArrayList<>(),
-            this.model, PieceColor.BLACK), new ArrayList<>(List.of(new AxialPosn(3, 0))));
+            this.model), new ArrayList<>(List.of(new AxialPosn(3, 0))));
   }
 
   @Test
@@ -185,7 +182,7 @@ public class StrategyTests {
     this.posnCaptures.put(new AxialPosn(-2, -1), 2);
 
     Assert.assertEquals(this.goCornersStrategy.chooseMove(new ArrayList<>(),
-            this.model, PieceColor.BLACK), new ArrayList<>(List.of(new AxialPosn(3, -3), new AxialPosn(3, 0))));
+            this.model), new ArrayList<>(List.of(new AxialPosn(3, -3), new AxialPosn(3, 0))));
   }
 
   @Test
@@ -196,6 +193,6 @@ public class StrategyTests {
     this.posnCaptures.put(new AxialPosn(-2, -1), 2);
 
     Assert.assertEquals(this.goCornersStrategy.chooseMove(new ArrayList<>(),
-            this.model, PieceColor.BLACK), new ArrayList<>());
+            this.model), new ArrayList<>());
   }
 }

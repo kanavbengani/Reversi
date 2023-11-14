@@ -7,5 +7,5 @@ import cs3500.reversi.model.IROModel;
 import cs3500.reversi.model.PieceColor;
 
 public interface ReversiStrategy {
-  List<AxialPosn> chooseMove(List<AxialPosn> possibleMoves, IROModel model, PieceColor color);
+  List<AxialPosn> chooseMove(List<AxialPosn> possibleMoves, IROModel model);
 }

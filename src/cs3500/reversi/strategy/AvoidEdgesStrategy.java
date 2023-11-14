@@ -12,15 +12,14 @@ import cs3500.reversi.model.PieceColor;
 public class AvoidEdgesStrategy implements ReversiStrategy {
 
   @Override
-  public List<AxialPosn> chooseMove(List<AxialPosn> possibleMoves, IROModel model,
-                                    PieceColor color) {
+  public List<AxialPosn> chooseMove(List<AxialPosn> possibleMoves, IROModel model) {
     List<AxialPosn> edges = this.getEdges(model);
     List<AxialPosn> moves = new ArrayList<>();
 
     Iterable<AxialPosn> it = possibleMoves.isEmpty() ? model.getAllPosn() : possibleMoves;
 
     for (AxialPosn move : it) {
-      if (model.isMoveValid(color, move) && !edges.contains(move)) {
+      if (model.isMoveValid(model.getTurn(), move) && !edges.contains(move)) {
         moves.add(move);
       }
     }

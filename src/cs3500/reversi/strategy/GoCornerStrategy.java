@@ -11,15 +11,14 @@ import cs3500.reversi.model.PieceColor;
 public class GoCornerStrategy implements ReversiStrategy {
 
   @Override
-  public List<AxialPosn> chooseMove(List<AxialPosn> possibleMoves, IROModel model,
-                                    PieceColor color) {
+  public List<AxialPosn> chooseMove(List<AxialPosn> possibleMoves, IROModel model) {
     List<AxialPosn> corners = this.getCorners(model);
     List<AxialPosn> moves = new ArrayList<>();
 
     Iterable<AxialPosn> it = possibleMoves.isEmpty() ? corners : possibleMoves;
 
     for (AxialPosn move : it) {
-      if (model.isMoveValid(color, move) && corners.contains(move)) {
+      if (model.isMoveValid(model.getTurn(), move) && corners.contains(move)) {
         moves.add(move);
       }
     }

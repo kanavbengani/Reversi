@@ -16,10 +16,9 @@ public class AndStrategy implements ReversiStrategy {
     this.strat2 = strat2;
   }
 
-  public List<AxialPosn> chooseMove(List<AxialPosn> possibleMoves, IROModel model,
-                                    PieceColor color) {
-    List<AxialPosn> move1 = strat1.chooseMove(possibleMoves, model, color);
+  public List<AxialPosn> chooseMove(List<AxialPosn> possibleMoves, IROModel model) {
+    List<AxialPosn> move1 = strat1.chooseMove(possibleMoves, model);
 
-    return strat2.chooseMove(move1, model, color);
+    return strat2.chooseMove(move1, model);
   }
 }

@@ -107,7 +107,7 @@ public class MockModelForStrategy implements IModel {
   @Override
   public PieceColor getTurn() {
     this.log.append("Calling getTurn.\n");
-    return PieceColor.WHITE;
+    return PieceColor.BLACK;
   }
 
   @Override
