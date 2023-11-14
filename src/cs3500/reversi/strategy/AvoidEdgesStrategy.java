@@ -7,7 +7,6 @@ import java.util.List;
 import cs3500.reversi.model.AxialPosn;
 import cs3500.reversi.model.Direction;
 import cs3500.reversi.model.IROModel;
-import cs3500.reversi.model.PieceColor;
 
 public class AvoidEdgesStrategy implements ReversiStrategy {
 

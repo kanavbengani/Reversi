@@ -18,24 +18,32 @@ public class MinimaxStrategy implements ReversiStrategy {
   @Override
   public List<AxialPosn> chooseMove(List<AxialPosn> possibleMoves, IROModel model) {
     this.myColor = model.getTurn();
-    this.opponentColor = this.myColor.equals(PieceColor.BLACK) ? PieceColor.WHITE : PieceColor.BLACK;
+    this.opponentColor = this.myColor.equals(PieceColor.BLACK)
+            ? PieceColor.WHITE
+            : PieceColor.BLACK;
+    // ??? Your Move -> Best Outcome For Opponent ???
     Map<AxialPosn, Integer> moves = this.doMinimax((IModel) model);
     return new ArrayList<>(moves.keySet());
   }
 
   private Map<AxialPosn, Integer> doMinimax(IModel myTurnModel) {
+    if (myTurnModel.isGameOver()) {
+      throw new IllegalStateException("Game is over, move cannot be chosen.");
+    }
+
     Map<AxialPosn, Integer> result = new HashMap<>();
 
     for (AxialPosn move : myTurnModel.getAllPosn()) {
       // Iterating through only valid moves for my color.
       if (myTurnModel.isMoveValid(this.myColor, move)) {
-        IModel copyModel = this.copyModel(myTurnModel);
+        IModel copyModel = myTurnModel.copy();
         copyModel.playMove(this.myColor, move);
         if (copyModel.isGameOver()) {
-          result.put(move, Integer.MAX_VALUE);
+          result.put(move, Integer.MIN_VALUE);
         }
         else {
-          result.put(move, this.maximizeForOpponent(copyModel));
+          int maximizedOpponentMove = this.maximizeForOpponent(copyModel);
+          result.put(move, maximizedOpponentMove);
         }
       }
     }
@@ -46,6 +54,10 @@ public class MinimaxStrategy implements ReversiStrategy {
   }
 
   private Integer maximizeForOpponent(IModel oppTurnModel) {
+    if (oppTurnModel.isGameOver()) {
+      throw new IllegalStateException("Game is over, move cannot be chosen.");
+    }
+
     Map<AxialPosn, Integer> result = new HashMap<>();
 
     ReversiStrategy opponentStrategyGuess = new AndStrategy(new GoCornerStrategy(),
@@ -54,21 +66,27 @@ public class MinimaxStrategy implements ReversiStrategy {
     List<AxialPosn> opponentMoves = opponentStrategyGuess.chooseMove(new ArrayList<>(),
             oppTurnModel.getReadOnlyModel());
 
+    if (opponentMoves.isEmpty()) {
+      return Integer.MIN_VALUE / 2;
+    }
+
     for (AxialPosn move : opponentMoves) {
-      IModel copyModel = this.copyModel(oppTurnModel);
-      copyModel.playMove(this.myColor, move);
+      IModel copyModel = oppTurnModel.copy();
+      copyModel.playMove(this.opponentColor, move);
       if (copyModel.isGameOver()) {
         result.put(move, Integer.MAX_VALUE);
       }
       else {
+        // adding score from the perspective of opponent (positive means good for opponent).
         result.put(move,
-                oppTurnModel.getScore(this.myColor) - oppTurnModel.getScore(this.opponentColor));
+                copyModel.getScore(this.opponentColor) - copyModel.getScore(this.myColor));
       }
     }
 
     result = this.sortAscending(result);
 
-    return result.get(new ArrayList<>(result.keySet()).get(0));
+    // returning value of best move for opponent
+    return result.get(new ArrayList<>(result.keySet()).get(result.keySet().size() - 1));
   }
 
   // Sort the given map by values in ascending order and top-most, left-most. Returns a
@@ -76,7 +94,6 @@ public class MinimaxStrategy implements ReversiStrategy {
   private Map<AxialPosn, Integer> sortAscending(Map<AxialPosn, Integer> result) {
     List<Map.Entry<AxialPosn, Integer>> entryList = new ArrayList<>(result.entrySet());
 
-    // TODO: Test this, it could be completely wrong.
     entryList.sort((o1, o2) -> {
       if (o1.getValue() < o2.getValue()) {
         return -1;
@@ -86,15 +103,8 @@ public class MinimaxStrategy implements ReversiStrategy {
         return -1;
       } else if (o1.getKey().r > o2.getKey().r) {
         return 1;
-      } else if (o1.getKey().q < o2.getKey().q) {
-        return -1;
-      } else if (o1.getKey().q > o2.getKey().q) {
-        return 1;
-      } else {
-        return 0;
-      }
+      } else return Integer.compare(o1.getKey().q, o2.getKey().q);
     });
-
 
     // Create a LinkedHashMap to store the sorted entries
     LinkedHashMap<AxialPosn, Integer> sortedMap = new LinkedHashMap<>();
@@ -105,61 +115,5 @@ public class MinimaxStrategy implements ReversiStrategy {
     }
 
     return sortedMap;
-  }
-
-//  private Map<AxialPosn, Integer> doMinimax(IModel model, PieceColor pieceColor, int depth) {
-//    if (depth == 1) {
-//      Map<AxialPosn, Integer> result = new HashMap<>();
-//
-//      for (AxialPosn move : model.getAllPosn()) {
-//        if (model.isMoveValid(pieceColor, move)) {
-//          int score = pieceColor.equals(target) ?
-//                  model.getAllCapturedPieces(pieceColor, move).size() :
-//                  -model.getAllCapturedPieces(pieceColor, move).size();
-//          IModel copyBoard = this.copyModel(model);
-//          copyBoard.playMove(pieceColor, move);
-//          if (copyBoard.isGameOver()) {
-//            result.put(move, pieceColor.equals(target) ? Integer.MAX_VALUE : Integer.MIN_VALUE);
-//          }
-//          else {
-//            result.put(move, score);
-//          }
-//        }
-//      }
-//
-//      return result;
-//    }
-//
-//    Map<AxialPosn, Integer> result = new HashMap<>();
-//
-//    for (AxialPosn move : model.getAllPosn()) {
-//      if (model.isMoveValid(pieceColor, move)) {
-//
-//        int score = pieceColor.equals(target) ?
-//                model.getAllCapturedPieces(pieceColor, move).size() :
-//                -model.getAllCapturedPieces(pieceColor, move).size();
-//
-//        IModel copyBoard = this.copyModel(model);
-//        copyBoard.playMove(pieceColor, move);
-//        PieceColor nextColor = pieceColor.equals(PieceColor.BLACK) ? PieceColor.WHITE :
-//                PieceColor.BLACK;
-//        Map<AxialPosn, Integer> branch = this.doMinimax(copyBoard, nextColor, depth - 1);
-//
-//        int branchScore = Collections.max(branch.entrySet(), Map.Entry.comparingByValue()).getValue();
-//
-//        result.put(move, score + branchScore);
-//
-//        // 1. Clone the model
-//        // 2. Play the move
-//        // 3. Evaluate using helper
-//        // 4. Put to result
-//      }
-//    }
-//
-//    return result;
-//  }
-
-  private IModel copyModel(IModel model) {
-    return model;
   }
 }

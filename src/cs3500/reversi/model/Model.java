@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import javax.swing.text.html.Option;
+
 /**
  * The `Model` class represents the game board and logic for a Reversi game. It implements
  * the `IModel` interface and provides methods for making moves, checking game status, and more.
@@ -43,6 +45,18 @@ public class Model implements IModel {
     this.numRings = numRings;
     this.listeners = new ArrayList<>();
     this.initializeBoard();
+  }
+
+  // For copy
+  private Model(int numRings, PieceColor pieceColor1, PieceColor pieceColor2,
+                PieceColor currentPieceColor, List<ModelFeatures> listeners,
+                Map<AxialPosn, Optional<PieceColor>> board) {
+    this.pieceColor1 = pieceColor1;
+    this.pieceColor2 = pieceColor2;
+    this.currentPieceColor = currentPieceColor;
+    this.board = board;
+    this.numRings = numRings;
+    this.listeners = listeners;
   }
 
   /**
@@ -288,5 +302,11 @@ public class Model implements IModel {
   @Override
   public List<AxialPosn> getAllPosn() {
     return new ArrayList<>(this.board.keySet());
+  }
+
+  @Override
+  public IModel copy() {
+    return new Model(this.numRings, this.pieceColor1, this.pieceColor2,
+            this.currentPieceColor, new ArrayList<>(this.listeners), new HashMap<>(this.board));
   }
 }

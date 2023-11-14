@@ -57,6 +57,13 @@ public class MockModelForStrategy implements IModel {
 
   @Override
   public IROModel getReadOnlyModel() {
+    this.log.append("Calling getReadOnlyModel.\n");
+    return this;
+  }
+
+  @Override
+  public IModel copy() {
+    this.log.append("Calling copy.\n");
     return this;
   }
 
