@@ -156,8 +156,10 @@ public class Model implements IModel {
         continue;
       }
 
-      tempAp = tempAp.add(offset);
       List<AxialPosn> tempPoints = new ArrayList<>();
+      tempPoints.add(tempAp);
+
+      tempAp = tempAp.add(offset);
       while (this.board.getOrDefault(tempAp, Optional.empty()).isPresent()) {
         if (this.board.get(tempAp).isEmpty()) {
           break;
