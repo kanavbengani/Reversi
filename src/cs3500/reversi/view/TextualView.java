@@ -6,7 +6,7 @@ import cs3500.reversi.model.IROModel;
 import cs3500.reversi.model.PieceColor;
 
 /**
- * The TextualView class provides a textual representation of a read-only cs3500.reversi.model.
+ * The TextualView class provides a textual representation of a read-only Reversi model.
  */
 public class TextualView implements ITextualView {
   private final IROModel model;
@@ -20,11 +20,6 @@ public class TextualView implements ITextualView {
     this.model = model;
   }
 
-  /**
-   * Generates a textual representation of the read-only cs3500.reversi.model.
-   *
-   * @return A string representing the read-only cs3500.reversi.model.
-   */
   @Override
   public String toString() {
     int rings = this.model.getNumRings();

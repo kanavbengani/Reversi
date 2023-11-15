@@ -1,31 +1,49 @@
 package cs3500.reversi.strategy;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import cs3500.reversi.model.AxialPosn;
 import cs3500.reversi.model.IModel;
 import cs3500.reversi.model.IROModel;
 import cs3500.reversi.model.PieceColor;
 
+/**
+ * Represents a Reversi strategy that uses the Minimax algorithm with a composite opponent strategy.
+ * It evaluates possible moves by considering the best response from the opponent,
+ * minimizing the potential loss.
+ */
 public class MinimaxStrategy implements ReversiStrategy {
   private PieceColor myColor;
   private PieceColor opponentColor;
+  private final ReversiStrategy opponent;
+
+  public MinimaxStrategy(ReversiStrategy opponent) {
+    this.opponent = Objects.requireNonNull(opponent);
+  }
 
   @Override
   public List<AxialPosn> chooseMove(List<AxialPosn> possibleMoves, IROModel model) {
+    this.initializeColors(model);
+    Map<AxialPosn, Integer> moves = doMinimax((IModel) model);
+    return new ArrayList<>(moves.keySet());
+  }
+
+  // Initializes the colors for the player and the opponent based on the current turn in the game.
+  private void initializeColors(IROModel model) {
     this.myColor = model.getTurn();
     this.opponentColor = this.myColor.equals(PieceColor.BLACK)
             ? PieceColor.WHITE
             : PieceColor.BLACK;
-    // ??? Your Move -> Best Outcome For Opponent ???
-    Map<AxialPosn, Integer> moves = this.doMinimax((IModel) model);
-    return new ArrayList<>(moves.keySet());
   }
 
+  // Performs the Minimax algorithm to evaluate and choose the best move for the current player.
   private Map<AxialPosn, Integer> doMinimax(IModel myTurnModel) {
     if (myTurnModel.isGameOver()) {
       throw new IllegalStateException("Game is over, move cannot be chosen.");
@@ -34,25 +52,23 @@ public class MinimaxStrategy implements ReversiStrategy {
     Map<AxialPosn, Integer> result = new HashMap<>();
 
     for (AxialPosn move : myTurnModel.getAllPosn()) {
-      // Iterating through only valid moves for my color.
       if (myTurnModel.isMoveValid(this.myColor, move)) {
         IModel copyModel = myTurnModel.copy();
         copyModel.playMove(this.myColor, move);
         if (copyModel.isGameOver()) {
           result.put(move, Integer.MIN_VALUE);
-        }
-        else {
-          int maximizedOpponentMove = this.maximizeForOpponent(copyModel);
+        } else {
+          int maximizedOpponentMove = maximizeForOpponent(copyModel);
           result.put(move, maximizedOpponentMove);
         }
       }
     }
 
-    result = this.sortAscending(result);
-
-    return result;
+    return sortAscending(result);
   }
 
+  // Maximizes the opponent's move by considering different opponent move options based on the
+  // best composite strategy we have implemented (GoCorner, AvoidEdges, and then CaptureMost).
   private Integer maximizeForOpponent(IModel oppTurnModel) {
     if (oppTurnModel.isGameOver()) {
       throw new IllegalStateException("Game is over, move cannot be chosen.");
@@ -60,10 +76,7 @@ public class MinimaxStrategy implements ReversiStrategy {
 
     Map<AxialPosn, Integer> result = new HashMap<>();
 
-    ReversiStrategy opponentStrategyGuess = new AndStrategy(new GoCornerStrategy(),
-            new AndStrategy(new AvoidEdgesStrategy(), new CaptureMostStrategy()));
-
-    List<AxialPosn> opponentMoves = opponentStrategyGuess.chooseMove(new ArrayList<>(),
+    List<AxialPosn> opponentMoves = opponent.chooseMove(new ArrayList<>(),
             oppTurnModel.getReadOnlyModel());
 
     if (opponentMoves.isEmpty()) {
@@ -75,45 +88,27 @@ public class MinimaxStrategy implements ReversiStrategy {
       copyModel.playMove(this.opponentColor, move);
       if (copyModel.isGameOver()) {
         result.put(move, Integer.MAX_VALUE);
-      }
-      else {
-        // adding score from the perspective of opponent (positive means good for opponent).
+      } else {
         result.put(move,
                 copyModel.getScore(this.opponentColor) - copyModel.getScore(this.myColor));
       }
     }
 
-    result = this.sortAscending(result);
-
-    // returning value of best move for opponent
-    return result.get(new ArrayList<>(result.keySet()).get(result.keySet().size() - 1));
+    return Collections.max(result.values());
   }
 
-  // Sort the given map by values in ascending order and top-most, left-most. Returns a
-  // LinkedHashMap of which the keyset() method will always return a sorted list of keys.
+  // Sorts by ascending value in the result map and then topmost, leftmost key.
   private Map<AxialPosn, Integer> sortAscending(Map<AxialPosn, Integer> result) {
     List<Map.Entry<AxialPosn, Integer>> entryList = new ArrayList<>(result.entrySet());
 
-    entryList.sort((o1, o2) -> {
-      if (o1.getValue() < o2.getValue()) {
-        return -1;
-      } else if (o1.getValue() > o2.getValue()) {
-        return 1;
-      } else if (o1.getKey().r < o2.getKey().r) {
-        return -1;
-      } else if (o1.getKey().r > o2.getKey().r) {
-        return 1;
-      } else return Integer.compare(o1.getKey().q, o2.getKey().q);
-    });
+    entryList.sort(Comparator
+            .comparingInt((Map.Entry<AxialPosn, Integer> entry) -> entry.getValue())
+            .thenComparingInt(entry -> entry.getKey().r)
+            .thenComparingInt(entry -> entry.getKey().q));
 
-    // Create a LinkedHashMap to store the sorted entries
-    LinkedHashMap<AxialPosn, Integer> sortedMap = new LinkedHashMap<>();
-
-    // Populate the LinkedHashMap with sorted entries
-    for (Map.Entry<AxialPosn, Integer> entry : entryList) {
-      sortedMap.put(entry.getKey(), entry.getValue());
-    }
-
-    return sortedMap;
+    return entryList.stream()
+            .collect(LinkedHashMap::new,
+                    (map, entry) -> map.put(entry.getKey(), entry.getValue()),
+                    LinkedHashMap::putAll);
   }
 }

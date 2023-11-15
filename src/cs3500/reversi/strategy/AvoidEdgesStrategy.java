@@ -8,8 +8,11 @@ import cs3500.reversi.model.AxialPosn;
 import cs3500.reversi.model.Direction;
 import cs3500.reversi.model.IROModel;
 
+/**
+ * Represents a Reversi strategy that filters out moves near the edges of the game board.
+ * It aims to avoid choosing moves that are adjacent to the board edges.
+ */
 public class AvoidEdgesStrategy implements ReversiStrategy {
-
   @Override
   public List<AxialPosn> chooseMove(List<AxialPosn> possibleMoves, IROModel model) {
     List<AxialPosn> edges = this.getEdges(model);
@@ -28,6 +31,7 @@ public class AvoidEdgesStrategy implements ReversiStrategy {
     return moves;
   }
 
+  // Gets edges (the cells adjacent to the corners of the board).
   private List<AxialPosn> getEdges(IROModel model) {
     int n = model.getNumRings();
     List<AxialPosn> edges = new ArrayList<>();

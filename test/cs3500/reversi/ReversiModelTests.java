@@ -1,24 +1,29 @@
+package cs3500.reversi;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+
+import javax.swing.text.html.Option;
 
 import cs3500.reversi.model.Direction;
 import cs3500.reversi.model.IModel;
 import cs3500.reversi.model.IROModel;
-import cs3500.reversi.model.MockModelListener;
 import cs3500.reversi.model.AxialPosn;
 import cs3500.reversi.model.Model;
-import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.model.ModelFeatures;
+import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.view.ITextualView;
 import cs3500.reversi.view.TextualView;
 
 /**
  * Represents a set of JUnit tests that test the functionality of the cs3500.reversi.model.
  */
-public class ReversiTests {
+public class ReversiModelTests {
   private IModel model;
   private IROModel roModel;
   private int numRings = 2;
@@ -262,24 +267,43 @@ public class ReversiTests {
   @Test
   public void testMPlayMoveValidMoveCorrectlyUpdatesMultipleCapturedPieces() {
     // Initial moves
-    this.model.playMove(PieceColor.BLACK, new AxialPosn(-1, -1));
-    this.model.playMove(PieceColor.WHITE, new AxialPosn(-2, 1));
-    this.model.playMove(PieceColor.BLACK, new AxialPosn(2, -1));
-    this.model.playMove(PieceColor.WHITE, new AxialPosn(1, 1));
-    this.model.playMove(PieceColor.BLACK, new AxialPosn(-1, 2));
+    int start = 0;
+    int end = 2;
+    Map<AxialPosn, Optional<PieceColor>> board = new HashMap<>();
+    for (int r = -2; r <= 2; r++) {
+      for (int q = start; q <= end; q++) {
+        AxialPosn ap = new AxialPosn(q, r);
+        board.put(ap, Optional.empty());
+      }
+
+      if (start == -2) {
+        end--;
+      } else {
+        start--;
+      }
+    }
+
+    board.put(new AxialPosn(-2, 1), Optional.of(PieceColor.BLACK));
+    board.put(new AxialPosn(-1, 0), Optional.of(PieceColor.WHITE));
+    board.put(new AxialPosn(0, -1), Optional.of(PieceColor.WHITE));
+    board.put(new AxialPosn(1, -1), Optional.of(PieceColor.WHITE));
+    board.put(new AxialPosn(1, 0), Optional.of(PieceColor.WHITE));
+    board.put(new AxialPosn(1, 1), Optional.of(PieceColor.BLACK));
+
+    this.model = new Model(board);
 
     // Check to see if all pieces are switched in color
-    this.model.playMove(PieceColor.WHITE, new AxialPosn(1, -2));
+    this.model.playMove(PieceColor.BLACK, new AxialPosn(1, -2));
     Assert.assertEquals(this.model.getPieceAt(new AxialPosn(1, -2)),
-            Optional.of(PieceColor.WHITE));
+            Optional.of(PieceColor.BLACK));
     Assert.assertEquals(this.model.getPieceAt(new AxialPosn(0, -1)),
-            Optional.of(PieceColor.WHITE));
+            Optional.of(PieceColor.BLACK));
     Assert.assertEquals(this.model.getPieceAt(new AxialPosn(-1, 0)),
-            Optional.of(PieceColor.WHITE));
+            Optional.of(PieceColor.BLACK));
     Assert.assertEquals(this.model.getPieceAt(new AxialPosn(1, -1)),
-            Optional.of(PieceColor.WHITE));
+            Optional.of(PieceColor.BLACK));
     Assert.assertEquals(this.model.getPieceAt(new AxialPosn(1, 0)),
-            Optional.of(PieceColor.WHITE));
+            Optional.of(PieceColor.BLACK));
 
   }
 

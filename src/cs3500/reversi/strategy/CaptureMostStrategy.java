@@ -6,9 +6,15 @@ import java.util.List;
 
 import cs3500.reversi.model.AxialPosn;
 import cs3500.reversi.model.IROModel;
-import cs3500.reversi.model.PieceColor;
 
+/**
+ * Represents a Reversi strategy that chooses moves based on capturing the most opponent pieces.
+ * It evaluates the number of opponent pieces captured for each move and selects moves that result
+ * in the maximum number of captured pieces. In case of ties, it selects moves based on their
+ * axial positions (topmost-leftmost).
+ */
 public class CaptureMostStrategy implements ReversiStrategy {
+  @Override
   public List<AxialPosn> chooseMove(List<AxialPosn> possibleMoves, IROModel model) {
     int maxCaptured = 0;
     List<AxialPosn> ties = new ArrayList<>();

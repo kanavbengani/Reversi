@@ -1,4 +1,4 @@
-package cs3500.reversi.strategy;
+package cs3500.reversi;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -8,19 +8,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import cs3500.reversi.model.AxialPosn;
 import cs3500.reversi.model.IModel;
 import cs3500.reversi.model.Model;
 import cs3500.reversi.model.PieceColor;
+import cs3500.reversi.strategy.AndStrategy;
+import cs3500.reversi.strategy.AvoidEdgesStrategy;
+import cs3500.reversi.strategy.CaptureMostStrategy;
+import cs3500.reversi.strategy.GoCornerStrategy;
+import cs3500.reversi.strategy.MinimaxStrategy;
+import cs3500.reversi.strategy.ReversiStrategy;
 import cs3500.reversi.view.TextualView;
-import cs3500.reversi.view.View;
 
 public class StrategyTests {
   private StringBuilder log;
   private final Map<AxialPosn, Integer> posnCaptures = new HashMap<>();
   private int numRings;
   private IModel model;
+  private IModel fullModel;
   private ReversiStrategy captureMostStrategy;
   private ReversiStrategy avoidEdgesStrategy;
   private ReversiStrategy goCornersStrategy;
@@ -35,10 +42,13 @@ public class StrategyTests {
     this.numRings = 3;
 
     this.model = new MockModelForStrategy(this.log, this.posnCaptures, this.numRings);
+    this.fullModel = new Model(this.numRings);
     this.captureMostStrategy = new CaptureMostStrategy();
     this.avoidEdgesStrategy = new AvoidEdgesStrategy();
     this.goCornersStrategy = new GoCornerStrategy();
-    this.minimaxStrategy = new MinimaxStrategy();
+    this.minimaxStrategy = new MinimaxStrategy(new AndStrategy(
+            new GoCornerStrategy(),
+            new AndStrategy(new AvoidEdgesStrategy(), new CaptureMostStrategy())));
   }
 
   // CaptureMostStrategy
@@ -206,23 +216,75 @@ public class StrategyTests {
             this.model), new ArrayList<>());
   }
 
+  // MinimaxStrategy
   @Test
-  public void testMinimaxReturnsBestOutcome() {
-    IModel prod = new Model(10);
+  public void testMinimaxStrategyReturnsAllPossibleMovesInitiallyInCorrectOrder() {
+    Assert.assertEquals(this.minimaxStrategy.chooseMove(new ArrayList<>(), this.fullModel),
+            new ArrayList<>(List.of(
+                    new AxialPosn(1, -2), new AxialPosn(-1, -1),
+                    new AxialPosn(2, -1), new AxialPosn(-2, 1),
+                    new AxialPosn(1, 1), new AxialPosn(-1, 2))));
+  }
 
-    View view = new View(prod.getReadOnlyModel(), PieceColor.BLACK);
-    view.setVisible(true);
+  @Test
+  public void testMinimaxStrategyReturnsAllPossibleMovesAfterOneMoveInCorrectOrder() {
+    this.fullModel.playMove(PieceColor.BLACK, new AxialPosn(1, -2));
 
-    while (!prod.isGameOver()) {
-      List<AxialPosn> moves = this.minimaxStrategy.chooseMove(new ArrayList<>(), prod);
+    Assert.assertEquals(this.minimaxStrategy.chooseMove(new ArrayList<>(), this.fullModel),
+            new ArrayList<>(List.of(
+                    new AxialPosn(2, -3), new AxialPosn(-2, 1),
+                    new AxialPosn(-1, 2), new AxialPosn(2, -1))));
+  }
 
-      PieceColor turn = prod.getTurn();
-      if (!moves.isEmpty()) {
-        prod.playMove(turn, moves.get(0));
-      } else {
-        prod.pass(turn);
+  private Map<AxialPosn, Optional<PieceColor>> createEmptyBoard(int numRings) {
+    int start = 0;
+    int end = numRings;
+    Map<AxialPosn, Optional<PieceColor>> board = new HashMap<>();
+    for (int r = -numRings; r <= numRings; r++) {
+      for (int q = start; q <= end; q++) {
+        AxialPosn ap = new AxialPosn(q, r);
+        board.put(ap, Optional.empty());
       }
-      view.repaint();
+
+      if (start == -numRings) {
+        end--;
+      } else {
+        start--;
+      }
     }
+
+    return board;
+  }
+
+  @Test
+  public void testMinimaxStrategyPicksWinningMoveForBlack() {
+    Map<AxialPosn, Optional<PieceColor>> board = this.createEmptyBoard(2);
+
+    board.put(new AxialPosn(0, 0), Optional.of(PieceColor.WHITE));
+    board.put(new AxialPosn(-1, 1), Optional.of(PieceColor.WHITE));
+    board.put(new AxialPosn(0, -1), Optional.of(PieceColor.BLACK));
+    board.put(new AxialPosn(-1, 2), Optional.of(PieceColor.BLACK));
+    board.put(new AxialPosn(-2, 2), Optional.of(PieceColor.BLACK));
+
+    this.fullModel = new Model(board);
+
+    Assert.assertEquals(this.minimaxStrategy.chooseMove(new ArrayList<>(), this.fullModel),
+            new ArrayList<>(List.of(
+                    new AxialPosn(1, -1),
+                    new AxialPosn(-1, 0),
+                    new AxialPosn(0, 1))));
+  }
+
+  @Test
+  public void testMinimaxStrategyReturnsEmptyWhenNoMoves() {
+    Map<AxialPosn, Optional<PieceColor>> board = this.createEmptyBoard(2);
+    board.put(new AxialPosn(0, 0), Optional.of(PieceColor.BLACK));
+    board.put(new AxialPosn(0, 1), Optional.of(PieceColor.WHITE));
+    board.put(new AxialPosn(0, 2), Optional.of(PieceColor.WHITE));
+    this.fullModel = new Model(board);
+
+    System.out.println(new TextualView(this.fullModel));
+
+    Assert.assertEquals(this.minimaxStrategy.chooseMove(new ArrayList<>(), this.fullModel), new ArrayList<>());
   }
 }

@@ -63,7 +63,7 @@ testing purposes.
 │       └── cs3500.reversi.view
 │               └── TextualView.java
 └── test
-    └── ReversiTests.java
+    └── cs3500.reversi.ReversiModelTests.java
 ```
 
 This is the organization of all the files in the codebase. All `Model` related files are in a 

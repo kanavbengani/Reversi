@@ -148,28 +148,28 @@ public class Model implements IModel {
     List<AxialPosn> finalPoints = new ArrayList<>();
     for (Direction offset : Direction.values()) {
       AxialPosn tempAp = ap.add(offset);
-      int counter = 0;
+
+      if (this.board.getOrDefault(tempAp, Optional.empty()).isEmpty()) {
+        continue;
+      }
+      else if (this.board.get(tempAp).get().equals(pieceColor)) {
+        continue;
+      }
+
+      tempAp = tempAp.add(offset);
       List<AxialPosn> tempPoints = new ArrayList<>();
       while (this.board.getOrDefault(tempAp, Optional.empty()).isPresent()) {
-        tempPoints.add(tempAp);
         if (this.board.get(tempAp).isEmpty()) {
           break;
         }
-
         PieceColor p = this.board.get(tempAp).get();
 
         if (p.equals(pieceColor)) {
-          if (counter == 0) {
-            tempAp = tempAp.add(offset);
-            counter += 1;
-            continue;
-          }
           finalPoints.addAll(tempPoints);
           break;
         }
-
+        tempPoints.add(tempAp);
         tempAp = tempAp.add(offset);
-        counter += 1;
       }
     }
 

@@ -1,4 +1,4 @@
-package cs3500.reversi.strategy;
+package cs3500.reversi;
 
 import java.util.ArrayList;
 import java.util.List;

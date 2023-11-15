@@ -30,10 +30,12 @@ import cs3500.reversi.model.ModelFeatures;
 import cs3500.reversi.model.PieceColor;
 
 /**
- * A ReversiPanel will draw all the colors, allow users to play the game.
+ * A ReversiPanel is a JPanel that draws the Reversi game board and allows users to interact with
+ * the game. It implements ModelFeatures to receive updates from the game model and repaints
+ * itself accordingly.
  */
 class ReversiPanel extends JPanel implements ModelFeatures {
-  private static final int PADDING = 0;
+  private static final int PADDING = 10;
   private static final int HEIGHT = 800;
   private static final int WIDTH = 800;
 
@@ -44,6 +46,12 @@ class ReversiPanel extends JPanel implements ModelFeatures {
   private final double hexagonRadius;
   private Optional<AxialPosn> highlightedHex = Optional.empty();
 
+  /**
+   * Constructs a ReversiPanel with the specified Reversi game model and player color.
+   *
+   * @param model      The Reversi game model.
+   * @param pieceColor The color of the player using this panel.
+   */
   public ReversiPanel(IROModel model, PieceColor pieceColor) {
     this.model = Objects.requireNonNull(model);
     this.numRings = this.model.getNumRings();
@@ -65,6 +73,8 @@ class ReversiPanel extends JPanel implements ModelFeatures {
     this.setBackground(Color.DARK_GRAY);
   }
 
+  // Converts a given physical point assuming the origin is in the middle of the screen into a
+  // logical coordinate (in axial).
   private double computeHexagonRadius() {
     double drawableWidth = ReversiPanel.WIDTH - 2 * ReversiPanel.PADDING;
     double drawableHeight = ReversiPanel.HEIGHT - 2 * ReversiPanel.PADDING;
@@ -101,6 +111,7 @@ class ReversiPanel extends JPanel implements ModelFeatures {
     }
   }
 
+  // Draws the board with the given Graphics2D object.
   private void drawBoard(Graphics2D g2d) {
     Color oldColor = g2d.getColor();
 
@@ -117,6 +128,8 @@ class ReversiPanel extends JPanel implements ModelFeatures {
     g2d.setColor(oldColor);
   }
 
+  // Creates a circle with the given center (in cartesian coordinates) and radius with the given
+  // Graphics2D object.
   private void makeCircle(Graphics2D g2d, CartesianPosn p, double r, Color c) {
     Color oldColor = g2d.getColor();
     g2d.setColor(c);
@@ -126,6 +139,8 @@ class ReversiPanel extends JPanel implements ModelFeatures {
     g2d.setColor(oldColor);
   }
 
+  // Creates a hexagon with the given center (in cartesian coordinates) with the given
+  // Graphics2D object.
   private void makeHexagon(Graphics2D g2d, CartesianPosn p, Color fillColor) {
     Color oldColor = g2d.getColor();
     g2d.setColor(fillColor);
@@ -171,12 +186,8 @@ class ReversiPanel extends JPanel implements ModelFeatures {
     return new Dimension(ReversiPanel.WIDTH, ReversiPanel.HEIGHT);
   }
 
-  /**
-   * Converts a given physical point assuming the origin is in the middle of the screen into a
-   * logical coordinate (in axial).
-   * @param physicalP the physical coordinate on the screen in cartesian coordinates
-   * @return the corresponding axial position of the given physical coordinate.
-   */
+  // Converts a given physical point assuming the origin is in the middle of the screen into a
+  // logical coordinate (in axial).
   private AxialPosn transformPhysicalToLogical(CartesianPosn physicalP) {
     double x = physicalP.x;
     double y = physicalP.y;
@@ -202,6 +213,8 @@ class ReversiPanel extends JPanel implements ModelFeatures {
     return new AxialPosn((int) qRounded, (int) rRounded);
   }
 
+  // Transforms logical axial coordinates to the cartesian coordinate of the center of the
+  // hexagon in the view.
   private CartesianPosn transformLogicalToPhysical(AxialPosn axial) {
     double x = this.hexagonRadius * (Math.sqrt(3) * axial.q + Math.sqrt(3) / 2 * axial.r);
     double y = this.hexagonRadius * (3.0 / 2.0 * axial.r);
@@ -209,20 +222,29 @@ class ReversiPanel extends JPanel implements ModelFeatures {
     return new CartesianPosn(x, -y);
   }
 
+  // Represents the KeyboardEventListener that parses input from a keyboard stroke and performs
+  // action to the view/System.out accordingly.
   private class KeyboardEventListener extends KeyAdapter {
     @Override
     public void keyPressed(KeyEvent e) {
-      for (ViewFeatures l : ReversiPanel.this.featuresListeners) {
-        if (e.getKeyCode() == KeyEvent.VK_P) {
+      if (e.getKeyCode() == KeyEvent.VK_P) {
+        System.out.println(ReversiPanel.this.pieceColor + " wants to pass.");
+        for (ViewFeatures l : ReversiPanel.this.featuresListeners) {
           l.pass(ReversiPanel.this.pieceColor);
         }
-        if (e.getKeyCode() == KeyEvent.VK_ENTER && ReversiPanel.this.highlightedHex.isPresent()) {
+      }
+      if (e.getKeyCode() == KeyEvent.VK_ENTER && ReversiPanel.this.highlightedHex.isPresent()) {
+        System.out.println(ReversiPanel.this.pieceColor + " wants to play a move at " +
+                ReversiPanel.this.highlightedHex.get() + ".");
+        for (ViewFeatures l : ReversiPanel.this.featuresListeners) {
           l.move(ReversiPanel.this.pieceColor, ReversiPanel.this.highlightedHex.get());
         }
       }
     }
   }
 
+  // Represents the MouseEventsListener that parses input from a mouse click and performs action
+  // to the view/System.out accordingly.
   private class MouseEventsListener extends MouseInputAdapter {
     @Override
     public void mouseReleased(MouseEvent e) {
@@ -236,7 +258,7 @@ class ReversiPanel extends JPanel implements ModelFeatures {
       // Showing axial coordinate that has been clicked to System.out
       try {
         ReversiPanel.this.model.getPieceAt(axialPosn);
-        System.out.println(axialPosn);
+        System.out.println(ReversiPanel.this.pieceColor + " selected " + axialPosn + ".");
       } catch (IllegalArgumentException ignored) {
       }
 

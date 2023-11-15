@@ -7,6 +7,11 @@ import java.util.List;
 import cs3500.reversi.model.AxialPosn;
 import cs3500.reversi.model.IROModel;
 
+/**
+ * Represents a Reversi strategy that chooses moves based on moving towards the corners of the game
+ * board. It evaluates the provided possible moves and selects those that are in the corners of
+ * the game board.
+ */
 public class GoCornerStrategy implements ReversiStrategy {
 
   @Override
@@ -28,6 +33,7 @@ public class GoCornerStrategy implements ReversiStrategy {
     return moves;
   }
 
+  // Gets the corners of the board.
   private List<AxialPosn> getCorners(IROModel model) {
     int n = model.getNumRings();
 

@@ -1,10 +1,13 @@
-package cs3500.reversi.model;
+package cs3500.reversi;
+
+import cs3500.reversi.model.ModelFeatures;
+import cs3500.reversi.model.PieceColor;
 
 /**
  * The `MockModelListener` class is an implementation of the `ModelFeatures` interface that
  * simulates a cs3500.reversi.player's moves by logging messages to a given log.
  */
-public class MockModelListener implements ModelFeatures {
+class MockModelListener implements ModelFeatures {
   private final StringBuilder log;
 
   /**
