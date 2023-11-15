@@ -20,36 +20,38 @@ public final class Reversi {
   public static void main(String[] args) {
     IModel model = new Model(5);
 
-    IView viewBlack = new View(model.getReadOnlyModel(), PieceColor.BLACK);
-    IView viewWhite = new View(model.getReadOnlyModel(), PieceColor.WHITE);
+//    IView viewBlack = new View(model.getReadOnlyModel(), PieceColor.BLACK);
+//    IView viewWhite = new View(model.getReadOnlyModel(), PieceColor.WHITE);
+//
+//    viewBlack.display(true);
+//    viewWhite.display(true);
 
-    viewBlack.display(true);
-    viewWhite.display(true);
+      IModel fullModel = new Model(5);
 
-//      IModel fullModel = new Model(6);
-//
-//      IView view = new View(fullModel.getReadOnlyModel(), PieceColor.BLACK);
-//      view.display(true);
-//
-//      while (!fullModel.isGameOver()) {
-//        List<AxialPosn> moves;
-//        moves = new MinimaxStrategy().chooseMove(new ArrayList<>(), fullModel);
-//
-//        PieceColor turn = fullModel.getTurn();
-//        if (!moves.isEmpty()) {
-//          fullModel.playMove(turn, moves.get(0));
-//        } else {
-//          fullModel.pass(turn);
-//        }
-//        view.refresh();
-//      }
-//
-//      Optional<PieceColor> winner = fullModel.getWinner();
-//
-//      if (winner.isPresent()) {
-//        System.out.println("Game is over! " + winner.get() + " won the game!");
-//      } else {
-//        System.out.println("That was a TIE!");
-//      }
+      IView view = new View(fullModel.getReadOnlyModel(), PieceColor.BLACK);
+      view.display(true);
+
+      while (!fullModel.isGameOver()) {
+        List<AxialPosn> moves;
+        moves = new MinimaxStrategy(new AndStrategy(
+                new GoCornerStrategy(),
+                new AndStrategy(new AvoidEdgesStrategy(), new CaptureMostStrategy()))).chooseMove(new ArrayList<>(), fullModel);
+
+        PieceColor turn = fullModel.getTurn();
+        if (!moves.isEmpty()) {
+          fullModel.playMove(turn, moves.get(0));
+        } else {
+          fullModel.pass(turn);
+        }
+        view.refresh();
+      }
+
+      Optional<PieceColor> winner = fullModel.getWinner();
+
+      if (winner.isPresent()) {
+        System.out.println("Game is over! " + winner.get() + " won the game!");
+      } else {
+        System.out.println("That was a TIE!");
+      }
     }
 }

@@ -106,7 +106,8 @@ public class Model implements IModel {
     }
   }
 
-  // Returns the number of rings for the board passed in, throws exception if
+  // Returns the number of rings for the board passed in.
+  // TODO: should throw exception if rings is not int?
   private int validateBoard(Map<AxialPosn, Optional<PieceColor>> board) {
     int posnCount = board.keySet().size();
     double numRings = (-3 + Math.sqrt(-3 + 12 * posnCount)) / 6;
@@ -146,6 +147,11 @@ public class Model implements IModel {
   // Validating whether a move is possible in all directions
   private List<AxialPosn> validateAllDirections(PieceColor pieceColor, AxialPosn ap) {
     List<AxialPosn> finalPoints = new ArrayList<>();
+
+    if (this.board.get(ap).isPresent()) {
+      return new ArrayList<>();
+    }
+
     for (Direction offset : Direction.values()) {
       AxialPosn tempAp = ap.add(offset);
 
@@ -234,8 +240,8 @@ public class Model implements IModel {
 
   // Returns whether there are any valid moves for the passed in color.
   private boolean anyLegalMoves(PieceColor color) {
-    return board.keySet().stream()
-            .anyMatch(ap -> isMoveValid(color, ap));
+    return this.board.keySet().stream()
+            .anyMatch(ap -> !this.validateAllDirections(color, ap).isEmpty());
   }
 
   @Override

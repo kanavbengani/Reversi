@@ -283,8 +283,33 @@ public class StrategyTests {
     board.put(new AxialPosn(0, 2), Optional.of(PieceColor.WHITE));
     this.fullModel = new Model(board);
 
-    System.out.println(new TextualView(this.fullModel));
-
     Assert.assertEquals(this.minimaxStrategy.chooseMove(new ArrayList<>(), this.fullModel), new ArrayList<>());
+  }
+
+  @Test
+  public void testMinimaxStrategyReturnsMovesWhenPlayersTurn() {
+    Map<AxialPosn, Optional<PieceColor>> board = this.createEmptyBoard(2);
+    board.put(new AxialPosn(0, 0), Optional.of(PieceColor.BLACK));
+    board.put(new AxialPosn(0, 1), Optional.of(PieceColor.WHITE));
+    board.put(new AxialPosn(0, 2), Optional.of(PieceColor.WHITE));
+    this.fullModel = new Model(board);
+    this.fullModel.pass(PieceColor.BLACK);
+
+    Assert.assertEquals(this.minimaxStrategy.chooseMove(new ArrayList<>(), this.fullModel),
+            new ArrayList<>(List.of(new AxialPosn(0, -1))));
+  }
+
+  @Test
+  public void testMinimaxStrategyChoosesNonLosingMoveForPlayer() {
+    Map<AxialPosn, Optional<PieceColor>> board = this.createEmptyBoard(2);
+    board.put(new AxialPosn(0, 0), Optional.of(PieceColor.WHITE));
+    board.put(new AxialPosn(0, 1), Optional.of(PieceColor.BLACK));
+    board.put(new AxialPosn(0, 2), Optional.of(PieceColor.WHITE));
+    board.put(new AxialPosn(-2, 1), Optional.of(PieceColor.WHITE));
+    board.put(new AxialPosn(-2, 2), Optional.of(PieceColor.BLACK));
+    this.fullModel = new Model(board);
+
+    Assert.assertEquals(this.minimaxStrategy.chooseMove(new ArrayList<>(), this.fullModel),
+            new ArrayList<>(List.of(new AxialPosn(-2, 0), new AxialPosn(0, -1))));
   }
 }
