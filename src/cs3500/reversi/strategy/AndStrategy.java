@@ -4,7 +4,6 @@ import java.util.List;
 
 import cs3500.reversi.model.AxialPosn;
 import cs3500.reversi.model.IROModel;
-import cs3500.reversi.model.PieceColor;
 
 /**
  * Represents a composite Reversi strategy that combines two strategies using the logical AND
@@ -20,7 +19,8 @@ public class AndStrategy implements ReversiStrategy {
    * Constructs an AndStrategy with the specified two strategies.
    *
    * @param strat1 The first Reversi strategy to be applied.
-   * @param strat2 The second Reversi strategy to be applied based on the results of the first strategy.
+   * @param strat2 The second Reversi strategy to be applied based on the results of the first
+   *               strategy.
    */
   public AndStrategy(ReversiStrategy strat1, ReversiStrategy strat2) {
     this.strat1 = strat1;

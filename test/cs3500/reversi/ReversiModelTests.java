@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.swing.text.html.Option;
-
 import cs3500.reversi.model.Direction;
 import cs3500.reversi.model.IModel;
 import cs3500.reversi.model.IROModel;

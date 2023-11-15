@@ -108,7 +108,7 @@ public class MinimaxStrategy implements ReversiStrategy {
 
     return entryList.stream()
             .collect(LinkedHashMap::new,
-                    (map, entry) -> map.put(entry.getKey(), entry.getValue()),
-                    LinkedHashMap::putAll);
+                (map, entry) -> map.put(entry.getKey(), entry.getValue()),
+                LinkedHashMap::putAll);
   }
 }

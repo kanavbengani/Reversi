@@ -1,17 +1,11 @@
 package cs3500.reversi.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
-import javax.swing.text.html.Option;
 
 /**
  * The `Model` class represents the game board and logic for a Reversi game. It implements

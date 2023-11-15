@@ -4,7 +4,6 @@ import java.util.List;
 
 import cs3500.reversi.model.AxialPosn;
 import cs3500.reversi.model.IROModel;
-import cs3500.reversi.model.PieceColor;
 
 /**
  * Represents a strategy interface for choosing moves in a Reversi game.

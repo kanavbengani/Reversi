@@ -102,4 +102,11 @@ public interface IROModel {
    * @return a list of all positions on the board.
    */
   List<AxialPosn> getAllPosn();
+
+  /**
+   * Returns a copy of this model.
+   *
+   * @return returns a copy of the model.
+   */
+  IModel copy();
 }

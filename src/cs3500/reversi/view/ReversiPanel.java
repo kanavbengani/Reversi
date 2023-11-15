@@ -13,6 +13,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
 
@@ -103,11 +104,13 @@ class ReversiPanel extends JPanel implements ModelFeatures {
 
       if (this.model.isMoveValid(this.pieceColor, posn)) {
         color = Color.GREEN;
+        this.makeHexagon(g2d, this.transformLogicalToPhysical(posn), color);
+        this.writeHowManyCaptured(g2d, this.transformLogicalToPhysical(posn),
+                this.model.getAllCapturedPieces(this.pieceColor, this.highlightedHex.get()).size());
       } else {
         color = Color.RED;
+        this.makeHexagon(g2d, this.transformLogicalToPhysical(posn), color);
       }
-
-      this.makeHexagon(g2d, this.transformLogicalToPhysical(posn), color);
     }
   }
 
@@ -169,6 +172,35 @@ class ReversiPanel extends JPanel implements ModelFeatures {
     g2d.setColor(oldColor);
   }
 
+  private void writeHowManyCaptured(Graphics2D g2d, CartesianPosn p, int numCaptures) {
+    Color oldColor = g2d.getColor();
+    AffineTransform oldTransform = g2d.getTransform();
+
+    g2d.setColor(Color.BLACK);
+
+    AffineTransform verticalFlip = AffineTransform.getScaleInstance(1, -1);
+    verticalFlip.translate(0, -p.y * 2);
+    g2d.transform(verticalFlip);
+
+    int fontSize = 24;
+    g2d.setFont(g2d.getFont().deriveFont((float) fontSize));
+
+    // Calculate the center of the hexagon
+    double hexagonCenterX = p.x;
+    double hexagonCenterY = p.y;
+
+    // Calculate the position to center the text within the hexagon
+    int textWidth = g2d.getFontMetrics().stringWidth(String.valueOf(numCaptures));
+    int textHeight = g2d.getFontMetrics().getHeight();
+    int xText = (int) (hexagonCenterX - textWidth / 2);
+    int yText = (int) (hexagonCenterY + textHeight / 4); // Adjust based on font metrics
+
+    g2d.drawString(String.valueOf(numCaptures), xText, yText);
+
+    g2d.setColor(oldColor);
+    g2d.setTransform(oldTransform);
+  }
+
   void addFeaturesListener(ViewFeatures features) {
     if (features == null) {
       throw new IllegalArgumentException("Features cannot be null");
@@ -224,7 +256,7 @@ class ReversiPanel extends JPanel implements ModelFeatures {
 
   // Represents the KeyboardEventListener that parses input from a keyboard stroke and performs
   // action to the view/System.out accordingly.
-  private class KeyboardEventListener extends KeyAdapter {
+  class KeyboardEventListener extends KeyAdapter {
     @Override
     public void keyPressed(KeyEvent e) {
       if (e.getKeyCode() == KeyEvent.VK_P) {
@@ -234,8 +266,8 @@ class ReversiPanel extends JPanel implements ModelFeatures {
         }
       }
       if (e.getKeyCode() == KeyEvent.VK_ENTER && ReversiPanel.this.highlightedHex.isPresent()) {
-        System.out.println(ReversiPanel.this.pieceColor + " wants to play a move at " +
-                ReversiPanel.this.highlightedHex.get() + ".");
+        System.out.println(ReversiPanel.this.pieceColor + " wants to play a move at "
+                + ReversiPanel.this.highlightedHex.get() + ".");
         for (ViewFeatures l : ReversiPanel.this.featuresListeners) {
           l.move(ReversiPanel.this.pieceColor, ReversiPanel.this.highlightedHex.get());
         }
@@ -245,7 +277,7 @@ class ReversiPanel extends JPanel implements ModelFeatures {
 
   // Represents the MouseEventsListener that parses input from a mouse click and performs action
   // to the view/System.out accordingly.
-  private class MouseEventsListener extends MouseInputAdapter {
+  class MouseEventsListener extends MouseInputAdapter {
     @Override
     public void mouseReleased(MouseEvent e) {
       Point physicalP = e.getPoint();
@@ -257,14 +289,11 @@ class ReversiPanel extends JPanel implements ModelFeatures {
 
       // Showing axial coordinate that has been clicked to System.out
       try {
-        ReversiPanel.this.model.getPieceAt(axialPosn);
+        Optional<PieceColor> pieceColor = ReversiPanel.this.model.getPieceAt(axialPosn);
         System.out.println(ReversiPanel.this.pieceColor + " selected " + axialPosn + ".");
-      } catch (IllegalArgumentException ignored) {
-      }
 
-      // Highlight/Dehighlight logic
-      try {
-        if (ReversiPanel.this.model.getPieceAt(axialPosn).isEmpty()) {
+        // Highlight/De-highlight logic
+        if (pieceColor.isEmpty()) {
           if (ReversiPanel.this.highlightedHex.isPresent()
                   && axialPosn.equals(ReversiPanel.this.highlightedHex.get())) {
             throw new IllegalArgumentException("Cell is already highlighted.");

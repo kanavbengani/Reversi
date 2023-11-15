@@ -11,6 +11,10 @@ import cs3500.reversi.model.IROModel;
 import cs3500.reversi.model.ModelFeatures;
 import cs3500.reversi.model.PieceColor;
 
+/**
+ * Represents a mock model that appends to the given log and returns based
+ * on the given parameters in the constructor.
+ */
 public class MockModelForStrategy implements IModel {
 
   private final StringBuilder log;
@@ -18,6 +22,13 @@ public class MockModelForStrategy implements IModel {
   private final int numRings;
   private final List<AxialPosn> listOfPosn = new ArrayList<>();
 
+  /**
+   * Constructs a MockModelForStrategy with the given parameters.
+   *
+   * @param log          StringBuilder to store method call logs
+   * @param posnCaptures map representing the captures at each axial position
+   * @param numRings     number of rings in the game
+   */
   public MockModelForStrategy(StringBuilder log,
                               Map<AxialPosn, Integer> posnCaptures,
                               int numRings) {

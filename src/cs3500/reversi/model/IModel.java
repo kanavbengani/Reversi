@@ -28,11 +28,4 @@ public interface IModel extends IROModel {
    * @return A read-only version of this cs3500.reversi.model
    */
   IROModel getReadOnlyModel();
-
-  /**
-   * Returns a copy of this model.
-   *
-   * @return returns a copy of the model.
-   */
-  IModel copy();
 }

@@ -5,7 +5,7 @@ import cs3500.reversi.model.PieceColor;
 
 /**
  * The ViewFeatures interface defines methods to handle various events and interactions in the
- * context of the Reversi
+ * context of the Reversi.
  */
 public interface ViewFeatures {
   /**
