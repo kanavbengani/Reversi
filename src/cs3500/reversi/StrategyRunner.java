@@ -9,6 +9,7 @@ import cs3500.reversi.strategy.AvoidEdgesStrategy;
 import cs3500.reversi.strategy.CaptureMostStrategy;
 import cs3500.reversi.strategy.GoCornerStrategy;
 import cs3500.reversi.strategy.MinimaxStrategy;
+import cs3500.reversi.strategy.MinimaxStrategyDepth;
 import cs3500.reversi.view.IView;
 import cs3500.reversi.view.View;
 
@@ -25,16 +26,16 @@ public class StrategyRunner {
    * @param args Command line arguments (not used in this program).
    */
   public static void main(String[] args) {
-    IModel model = new Model(5);
+    IModel model = new Model(6);
     IView view = new View(model.getReadOnlyModel(), PieceColor.BLACK);
     view.display(true);
 
     while (!model.isGameOver()) {
       List<AxialPosn> moves;
-      moves = new MinimaxStrategy(new AndStrategy(
+      moves = new MinimaxStrategyDepth(new AndStrategy(
               new GoCornerStrategy(),
               new AndStrategy(new AvoidEdgesStrategy(),
-                      new CaptureMostStrategy()))).chooseMove(new ArrayList<>(), model);
+                      new CaptureMostStrategy())), 2).chooseMove(new ArrayList<>(), model);
 
       PieceColor turn = model.getTurn();
 

@@ -59,8 +59,8 @@ public class StrategyTests {
     this.captureMostStrategy.chooseMove(new ArrayList<>(), mockModel);
 
     for (AxialPosn ap : this.mockModel.getAllPosn()) {
-      Assert.assertTrue(this.log.toString().contains("Calling isMoveValid to check if BLACK can play on "
-              + ap.toString()));
+      Assert.assertTrue(this.log.toString().contains("Calling isMoveValid to check if BLACK" +
+              " can play on " + ap.toString()));
     }
   }
 
@@ -75,7 +75,8 @@ public class StrategyTests {
   public void testCaptureMostStrategyMultipleMovesSameNumCapturesSortCorrectly() {
     this.validPosn.put(new AxialPosn(2, -1), 5);
     this.validPosn.put(new AxialPosn(1, 1), 5);
-    // Mock model assumes the given list (validPosn) are the valid moves and returns true accordingly to the strategy.
+    // Mock model assumes the given list (validPosn) are the valid moves and returns
+    // true accordingly to the strategy.
 
     Assert.assertEquals(this.captureMostStrategy.chooseMove(new ArrayList<>(), mockModel),
             List.of(new AxialPosn(1, -2), new AxialPosn(2, -1),
@@ -85,8 +86,8 @@ public class StrategyTests {
   @Test
   public void testCaptureMostStrategyNoCaptures() {
     this.validPosn.clear();
-    Assert.assertEquals(this.captureMostStrategy.chooseMove(new ArrayList<>(), this.mockModel).size(),
-            0);
+    Assert.assertEquals(this.captureMostStrategy.chooseMove(
+            new ArrayList<>(), this.mockModel).size(),0);
   }
 
   @Test

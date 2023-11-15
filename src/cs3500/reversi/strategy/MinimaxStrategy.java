@@ -22,10 +22,10 @@ import cs3500.reversi.model.PieceColor;
 public class MinimaxStrategy implements ReversiStrategy {
   private PieceColor myColor;
   private PieceColor opponentColor;
-  private final ReversiStrategy opponent;
+  private final ReversiStrategy opponentStrategy;
 
   public MinimaxStrategy(ReversiStrategy opponent) {
-    this.opponent = Objects.requireNonNull(opponent);
+    this.opponentStrategy = Objects.requireNonNull(opponent);
   }
 
   @Override
@@ -76,7 +76,7 @@ public class MinimaxStrategy implements ReversiStrategy {
 
     Map<AxialPosn, Integer> result = new HashMap<>();
 
-    List<AxialPosn> opponentMoves = opponent.chooseMove(new ArrayList<>(),
+    List<AxialPosn> opponentMoves = this.opponentStrategy.chooseMove(new ArrayList<>(),
             oppTurnModel.getReadOnlyModel());
 
     if (opponentMoves.isEmpty()) {
