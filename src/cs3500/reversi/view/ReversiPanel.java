@@ -256,7 +256,7 @@ class ReversiPanel extends JPanel implements ModelFeatures {
 
   // Represents the KeyboardEventListener that parses input from a keyboard stroke and performs
   // action to the view/System.out accordingly.
-  class KeyboardEventListener extends KeyAdapter {
+  private class KeyboardEventListener extends KeyAdapter {
     @Override
     public void keyPressed(KeyEvent e) {
       if (e.getKeyCode() == KeyEvent.VK_P) {
@@ -277,7 +277,7 @@ class ReversiPanel extends JPanel implements ModelFeatures {
 
   // Represents the MouseEventsListener that parses input from a mouse click and performs action
   // to the view/System.out accordingly.
-  class MouseEventsListener extends MouseInputAdapter {
+  private class MouseEventsListener extends MouseInputAdapter {
     @Override
     public void mouseReleased(MouseEvent e) {
       Point physicalP = e.getPoint();
