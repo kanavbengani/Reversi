@@ -1,7 +1,12 @@
 package cs3500.reversi;
 
-import cs3500.reversi.strategy.*;
-import cs3500.reversi.view.TextualView;
+import cs3500.reversi.strategy.AndStrategy;
+import cs3500.reversi.strategy.AvoidEdgesStrategy;
+import cs3500.reversi.strategy.CaptureMostStrategy;
+import cs3500.reversi.strategy.GoCornerStrategy;
+import cs3500.reversi.strategy.MinimaxStrategyDepth;
+import cs3500.reversi.strategy.ReversiStrategy;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +51,7 @@ public class StrategyTests {
     this.goCornersStrategy = new GoCornerStrategy();
     this.minimaxStrategy = new MinimaxStrategyDepth(new AndStrategy(
             new GoCornerStrategy(),
-            new AndStrategy(new AvoidEdgesStrategy(), new CaptureMostStrategy())), 2);
+            new AndStrategy(new AvoidEdgesStrategy(), new CaptureMostStrategy())), 5);
   }
 
   // CaptureMostStrategy
@@ -232,8 +237,8 @@ public class StrategyTests {
 
     Assert.assertEquals(this.minimaxStrategy.chooseMove(new ArrayList<>(), this.fullModel),
             new ArrayList<>(List.of(
-                    new AxialPosn(2, -3), new AxialPosn(-2, 1),
-                    new AxialPosn(-1, 2), new AxialPosn(2, -1))));
+                    new AxialPosn(2, -3), new AxialPosn(2, -1),
+                    new AxialPosn(-2, 1), new AxialPosn(-1, 2))));
   }
 
   private Map<AxialPosn, Optional<PieceColor>> createEmptyBoard(int numRings) {
@@ -271,8 +276,8 @@ public class StrategyTests {
     Assert.assertEquals(this.minimaxStrategy.chooseMove(new ArrayList<>(), this.fullModel),
             new ArrayList<>(List.of(
                     new AxialPosn(1, -1),
-                    new AxialPosn(-1, 0),
-                    new AxialPosn(0, 1))));
+                    new AxialPosn(0, 1),
+                    new AxialPosn(-1, 0))));
   }
 
   @Test
@@ -310,9 +315,30 @@ public class StrategyTests {
     board.put(new AxialPosn(-2, 2), Optional.of(PieceColor.BLACK));
     this.fullModel = new Model(board);
 
-    System.out.println(new TextualView(this.fullModel));
+    Assert.assertEquals(this.minimaxStrategy.chooseMove(new ArrayList<>(), this.fullModel),
+            new ArrayList<>(List.of(new AxialPosn(0, -1), new AxialPosn(-2, 0))));
+  }
+
+  @Test
+  public void testMinimaxStrategyWorksDifferentlyAtDifferentDepths() {
+    this.minimaxStrategy = new MinimaxStrategyDepth(new AndStrategy(
+            new GoCornerStrategy(),
+            new AndStrategy(new AvoidEdgesStrategy(), new CaptureMostStrategy())), 3);
+    Map<AxialPosn, Optional<PieceColor>> board = this.createEmptyBoard(2);
+
+    board.put(new AxialPosn(0, 0), Optional.of(PieceColor.WHITE));
+    board.put(new AxialPosn(-1, 1), Optional.of(PieceColor.WHITE));
+    board.put(new AxialPosn(0, -1), Optional.of(PieceColor.BLACK));
+    board.put(new AxialPosn(-1, 2), Optional.of(PieceColor.BLACK));
+    board.put(new AxialPosn(-2, 2), Optional.of(PieceColor.BLACK));
+
+    this.fullModel = new Model(board);
 
     Assert.assertEquals(this.minimaxStrategy.chooseMove(new ArrayList<>(), this.fullModel),
-            new ArrayList<>(List.of(new AxialPosn(-2, 0), new AxialPosn(0, -1))));
+            new ArrayList<>(List.of(
+                    new AxialPosn(1, -1),
+                    new AxialPosn(-1, 0),
+                    new AxialPosn(0, 1))));
   }
+
 }

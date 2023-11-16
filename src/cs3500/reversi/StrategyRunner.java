@@ -8,7 +8,6 @@ import cs3500.reversi.strategy.AndStrategy;
 import cs3500.reversi.strategy.AvoidEdgesStrategy;
 import cs3500.reversi.strategy.CaptureMostStrategy;
 import cs3500.reversi.strategy.GoCornerStrategy;
-import cs3500.reversi.strategy.MinimaxStrategy;
 import cs3500.reversi.strategy.MinimaxStrategyDepth;
 import cs3500.reversi.view.IView;
 import cs3500.reversi.view.View;

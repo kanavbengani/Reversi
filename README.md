@@ -9,10 +9,12 @@ strategies for the game.
 ### Extra Credit
 - Strategy 2 -- See `strategy/AvoidEdgesStrategy.java`.
 - Strategy 3 -- See `strategy/GoCornerStrategy.java`.
-- Strategy 4 -- See `strategy/MinimaxStrategy.java`.
+- Strategy 4 -- See `strategy/MinimaxStrategy.java` (one layer) and `strategy/MinimaxStrategyDepth.java` (recursion - 
+can take in a depth greater than 1).
 - Composing Strategies -- See `AndStrategy.java`. (Allows recombination easily and efficiently).
 - Hints for which moves are valid. (Green for valid, red for invalid) -- See `screenshots/CellSelected.png`.
 - Shows how many will be captured when cell is clicked -- See `screenshots/ExtraCreditHint.png`.
+- In order to run the program and see the strategy in action against each other, see `StrategyRunner.java`.
 
 ### Changelog
 The following are changes made to the `model` package from the previous assignment (Assignment 5). 
@@ -77,6 +79,11 @@ pieces. In case of a tie, the list that is being returned is sorted by topmost, 
 - `MinimaxStrategy` -- A class that finds a list of moves that minimize the chances of the opponent playing their best
 move. A best move is calculated by the difference of scores between the two players. In case of a tie, the list that is 
 being returned is sorted by topmost, leftmost.
+  - `MinimaxStrategyDepth` -- Our implementation of Minimax also has a `depth` value taken in the constructor that 
+  defines the search depth of the algorithm. In order make an implementation of Minimax that matches the specification 
+  in the assignment, we can set the `depth` to be `1`. For now, passing moves are considered worse for an opponent than 
+  playing (may be improved upon in later iterations). The best move for the opponent is a move that is a winning move or
+  a move that leads to a winning outcome.
 
 ### View
 - `TextualView` -- A light-weight text-based view to visualize the game of Reversi, mostly for testing purposes.
@@ -113,6 +120,7 @@ being returned is sorted by topmost, leftmost.
 │           │   ├── CaptureMostStrategy.java
 │           │   ├── GoCornerStrategy.java
 │           │   ├── MinimaxStrategy.java
+│           │   ├── MinimaxStrategyDepth.java
 │           │   └── ReversiStrategy.java
 │           └── view
 │               ├── CartesianPosn.java
