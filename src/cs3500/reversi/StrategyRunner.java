@@ -26,16 +26,20 @@ public class StrategyRunner {
    * @param args Command line arguments (not used in this program).
    */
   public static void main(String[] args) {
-    IModel model = new Model(6);
+    IModel model = new Model(5);
     IView view = new View(model.getReadOnlyModel(), PieceColor.BLACK);
     view.display(true);
 
+    int count = 0;
+
     while (!model.isGameOver()) {
+      count++;
+      System.out.println("move " + count);
       List<AxialPosn> moves;
       moves = new MinimaxStrategyDepth(new AndStrategy(
               new GoCornerStrategy(),
               new AndStrategy(new AvoidEdgesStrategy(),
-                      new CaptureMostStrategy())), 2).chooseMove(new ArrayList<>(), model);
+                      new CaptureMostStrategy())), 3).chooseMove(new ArrayList<>(), model);
 
       PieceColor turn = model.getTurn();
 

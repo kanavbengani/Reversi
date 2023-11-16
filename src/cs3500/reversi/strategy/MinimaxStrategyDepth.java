@@ -15,6 +15,9 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
   private final int initialDepth;
 
   public MinimaxStrategyDepth(ReversiStrategy opponent, int depth) {
+    if (depth < 1) {
+      throw new IllegalArgumentException("depth has to be at least 1.");
+    }
     this.opponentStrategy = Objects.requireNonNull(opponent);
     this.initialDepth = depth;
   }
@@ -35,10 +38,8 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
   }
 
   private Map<AxialPosn, Integer> doMinimax(IModel model, int depth) {
-    System.out.println("here");
     Map<AxialPosn, Integer> result = new HashMap<>();
     if (depth == 1) {
-      System.out.println("HereBase");
       for (AxialPosn move : model.getAllPosn()) {
         if (model.isMoveValid(model.getTurn(), move)) {
           IModel copyModel = model.copy();
@@ -57,12 +58,13 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
         }
       }
       if (model.getTurn().equals(this.myColor)) {
-        result = this.sortAscending(result);
+        result = this.sortAscending(result, true);
       } else {
-        result = this.sortAscending(result);
+        result = this.sortAscending(result, false);
       }
     }
     else if ((initialDepth - depth) % 2 == 0) {
+      // my perspective
       for (AxialPosn move : model.getAllPosn()) {
         if (model.isMoveValid(this.myColor, move)) {
           IModel copyModel = model.copy();
@@ -70,14 +72,22 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
           if (copyModel.isGameOver()) {
             result.put(move, Integer.MIN_VALUE);
           } else {
-            int maximizedOpponentMove =
-                    Collections.min(this.sortAscending(this.doMinimax(copyModel, depth - 1)).values());
+            Collection<Integer> c = this.sortAscending(this.doMinimax(copyModel, depth - 1), true).values();
+            int maximizedOpponentMove;
+            if (c.isEmpty()) {
+              maximizedOpponentMove = Integer.MIN_VALUE / 2;
+            } else {
+              maximizedOpponentMove = Collections.min(c);
+            }
+
             result.put(move, maximizedOpponentMove);
           }
         }
       }
+      result = this.sortAscending(result, true);
     }
     else {
+      // opponent's perspective
       for (AxialPosn move : model.getAllPosn()) {
         if (model.isMoveValid(this.opponentColor, move)) {
           IModel copyModel = model.copy();
@@ -85,14 +95,20 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
           if (copyModel.isGameOver()) {
             result.put(move, Integer.MAX_VALUE);
           } else {
-            // it is Collections.max because all given values are positive for opponent, negative for us.
-            int minimizedMyMove =
-                    Collections.max(this.sortAscending(this.doMinimax(copyModel, depth - 1)).values());
-            result.put(move, minimizedMyMove);
+            Collection<Integer> c = this.sortAscending(this.doMinimax(copyModel, depth - 1), true).values();
+            int maximizedOpponentMove;
+            if (c.isEmpty()) {
+              maximizedOpponentMove = Integer.MAX_VALUE / 2;
+            } else {
+              maximizedOpponentMove = Collections.max(c);
+            }
+            result.put(move, maximizedOpponentMove);
           }
         }
       }
+      result = this.sortAscending(result, false);
     }
+    System.out.println(depth + ": " + result);
     return result;
   }
 
@@ -145,13 +161,25 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
             : Collections.min(result.values());
   }
 
-  private Map<AxialPosn, Integer> sortAscending(Map<AxialPosn, Integer> result) {
+  private Map<AxialPosn, Integer> sortAscending(Map<AxialPosn, Integer> result, boolean ascending) {
     List<Map.Entry<AxialPosn, Integer>> entryList = new ArrayList<>(result.entrySet());
 
-    entryList.sort(Comparator
-            .comparingInt((Map.Entry<AxialPosn, Integer> entry) -> entry.getValue())
-            .thenComparingInt(entry -> entry.getKey().r)
-            .thenComparingInt(entry -> entry.getKey().q));
+    Comparator<Map.Entry<AxialPosn, Integer>> comparator;
+    if (ascending) {
+      comparator = Comparator
+              .comparingInt((Map.Entry<AxialPosn, Integer> entry) -> entry.getValue())
+              .thenComparingInt(entry -> entry.getKey().r)
+              .thenComparingInt(entry -> entry.getKey().q);
+    }
+    else {
+      comparator = Comparator
+              .comparingInt((Map.Entry<AxialPosn, Integer> entry) -> entry.getValue())
+              .reversed()
+              .thenComparingInt(entry -> entry.getKey().r)
+              .thenComparingInt(entry -> entry.getKey().q);
+    }
+
+    entryList.sort(comparator);
 
     return entryList.stream()
             .collect(LinkedHashMap::new,

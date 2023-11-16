@@ -1,5 +1,7 @@
 package cs3500.reversi;
 
+import cs3500.reversi.strategy.*;
+import cs3500.reversi.view.TextualView;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,12 +16,6 @@ import cs3500.reversi.model.AxialPosn;
 import cs3500.reversi.model.IModel;
 import cs3500.reversi.model.Model;
 import cs3500.reversi.model.PieceColor;
-import cs3500.reversi.strategy.AndStrategy;
-import cs3500.reversi.strategy.AvoidEdgesStrategy;
-import cs3500.reversi.strategy.CaptureMostStrategy;
-import cs3500.reversi.strategy.GoCornerStrategy;
-import cs3500.reversi.strategy.MinimaxStrategy;
-import cs3500.reversi.strategy.ReversiStrategy;
 
 /**
  * A JUnit4 testing class for testing Reversi strategies.
@@ -48,9 +44,9 @@ public class StrategyTests {
     this.captureMostStrategy = new CaptureMostStrategy();
     this.avoidEdgesStrategy = new AvoidEdgesStrategy();
     this.goCornersStrategy = new GoCornerStrategy();
-    this.minimaxStrategy = new MinimaxStrategy(new AndStrategy(
+    this.minimaxStrategy = new MinimaxStrategyDepth(new AndStrategy(
             new GoCornerStrategy(),
-            new AndStrategy(new AvoidEdgesStrategy(), new CaptureMostStrategy())));
+            new AndStrategy(new AvoidEdgesStrategy(), new CaptureMostStrategy())), 2);
   }
 
   // CaptureMostStrategy
@@ -313,6 +309,8 @@ public class StrategyTests {
     board.put(new AxialPosn(-2, 1), Optional.of(PieceColor.WHITE));
     board.put(new AxialPosn(-2, 2), Optional.of(PieceColor.BLACK));
     this.fullModel = new Model(board);
+
+    System.out.println(new TextualView(this.fullModel));
 
     Assert.assertEquals(this.minimaxStrategy.chooseMove(new ArrayList<>(), this.fullModel),
             new ArrayList<>(List.of(new AxialPosn(-2, 0), new AxialPosn(0, -1))));
