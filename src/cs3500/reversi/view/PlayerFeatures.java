@@ -4,10 +4,10 @@ import cs3500.reversi.model.AxialPosn;
 import cs3500.reversi.model.PieceColor;
 
 /**
- * The ViewFeatures interface defines methods to handle various events and interactions in the
+ * The PlayerFeatures interface defines methods to handle various events and interactions in the
  * context of the Reversi.
  */
-public interface ViewFeatures {
+public interface PlayerFeatures {
   /**
    * Notifies the listener that a player has chosen to pass their turn.
    *
@@ -22,9 +22,4 @@ public interface ViewFeatures {
    * @param axialPosn  The axial position on the game board where the move is made.
    */
   void move(PieceColor pieceColor, AxialPosn axialPosn);
-
-  /**
-   * Notifies the listener that a player has chosen to quit the game.
-   */
-  void quit();
 }

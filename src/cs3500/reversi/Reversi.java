@@ -15,11 +15,12 @@ public final class Reversi {
    * @param args String command line arguments
    */
   public static void main(String[] args) {
+    System.out.println("here");
     IModel model = new Model(5);
 
     IView viewBlack = new View(model.getReadOnlyModel(), PieceColor.BLACK);
     IView viewWhite = new View(model.getReadOnlyModel(), PieceColor.WHITE);
-
+    
     viewBlack.display(true);
     viewWhite.display(true);
   }

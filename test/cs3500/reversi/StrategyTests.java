@@ -63,6 +63,7 @@ public class StrategyTests {
       Assert.assertTrue(this.log.toString().contains("Calling isMoveValid to check if BLACK" +
               " can play on " + ap.toString()));
     }
+    System.out.println(this.log);
   }
 
   @Test

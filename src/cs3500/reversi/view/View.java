@@ -1,6 +1,6 @@
 package cs3500.reversi.view;
 
-import javax.swing.JFrame;
+import javax.swing.*;
 
 import cs3500.reversi.model.IROModel;
 import cs3500.reversi.model.PieceColor;
@@ -40,7 +40,17 @@ public class View extends JFrame implements IView {
   }
 
   @Override
-  public void addFeatureListener(ViewFeatures features) {
+  public void addListener(PlayerFeatures features) {
     this.panel.addFeaturesListener(features);
+  }
+  
+  @Override
+  public void promptMessage(String message) {
+    JOptionPane.showMessageDialog(this, message);
+  }
+  
+  @Override
+  public void itsYourMove(PieceColor pieceColor) {
+    this.panel.itsYourMove(pieceColor);
   }
 }

@@ -35,14 +35,14 @@ import cs3500.reversi.model.PieceColor;
  * the game. It implements ModelFeatures to receive updates from the game model and repaints
  * itself accordingly.
  */
-class ReversiPanel extends JPanel implements ModelFeatures {
+class ReversiPanel extends JPanel {
   private static final int PADDING = 10;
   private static final int HEIGHT = 800;
   private static final int WIDTH = 800;
 
   private final IROModel model;
   private final int numRings;
-  private final List<ViewFeatures> featuresListeners = new ArrayList<>();
+  private final List<PlayerFeatures> featuresListeners = new ArrayList<>();
   private final PieceColor pieceColor;
   private final double hexagonRadius;
   private Optional<AxialPosn> highlightedHex = Optional.empty();
@@ -58,10 +58,7 @@ class ReversiPanel extends JPanel implements ModelFeatures {
     this.numRings = this.model.getNumRings();
     this.pieceColor = pieceColor;
     this.hexagonRadius = this.computeHexagonRadius();
-
-    // adds this as a listener to the model.
-    this.model.addListener(this);
-
+    
     // adds mouse and key listeners
     MouseAdapter mouse = new MouseEventsListener();
     this.addMouseListener(mouse);
@@ -95,8 +92,9 @@ class ReversiPanel extends JPanel implements ModelFeatures {
     // Invert coordinates so origin is in the middle and +y is upwards and +x is to the right.
     g2d.translate(WIDTH / 2, HEIGHT / 2);
     g2d.scale(1, -1);
-
+    
     this.drawBoard(g2d);
+    this.displayTurn(g2d);
 
     if (this.highlightedHex.isPresent()) {
       AxialPosn posn = this.highlightedHex.get();
@@ -129,6 +127,22 @@ class ReversiPanel extends JPanel implements ModelFeatures {
     }
 
     g2d.setColor(oldColor);
+  }
+  
+  private void displayTurn(Graphics2D g2d) {
+    System.out.println("here");
+    Color oldColor = g2d.getColor();
+    AffineTransform oldTransform = g2d.getTransform();
+    
+    g2d.setColor(Color.WHITE);
+//
+//      AffineTransform verticalFlip = AffineTransform.getScaleInstance(1, -1);
+//      g2d.transform(verticalFlip);
+  
+    g2d.drawString("It is your turn!", ReversiPanel.WIDTH / 2, ReversiPanel.HEIGHT / 2);
+    
+    g2d.setColor(oldColor);
+    g2d.setTransform(oldTransform);
   }
 
   // Creates a circle with the given center (in cartesian coordinates) and radius with the given
@@ -201,16 +215,11 @@ class ReversiPanel extends JPanel implements ModelFeatures {
     g2d.setTransform(oldTransform);
   }
 
-  void addFeaturesListener(ViewFeatures features) {
+  void addFeaturesListener(PlayerFeatures features) {
     if (features == null) {
       throw new IllegalArgumentException("Features cannot be null");
     }
     this.featuresListeners.add(features);
-  }
-
-  @Override
-  public void itsTheMoveOf(PieceColor pieceColor) {
-    this.repaint();
   }
 
   @Override
@@ -253,7 +262,11 @@ class ReversiPanel extends JPanel implements ModelFeatures {
 
     return new CartesianPosn(x, -y);
   }
-
+  
+  public void itsYourMove(PieceColor pieceColor) {
+    // TODO
+  }
+  
   // Represents the KeyboardEventListener that parses input from a keyboard stroke and performs
   // action to the view/System.out accordingly.
   private class KeyboardEventListener extends KeyAdapter {
@@ -261,14 +274,14 @@ class ReversiPanel extends JPanel implements ModelFeatures {
     public void keyPressed(KeyEvent e) {
       if (e.getKeyCode() == KeyEvent.VK_P) {
         System.out.println(ReversiPanel.this.pieceColor + " wants to pass.");
-        for (ViewFeatures l : ReversiPanel.this.featuresListeners) {
+        for (PlayerFeatures l : ReversiPanel.this.featuresListeners) {
           l.pass(ReversiPanel.this.pieceColor);
         }
       }
       if (e.getKeyCode() == KeyEvent.VK_ENTER && ReversiPanel.this.highlightedHex.isPresent()) {
         System.out.println(ReversiPanel.this.pieceColor + " wants to play a move at "
                 + ReversiPanel.this.highlightedHex.get() + ".");
-        for (ViewFeatures l : ReversiPanel.this.featuresListeners) {
+        for (PlayerFeatures l : ReversiPanel.this.featuresListeners) {
           l.move(ReversiPanel.this.pieceColor, ReversiPanel.this.highlightedHex.get());
         }
       }
