@@ -21,10 +21,10 @@ public final class Reversi {
    * @param args String command line arguments
    */
   public static void main(String[] args) {
+    // TODO: Make a factory.
     IModel model = new Model(5);
     IView viewBlack = new View(model.getReadOnlyModel(), PieceColor.BLACK);
     IView viewWhite = new View(model.getReadOnlyModel(), PieceColor.WHITE);
-//    Player player1 = new HumanPlayer();
     ReversiStrategy aiOpponent =
         new AndStrategy(
             new GoCornerStrategy(),
@@ -33,22 +33,18 @@ public final class Reversi {
                 new CaptureMostStrategy()
             )
         );
-    Player player1 = new AIPlayer(model, new MinimaxStrategyDepth(aiOpponent, 2), PieceColor.BLACK);
     
-    // Player2 - Human
+    // Player 1
+    // Human
+    Player player1 = new HumanPlayer();
+    // AI
+//    Player player1 = new AIPlayer(model, new MinimaxStrategyDepth(aiOpponent, 5), PieceColor.BLACK);
+    
+    // Player2
+    // Human
 //    Player player2 = new HumanPlayer();
-    
     // Player2 - AI
-    ReversiStrategy aiOpponent2 =
-        new AndStrategy(
-        new GoCornerStrategy(),
-        new AndStrategy(
-            new AvoidEdgesStrategy(),
-            new CaptureMostStrategy()
-        )
-    );
-    Player player2 = new AIPlayer(model, new MinimaxStrategyDepth(aiOpponent, 2), PieceColor.WHITE);
-//    viewWhite.display(false);
+    Player player2 = new AIPlayer(model, new MinimaxStrategyDepth(aiOpponent, 5), PieceColor.WHITE);
     
     IController controller1 = new Controller(model, player1, viewBlack);
     IController controller2 = new Controller(model, player2, viewWhite);

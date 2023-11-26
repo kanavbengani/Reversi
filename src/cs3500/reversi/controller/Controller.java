@@ -50,11 +50,12 @@ public class Controller implements IController, PlayerFeatures, ModelFeatures {
   
   @Override
   public void itsGameOver(Optional<PieceColor> winner) {
-    System.out.println("Here");
     if (winner.isEmpty()) {
       this.view.promptMessage("STALEMATE!");
     }
     else {
+      // TODO: this should not be called endlessly at the end of the game.
+      // Especially, during AIvAI.
       this.view.promptMessage(winner.get() + " WON!");
     }
   }

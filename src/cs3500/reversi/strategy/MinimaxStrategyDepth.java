@@ -41,6 +41,9 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
 
   @Override
   public List<AxialPosn> chooseMove(List<AxialPosn> possibleMoves, IROModel model) {
+    // TODO: Add passing as a possible move.
+    //       Keep in mind though during AI vs. AI,
+    //       what if they keep passing because that is the optimal move?
     this.initializeColors(model);
     Map<AxialPosn, Integer> moves = this.doMinimax(model, initialDepth);
     return new ArrayList<>(moves.keySet());
