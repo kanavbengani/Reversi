@@ -27,6 +27,7 @@ public class View extends JFrame implements IView {
     this.add(panel);
 
     this.pack();
+    this.display(true);
   }
 
   @Override
@@ -46,7 +47,9 @@ public class View extends JFrame implements IView {
   
   @Override
   public void promptMessage(String message) {
-    JOptionPane.showMessageDialog(this, message);
+    if (this.isVisible()) {
+      JOptionPane.showMessageDialog(this, message);
+    }
   }
   
   @Override

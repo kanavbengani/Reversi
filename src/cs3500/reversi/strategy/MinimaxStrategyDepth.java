@@ -42,7 +42,7 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
   @Override
   public List<AxialPosn> chooseMove(List<AxialPosn> possibleMoves, IROModel model) {
     this.initializeColors(model);
-    Map<AxialPosn, Integer> moves = this.doMinimax((IModel) model, initialDepth);
+    Map<AxialPosn, Integer> moves = this.doMinimax(model, initialDepth);
     return new ArrayList<>(moves.keySet());
   }
 
@@ -57,7 +57,7 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
 
   // Does minimax with the given depth and model. Positive scores are good for the opponent
   // while negative scores are good for us.
-  private Map<AxialPosn, Integer> doMinimax(IModel model, int depth) {
+  private Map<AxialPosn, Integer> doMinimax(IROModel model, int depth) {
     Map<AxialPosn, Integer> result;
     if (depth == 1) {
       result = this.doBaseCase(model);
@@ -74,18 +74,22 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
   }
 
   // Executes the base case moves with depth = 1.
-  private Map<AxialPosn, Integer> doBaseCase(IModel model) {
+  private Map<AxialPosn, Integer> doBaseCase(IROModel model) {
     Map<AxialPosn, Integer> result = new HashMap<>();
     for (AxialPosn move : model.getAllPosn()) {
       if (model.isMoveValid(model.getTurn(), move)) {
         IModel copyModel = model.copy();
         copyModel.playMove(model.getTurn(), move);
         if (copyModel.isGameOver()) {
-          if (model.getTurn().equals(this.myColor)) {
-            result.put(move, Integer.MIN_VALUE);
+          if (copyModel.getWinner().isEmpty()) { // Stalemate
+            result.put(move, 0);
           }
           else {
-            result.put(move, Integer.MAX_VALUE);
+            if (copyModel.getWinner().get().equals(this.myColor)) { // We won.
+              result.put(move, Integer.MIN_VALUE);
+            } else { // Opponent won.
+              result.put(move, Integer.MAX_VALUE);
+            }
           }
         } else {
           int maximizedOpponentMove = this.baseCase(copyModel);
@@ -102,14 +106,23 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
   }
 
   // Executes the opponent's perspective, hence maximizing each of their moves.
-  private Map<AxialPosn, Integer> doOpponentPerspective(IModel model, int depth) {
+  private Map<AxialPosn, Integer> doOpponentPerspective(IROModel model, int depth) {
     Map<AxialPosn, Integer> result = new HashMap<>();
     for (AxialPosn move : model.getAllPosn()) {
       if (model.isMoveValid(this.opponentColor, move)) {
         IModel copyModel = model.copy();
         copyModel.playMove(this.opponentColor, move);
         if (copyModel.isGameOver()) {
-          result.put(move, Integer.MAX_VALUE);
+          if (copyModel.getWinner().isEmpty()) { // Stalemate
+            result.put(move, 0);
+          }
+          else {
+            if (copyModel.getWinner().get().equals(this.myColor)) { // We won.
+              result.put(move, Integer.MIN_VALUE);
+            } else { // Opponent won.
+              result.put(move, Integer.MAX_VALUE);
+            }
+          }
         } else {
           Collection<Integer> c = this.sortAscending(
                   this.doMinimax(copyModel, depth - 1), true).values();
@@ -128,14 +141,23 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
   }
 
   // Executes the 'my' (target) perspective, hence minimizing each of opponent's best moves.
-  private Map<AxialPosn, Integer> doMyPerspective(IModel model, int depth) {
+  private Map<AxialPosn, Integer> doMyPerspective(IROModel model, int depth) {
     Map<AxialPosn, Integer> result = new HashMap<>();
     for (AxialPosn move : model.getAllPosn()) {
       if (model.isMoveValid(this.myColor, move)) {
         IModel copyModel = model.copy();
         copyModel.playMove(this.myColor, move);
         if (copyModel.isGameOver()) {
-          result.put(move, Integer.MIN_VALUE);
+          if (copyModel.getWinner().isEmpty()) { // Stalemate
+            result.put(move, 0);
+          }
+          else {
+            if (copyModel.getWinner().get().equals(this.myColor)) { // We won.
+              result.put(move, Integer.MIN_VALUE);
+            } else { // Opponent won.
+              result.put(move, Integer.MAX_VALUE);
+            }
+          }
         } else {
           Collection<Integer> c = this.sortAscending(
                   this.doMinimax(copyModel, depth - 1), true).values();
@@ -157,7 +179,7 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
   // Executes last layer of the recursion tree, hence an output of an integer value
   // representing the difference in score. Positive (good for opponent), negative
   // (good for us).
-  private Integer baseCase(IModel model) {
+  private Integer baseCase(IROModel model) {
     if (model.isGameOver()) {
       throw new IllegalStateException("Game is over, move cannot be chosen.");
     }
@@ -167,8 +189,7 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
 
     if (turn.equals(this.opponentColor)) {
       // If end is opponent's turn, go through only moves picked in their strategy.
-      it = this.opponentStrategy.chooseMove(new ArrayList<>(),
-              model.getReadOnlyModel());
+      it = this.opponentStrategy.chooseMove(new ArrayList<>(), model);
       if (it.isEmpty()) {
         return Integer.MIN_VALUE / 2;
       }
@@ -188,17 +209,16 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
     for (AxialPosn move : it) {
       IModel copyModel = model.copy();
       copyModel.playMove(turn, move);
-      if (copyModel.isGameOver() && copyModel.getWinner().isPresent()) {
-        if (copyModel.getWinner().isPresent()) {
-          if (copyModel.getWinner().get().equals(this.opponentColor)) {
-            result.put(move, Integer.MAX_VALUE);
-          }
-          else {
-            result.put(move, Integer.MIN_VALUE);
-          }
+      if (copyModel.isGameOver()) {
+        if (copyModel.getWinner().isEmpty()) { // Stalemate
+          result.put(move, 0);
         }
         else {
-          result.put(move, 0);
+          if (copyModel.getWinner().get().equals(this.myColor)) { // We won.
+            result.put(move, Integer.MIN_VALUE);
+          } else { // Opponent won.
+            result.put(move, Integer.MAX_VALUE);
+          }
         }
       } else {
         result.put(move,

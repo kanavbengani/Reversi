@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -31,7 +32,7 @@ public class Model implements IModel {
   public Model(int numRings) {
     this.pieceColor1 = PieceColor.BLACK;
     this.pieceColor2 = PieceColor.WHITE;
-    this.currentPieceColor = this.pieceColor1;
+    this.currentPieceColor = null;
     this.board = new HashMap<>();
     if (numRings < 1) {
       throw new IllegalArgumentException("Number of rings must be at least 1.");
@@ -62,7 +63,7 @@ public class Model implements IModel {
   public Model(Map<AxialPosn, Optional<PieceColor>> board) {
     this.pieceColor1 = PieceColor.BLACK;
     this.pieceColor2 = PieceColor.WHITE;
-    this.currentPieceColor = this.pieceColor1;
+    this.currentPieceColor = null;
     this.numRings = this.validateBoard(board);
     this.board = board;
     this.listeners = new ArrayList<>();
@@ -106,6 +107,24 @@ public class Model implements IModel {
     int posnCount = board.keySet().size();
     double numRings = (-3 + Math.sqrt(-3 + 12 * posnCount)) / 6;
     return (int) numRings;
+  }
+  
+  @Override
+  public void startGame() throws IllegalStateException {
+    if (this.listeners.size() == 2) {
+      this.currentPieceColor = this.pieceColor1;
+      for (ModelFeatures f : this.listeners) {
+        if (this.isGameOver()) {
+          f.itsGameOver(this.getWinner());
+        }
+        else {
+          f.itsTheMoveOf(this.currentPieceColor);
+        }
+      }
+    }
+    else {
+      throw new IllegalStateException("There has to be two players in this game.");
+    }
   }
 
   // Observation Methods
@@ -264,7 +283,7 @@ public class Model implements IModel {
     for (AxialPosn tempAp : points) {
       this.board.put(tempAp, Optional.of(pc));
     }
-
+    
     this.switchTurn();
   }
 
@@ -278,7 +297,7 @@ public class Model implements IModel {
     if (!this.currentPieceColor.equals(pc)) {
       throw new IllegalStateException("Cannot pass when its not your turn.");
     }
-
+    
     this.switchTurn();
   }
 
@@ -289,10 +308,15 @@ public class Model implements IModel {
             this.currentPieceColor.equals(pieceColor1)
                     ? pieceColor2
                     : pieceColor1;
-
-    // Triggering event broadcasting it is the given color's move!
+    
+    // Broadcasting to all listeners the turn/winner.
     for (ModelFeatures f : this.listeners) {
-      f.itsTheMoveOf(this.currentPieceColor);
+      if (this.isGameOver()) {
+        f.itsGameOver(this.getWinner());
+      }
+      else {
+        f.itsTheMoveOf(this.currentPieceColor);
+      }
     }
   }
 
@@ -309,6 +333,6 @@ public class Model implements IModel {
   @Override
   public IModel copy() {
     return new Model(this.numRings, this.pieceColor1, this.pieceColor2,
-            this.currentPieceColor, new ArrayList<>(this.listeners), new HashMap<>(this.board));
+            this.currentPieceColor, new ArrayList<>(), new HashMap<>(this.board));
   }
 }

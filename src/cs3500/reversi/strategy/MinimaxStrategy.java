@@ -31,7 +31,7 @@ public class MinimaxStrategy implements ReversiStrategy {
   @Override
   public List<AxialPosn> chooseMove(List<AxialPosn> possibleMoves, IROModel model) {
     this.initializeColors(model);
-    Map<AxialPosn, Integer> moves = doMinimax((IModel) model);
+    Map<AxialPosn, Integer> moves = this.doMinimax(model);
     return new ArrayList<>(moves.keySet());
   }
 
@@ -44,7 +44,7 @@ public class MinimaxStrategy implements ReversiStrategy {
   }
 
   // Performs the Minimax algorithm to evaluate and choose the best move for the current player.
-  private Map<AxialPosn, Integer> doMinimax(IModel myTurnModel) {
+  private Map<AxialPosn, Integer> doMinimax(IROModel myTurnModel) {
     if (myTurnModel.isGameOver()) {
       throw new IllegalStateException("Game is over, move cannot be chosen.");
     }
@@ -69,7 +69,7 @@ public class MinimaxStrategy implements ReversiStrategy {
 
   // Maximizes the opponent's move by considering different opponent move options based on the
   // best composite strategy we have implemented (GoCorner, AvoidEdges, and then CaptureMost).
-  private Integer maximizeForOpponent(IModel oppTurnModel) {
+  private Integer maximizeForOpponent(IROModel oppTurnModel) {
     if (oppTurnModel.isGameOver()) {
       throw new IllegalStateException("Game is over, move cannot be chosen.");
     }
@@ -77,7 +77,7 @@ public class MinimaxStrategy implements ReversiStrategy {
     Map<AxialPosn, Integer> result = new HashMap<>();
 
     List<AxialPosn> opponentMoves = this.opponentStrategy.chooseMove(new ArrayList<>(),
-            oppTurnModel.getReadOnlyModel());
+            oppTurnModel);
 
     if (opponentMoves.isEmpty()) {
       return Integer.MIN_VALUE / 2;

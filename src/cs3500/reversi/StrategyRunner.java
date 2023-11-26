@@ -33,7 +33,6 @@ public class StrategyRunner {
 
     while (!model.isGameOver()) {
       count++;
-      System.out.println("move " + count);
       List<AxialPosn> moves;
       moves = new MinimaxStrategyDepth(new AndStrategy(
               new GoCornerStrategy(),

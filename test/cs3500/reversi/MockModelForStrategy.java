@@ -71,7 +71,11 @@ public class MockModelForStrategy implements IModel {
     this.log.append("Calling getReadOnlyModel.\n");
     return this;
   }
-
+  
+  @Override
+  public void startGame() {
+  }
+  
   @Override
   public IModel copy() {
     this.log.append("Calling copy.\n");

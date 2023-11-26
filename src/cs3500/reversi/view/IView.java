@@ -33,7 +33,7 @@ public interface IView {
   void promptMessage(String message);
   
   /**
-   * Prompts theis view
+   * Tells the view whose turn it is.
    */
   void itsYourMove(PieceColor pieceColor);
 }

@@ -5,6 +5,8 @@ import cs3500.reversi.view.IView;
 import cs3500.reversi.player.Player;
 import cs3500.reversi.view.PlayerFeatures;
 
+import java.util.Optional;
+
 public class Controller implements IController, PlayerFeatures, ModelFeatures {
   private final IModel model;
   private final Player player;
@@ -24,6 +26,7 @@ public class Controller implements IController, PlayerFeatures, ModelFeatures {
   public void pass(PieceColor pieceColor) {
     try {
       this.model.pass(pieceColor);
+      this.view.refresh();
     } catch (IllegalStateException e) {
       this.view.promptMessage(e.getMessage());
     }
@@ -33,6 +36,7 @@ public class Controller implements IController, PlayerFeatures, ModelFeatures {
   public void move(PieceColor pieceColor, AxialPosn axialPosn) {
     try {
       this.model.playMove(pieceColor, axialPosn);
+      this.view.refresh();
     } catch (IllegalStateException | IllegalArgumentException e) {
       this.view.promptMessage(e.getMessage());
     }
@@ -40,7 +44,18 @@ public class Controller implements IController, PlayerFeatures, ModelFeatures {
   
   @Override
   public void itsTheMoveOf(PieceColor pieceColor) {
-    this.player.itsYourMove(pieceColor);
     this.view.itsYourMove(pieceColor);
+    this.player.itsYourMove(pieceColor);
+  }
+  
+  @Override
+  public void itsGameOver(Optional<PieceColor> winner) {
+    System.out.println("Here");
+    if (winner.isEmpty()) {
+      this.view.promptMessage("STALEMATE!");
+    }
+    else {
+      this.view.promptMessage(winner.get() + " WON!");
+    }
   }
 }

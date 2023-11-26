@@ -25,6 +25,7 @@ import java.util.Optional;
 import javax.swing.JPanel;
 import javax.swing.event.MouseInputAdapter;
 
+import cs3500.reversi.Reversi;
 import cs3500.reversi.model.AxialPosn;
 import cs3500.reversi.model.IROModel;
 import cs3500.reversi.model.ModelFeatures;
@@ -37,8 +38,8 @@ import cs3500.reversi.model.PieceColor;
  */
 class ReversiPanel extends JPanel {
   private static final int PADDING = 10;
-  private static final int HEIGHT = 800;
-  private static final int WIDTH = 800;
+  private static final int HEIGHT = 700;
+  private static final int WIDTH = 700;
 
   private final IROModel model;
   private final int numRings;
@@ -46,6 +47,7 @@ class ReversiPanel extends JPanel {
   private final PieceColor pieceColor;
   private final double hexagonRadius;
   private Optional<AxialPosn> highlightedHex = Optional.empty();
+  private boolean isMyMove = false;
 
   /**
    * Constructs a ReversiPanel with the specified Reversi game model and player color.
@@ -130,16 +132,23 @@ class ReversiPanel extends JPanel {
   }
   
   private void displayTurn(Graphics2D g2d) {
-    System.out.println("here");
+    if (!this.isMyMove) {
+      return;
+    }
     Color oldColor = g2d.getColor();
     AffineTransform oldTransform = g2d.getTransform();
     
     g2d.setColor(Color.WHITE);
-//
-//      AffineTransform verticalFlip = AffineTransform.getScaleInstance(1, -1);
-//      g2d.transform(verticalFlip);
-  
-    g2d.drawString("It is your turn!", ReversiPanel.WIDTH / 2, ReversiPanel.HEIGHT / 2);
+    
+    int fontSize = 24;
+    g2d.setFont(g2d.getFont().deriveFont((float) fontSize));
+    
+    AffineTransform verticalFlip = AffineTransform.getScaleInstance(1, -1);
+    g2d.transform(verticalFlip);
+    
+    int textWidth = g2d.getFontMetrics().stringWidth(String.valueOf("It is your turn!")) / 2;
+    
+    g2d.drawString("It is your turn!", -textWidth, -ReversiPanel.HEIGHT / 2 + 40);
     
     g2d.setColor(oldColor);
     g2d.setTransform(oldTransform);
@@ -264,7 +273,8 @@ class ReversiPanel extends JPanel {
   }
   
   public void itsYourMove(PieceColor pieceColor) {
-    // TODO
+    this.isMyMove = this.pieceColor.equals(pieceColor);
+    this.repaint();
   }
   
   // Represents the KeyboardEventListener that parses input from a keyboard stroke and performs
@@ -277,6 +287,7 @@ class ReversiPanel extends JPanel {
         for (PlayerFeatures l : ReversiPanel.this.featuresListeners) {
           l.pass(ReversiPanel.this.pieceColor);
         }
+        ReversiPanel.this.highlightedHex = Optional.empty();
       }
       if (e.getKeyCode() == KeyEvent.VK_ENTER && ReversiPanel.this.highlightedHex.isPresent()) {
         System.out.println(ReversiPanel.this.pieceColor + " wants to play a move at "
@@ -284,6 +295,7 @@ class ReversiPanel extends JPanel {
         for (PlayerFeatures l : ReversiPanel.this.featuresListeners) {
           l.move(ReversiPanel.this.pieceColor, ReversiPanel.this.highlightedHex.get());
         }
+        ReversiPanel.this.highlightedHex = Optional.empty();
       }
     }
   }

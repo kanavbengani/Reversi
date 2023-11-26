@@ -28,4 +28,9 @@ public interface IModel extends IROModel {
    * @return A read-only version of this cs3500.reversi.model
    */
   IROModel getReadOnlyModel();
+  
+  /**
+   * Starts the game of Reversi, allowing the set-up of the game to be separated from the playthrough.
+   */
+  void startGame();
 }

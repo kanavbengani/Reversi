@@ -9,12 +9,7 @@ import java.util.List;
 
 
 public class HumanPlayer implements Player {
-  private final IModel model;
   private final List<PlayerFeatures> listeners = new ArrayList<>();
-  
-  public HumanPlayer(IModel model) {
-    this.model = model;
-  }
   
   @Override
   public void itsYourMove(PieceColor pieceColor) {}
