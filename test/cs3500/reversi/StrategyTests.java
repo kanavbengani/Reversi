@@ -52,6 +52,9 @@ public class StrategyTests {
     this.minimaxStrategy = new MinimaxStrategyDepth(new AndStrategy(
             new GoCornerStrategy(),
             new AndStrategy(new AvoidEdgesStrategy(), new CaptureMostStrategy())), 5);
+    this.fullModel.addListener(new MockModelListener(new StringBuilder()));
+    this.fullModel.addListener(new MockModelListener(new StringBuilder()));
+    this.fullModel.startGame();
   }
 
   // CaptureMostStrategy
@@ -272,6 +275,9 @@ public class StrategyTests {
     board.put(new AxialPosn(-2, 2), Optional.of(PieceColor.BLACK));
 
     this.fullModel = new Model(board);
+    this.fullModel.addListener(new MockModelListener(new StringBuilder()));
+    this.fullModel.addListener(new MockModelListener(new StringBuilder()));
+    this.fullModel.startGame();
 
     Assert.assertEquals(this.minimaxStrategy.chooseMove(new ArrayList<>(), this.fullModel),
             new ArrayList<>(List.of(
@@ -287,6 +293,9 @@ public class StrategyTests {
     board.put(new AxialPosn(0, 1), Optional.of(PieceColor.WHITE));
     board.put(new AxialPosn(0, 2), Optional.of(PieceColor.WHITE));
     this.fullModel = new Model(board);
+    this.fullModel.addListener(new MockModelListener(new StringBuilder()));
+    this.fullModel.addListener(new MockModelListener(new StringBuilder()));
+    this.fullModel.startGame();
 
     Assert.assertEquals(this.minimaxStrategy.chooseMove(new ArrayList<>(), this.fullModel),
             new ArrayList<>());
@@ -299,6 +308,10 @@ public class StrategyTests {
     board.put(new AxialPosn(0, 1), Optional.of(PieceColor.WHITE));
     board.put(new AxialPosn(0, 2), Optional.of(PieceColor.WHITE));
     this.fullModel = new Model(board);
+    this.fullModel.addListener(new MockModelListener(new StringBuilder()));
+    this.fullModel.addListener(new MockModelListener(new StringBuilder()));
+    this.fullModel.startGame();
+    
     this.fullModel.pass(PieceColor.BLACK);
 
     Assert.assertEquals(this.minimaxStrategy.chooseMove(new ArrayList<>(), this.fullModel),
@@ -314,9 +327,12 @@ public class StrategyTests {
     board.put(new AxialPosn(-2, 1), Optional.of(PieceColor.WHITE));
     board.put(new AxialPosn(-2, 2), Optional.of(PieceColor.BLACK));
     this.fullModel = new Model(board);
+    this.fullModel.addListener(new MockModelListener(new StringBuilder()));
+    this.fullModel.addListener(new MockModelListener(new StringBuilder()));
+    this.fullModel.startGame();
 
     Assert.assertEquals(this.minimaxStrategy.chooseMove(new ArrayList<>(), this.fullModel),
-            new ArrayList<>(List.of(new AxialPosn(0, -1), new AxialPosn(-2, 0))));
+            new ArrayList<>(List.of(new AxialPosn(-2, 0), new AxialPosn(0, -1))));
   }
 
   @Test
@@ -333,6 +349,9 @@ public class StrategyTests {
     board.put(new AxialPosn(-2, 2), Optional.of(PieceColor.BLACK));
 
     this.fullModel = new Model(board);
+    this.fullModel.addListener(new MockModelListener(new StringBuilder()));
+    this.fullModel.addListener(new MockModelListener(new StringBuilder()));
+    this.fullModel.startGame();
 
     Assert.assertEquals(this.minimaxStrategy.chooseMove(new ArrayList<>(), this.fullModel),
             new ArrayList<>(List.of(

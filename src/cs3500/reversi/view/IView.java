@@ -35,5 +35,5 @@ public interface IView {
   /**
    * Tells the view whose turn it is.
    */
-  void itsYourMove(PieceColor pieceColor);
+  void itsYourTurn(PieceColor pieceColor);
 }

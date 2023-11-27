@@ -23,8 +23,8 @@ public class AIPlayer implements Player {
   }
   
   @Override
-  public void itsYourMove(PieceColor pieceColor) {
-    if (!this.color.equals(pieceColor)) {
+  public void playAMove(PieceColor pieceColor) {
+    if (!this.color.equals(pieceColor) || this.model.isGameOver()) {
       return;
     }
     

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -20,8 +19,8 @@ public class Model implements IModel {
   private final int numRings;
   private final List<ModelFeatures> listeners;
 
-  // CLASS INVARIANT: The number of key-value pairs in `board` is equal to `3 * numRings *
-  // (numRings + 1) + 1`.
+//   CLASS INVARIANT: The number of key-value pairs in `board` is equal to `3 * numRings *
+//   (numRings + 1) + 1`.
 
   /**
    * Constructs a new Reversi game board with a specified number of rings.
@@ -102,10 +101,12 @@ public class Model implements IModel {
   }
 
   // Returns the number of rings for the board passed in.
-  // TODO: should throw exception if rings is not int?
-  private int validateBoard(Map<AxialPosn, Optional<PieceColor>> board) {
+  private int validateBoard(Map<AxialPosn, Optional<PieceColor>> board) throws IllegalArgumentException {
     int posnCount = board.keySet().size();
     double numRings = (-3 + Math.sqrt(-3 + 12 * posnCount)) / 6;
+    if (numRings % 1 != 0) {
+      throw new IllegalArgumentException("Illegal board passed in.");
+    }
     return (int) numRings;
   }
   
@@ -113,12 +114,19 @@ public class Model implements IModel {
   public void startGame() throws IllegalStateException {
     if (this.listeners.size() == 2) {
       this.currentPieceColor = this.pieceColor1;
-      for (ModelFeatures f : this.listeners) {
-        if (this.isGameOver()) {
+      if (this.isGameOver()) {
+        // Notifying that the game is over.
+        for (ModelFeatures f : this.listeners) {
           f.itsGameOver(this.getWinner());
         }
-        else {
-          f.itsTheMoveOf(this.currentPieceColor);
+      } else {
+        // Notifying whose move it is.
+        for (ModelFeatures f : this.listeners) {
+          f.notifyTurn(this.currentPieceColor);
+        }
+        // Asking to play a move.
+        for (ModelFeatures f : this.listeners) {
+          f.playAMove(this.currentPieceColor);
         }
       }
     }
@@ -261,7 +269,7 @@ public class Model implements IModel {
   public void addListener(ModelFeatures modelFeatures) {
     this.listeners.add(modelFeatures);
     for (ModelFeatures f : this.listeners) {
-      f.itsTheMoveOf(this.currentPieceColor);
+      f.notifyTurn(this.currentPieceColor);
     }
   }
 
@@ -301,7 +309,7 @@ public class Model implements IModel {
     this.switchTurn();
   }
 
-  // switches turn to a different color and triggers event saying it is the current piece's move.
+  // Switches turn to a different color and triggers event saying it is the current piece's move.
   private void switchTurn() {
     // Switching current piece color.
     this.currentPieceColor =
@@ -309,13 +317,19 @@ public class Model implements IModel {
                     ? pieceColor2
                     : pieceColor1;
     
-    // Broadcasting to all listeners the turn/winner.
-    for (ModelFeatures f : this.listeners) {
-      if (this.isGameOver()) {
-        f.itsGameOver(this.getWinner());
+    if (this.isGameOver()) {
+      // Notifying that the game is over.
+      for (ModelFeatures f : this.listeners) {
+          f.itsGameOver(this.getWinner());
       }
-      else {
-        f.itsTheMoveOf(this.currentPieceColor);
+    } else {
+      // Notifying whose move it is.
+      for (ModelFeatures f : this.listeners) {
+        f.notifyTurn(this.currentPieceColor);
+      }
+      // Asking to play a move.
+      for (ModelFeatures f : this.listeners) {
+        f.playAMove(this.currentPieceColor);
       }
     }
   }

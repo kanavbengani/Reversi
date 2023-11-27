@@ -53,7 +53,7 @@ public class View extends JFrame implements IView {
   }
   
   @Override
-  public void itsYourMove(PieceColor pieceColor) {
+  public void itsYourTurn(PieceColor pieceColor) {
     this.panel.itsYourMove(pieceColor);
   }
 }

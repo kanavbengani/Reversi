@@ -30,6 +30,9 @@ public class ReversiModelTests {
   public void initTest() {
     this.model = new Model(this.numRings);
     this.roModel = this.model.getReadOnlyModel();
+    this.model.addListener(new MockModelListener(new StringBuilder()));
+    this.model.addListener(new MockModelListener(new StringBuilder()));
+    this.model.startGame();
   }
 
   // IROModel Tests (Observation Methods)
@@ -289,6 +292,9 @@ public class ReversiModelTests {
     board.put(new AxialPosn(1, 1), Optional.of(PieceColor.BLACK));
 
     this.model = new Model(board);
+    this.model.addListener(new MockModelListener(new StringBuilder()));
+    this.model.addListener(new MockModelListener(new StringBuilder()));
+    this.model.startGame();
 
     // Check to see if all pieces are switched in color
     this.model.playMove(PieceColor.BLACK, new AxialPosn(1, -2));
@@ -353,7 +359,8 @@ public class ReversiModelTests {
     this.model.addListener(new MockModelListener(log));
 
     this.model.pass(PieceColor.BLACK);
-    Assert.assertEquals(log.toString(), "it's BLACK's move!\nit's WHITE's move!\n");
+    Assert.assertEquals(log.toString(), "it's BLACK's move!\nit's WHITE's move!\n" +
+        "WHITE needs to play a move!");
 
     this.model.pass(PieceColor.WHITE);
     Assert.assertEquals(log.toString(), "it's BLACK's move!\nit's WHITE's move!\nit's BLACK's "
@@ -377,15 +384,16 @@ public class ReversiModelTests {
 
     this.model.pass(PieceColor.BLACK);
     Assert.assertEquals(log.toString(), "it's BLACK's move!\nit's BLACK's move!\nit's WHITE's "
-            + "move!\n");
+            + "move!\nWHITE needs to play a move!\n");
     Assert.assertEquals(log2.toString(), "it's BLACK's move!\nit's WHITE's "
-            + "move!\n");
+            + "move!\nWHITE needs to play a move!\n");
 
     this.model.pass(PieceColor.WHITE);
-    Assert.assertEquals(log.toString(), "it's BLACK's move!\nit's BLACK's move!\nit's WHITE's "
-            + "move!\nit's BLACK's move!\n");
-    Assert.assertEquals(log2.toString(), "it's BLACK's move!\nit's WHITE's move!\nit's BLACK's "
-            + "move!\n");
+    Assert.assertEquals(log.toString(), "it's BLACK's move!\nit's BLACK's move!\n" +
+        "it's WHITE's move!\nWHITE needs to play a move!\nit's BLACK's move!\n" +
+        "BLACK needs to play a move!\n");
+    Assert.assertEquals(log2.toString(), "it's BLACK's move!\nit's WHITE's move!\n" +
+        "WHITE needs to play a move!\nit's BLACK's move!\nBLACK needs to play a move!\n");
   }
 
   // AxialPosn Tests
@@ -419,10 +427,10 @@ public class ReversiModelTests {
     ModelFeatures m1 = new MockModelListener(log);
     this.model.addListener(new MockModelListener(log));
 
-    m1.itsTheMoveOf(PieceColor.BLACK);
+    m1.notifyTurn(PieceColor.BLACK);
     Assert.assertEquals(log.toString(), "it's BLACK's move!\nit's BLACK's move!\n");
 
-    m1.itsTheMoveOf(PieceColor.WHITE);
+    m1.notifyTurn(PieceColor.WHITE);
     Assert.assertEquals(log.toString(), "it's BLACK's move!\nit's BLACK's move!\nit's WHITE's "
             + "move!\n");
   }

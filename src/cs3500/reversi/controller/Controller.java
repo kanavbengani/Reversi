@@ -43,19 +43,23 @@ public class Controller implements IController, PlayerFeatures, ModelFeatures {
   }
   
   @Override
-  public void itsTheMoveOf(PieceColor pieceColor) {
-    this.view.itsYourMove(pieceColor);
-    this.player.itsYourMove(pieceColor);
+  public void notifyTurn(PieceColor pieceColor) {
+    this.view.itsYourTurn(pieceColor);
+  }
+  
+  @Override
+  public void playAMove(PieceColor pieceColor) {
+    this.player.playAMove(pieceColor);
   }
   
   @Override
   public void itsGameOver(Optional<PieceColor> winner) {
+    System.out.println("Winner: " + winner);
+    this.view.refresh();
     if (winner.isEmpty()) {
       this.view.promptMessage("STALEMATE!");
     }
     else {
-      // TODO: this should not be called endlessly at the end of the game.
-      // Especially, during AIvAI.
       this.view.promptMessage(winner.get() + " WON!");
     }
   }

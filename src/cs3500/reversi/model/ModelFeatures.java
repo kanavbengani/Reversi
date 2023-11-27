@@ -12,7 +12,14 @@ public interface ModelFeatures {
    *
    * @param pieceColor The color of the piece whose turn it is to make a move.
    */
-  void itsTheMoveOf(PieceColor pieceColor);
+  void notifyTurn(PieceColor pieceColor);
+  
+  /**
+   * This method is called when it is the move of the player passed in.
+   *
+   * @param pieceColor The color of the piece whose turn it is to play a move.
+   */
+  void playAMove(PieceColor pieceColor);
   
   /**
    * This method is called when the game is over.

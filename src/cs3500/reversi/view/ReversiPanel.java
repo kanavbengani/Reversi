@@ -132,7 +132,7 @@ class ReversiPanel extends JPanel {
   }
   
   private void displayTurn(Graphics2D g2d) {
-    if (!this.isMyMove) {
+    if (!this.isMyMove || this.model.isGameOver()) {
       return;
     }
     Color oldColor = g2d.getColor();
@@ -285,6 +285,8 @@ class ReversiPanel extends JPanel {
       if (e.getKeyCode() == KeyEvent.VK_P) {
         System.out.println(ReversiPanel.this.pieceColor + " wants to pass.");
         for (PlayerFeatures l : ReversiPanel.this.featuresListeners) {
+          ReversiPanel.this.highlightedHex = Optional.empty();
+          ReversiPanel.this.repaint();
           l.pass(ReversiPanel.this.pieceColor);
         }
         ReversiPanel.this.highlightedHex = Optional.empty();
@@ -293,7 +295,10 @@ class ReversiPanel extends JPanel {
         System.out.println(ReversiPanel.this.pieceColor + " wants to play a move at "
                 + ReversiPanel.this.highlightedHex.get() + ".");
         for (PlayerFeatures l : ReversiPanel.this.featuresListeners) {
-          l.move(ReversiPanel.this.pieceColor, ReversiPanel.this.highlightedHex.get());
+          AxialPosn tempHex = ReversiPanel.this.highlightedHex.get();
+          ReversiPanel.this.highlightedHex = Optional.empty();
+          ReversiPanel.this.repaint();
+          l.move(ReversiPanel.this.pieceColor, tempHex);
         }
         ReversiPanel.this.highlightedHex = Optional.empty();
       }

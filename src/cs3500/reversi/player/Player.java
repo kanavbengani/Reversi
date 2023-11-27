@@ -4,6 +4,6 @@ import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.view.PlayerFeatures;
 
 public interface Player {
-    void itsYourMove(PieceColor pieceColor);
+    void playAMove(PieceColor pieceColor);
     void addListener(PlayerFeatures playerFeatures);
 }

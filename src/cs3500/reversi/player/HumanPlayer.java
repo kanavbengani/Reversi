@@ -12,7 +12,7 @@ public class HumanPlayer implements Player {
   private final List<PlayerFeatures> listeners = new ArrayList<>();
   
   @Override
-  public void itsYourMove(PieceColor pieceColor) {}
+  public void playAMove(PieceColor pieceColor) {}
   
   @Override
   public void addListener(PlayerFeatures features) {
