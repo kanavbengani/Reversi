@@ -1,42 +1,40 @@
 package cs3500.reversi.player;
 
 import cs3500.reversi.model.AxialPosn;
-import cs3500.reversi.model.IModel;
-import cs3500.reversi.model.PieceColor;
+import cs3500.reversi.model.IROModel;
 import cs3500.reversi.strategy.ReversiStrategy;
 import cs3500.reversi.view.PlayerFeatures;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AIPlayer implements Player {
-  
+public final class AIPlayer implements Player {
   private final ReversiStrategy strategy;
-  private final PieceColor color;
-  private final IModel model;
-  private final List<PlayerFeatures> listeners = new ArrayList<>();
+  private final IROModel model;
+  private final List<PlayerFeatures> listeners;
   
-  public AIPlayer(IModel model, ReversiStrategy strategy, PieceColor color) {
+  public AIPlayer(IROModel model, ReversiStrategy strategy) {
     this.model = model;
     this.strategy = strategy;
-    this.color = color;
+    this.listeners = new ArrayList<>();
   }
   
   @Override
-  public void playAMove(PieceColor pieceColor) {
-    if (!this.color.equals(pieceColor) || this.model.isGameOver()) {
+  public void playAMove() {
+    if (this.model.isGameOver()) {
       return;
     }
     
-    List<AxialPosn> moves = this.strategy.chooseMove(new ArrayList<>(), this.model.getReadOnlyModel());
+    List<AxialPosn> moves = this.strategy.chooseMove(new ArrayList<>(), this.model);
     
     if (!moves.isEmpty()) {
       for (PlayerFeatures f : this.listeners) {
-        f.move(this.color, moves.get(0));
+        f.move(moves.get(0));
+        
       }
     } else {
       for (PlayerFeatures f : this.listeners) {
-        f.pass(this.color);
+        f.pass();
       }
     }
   }

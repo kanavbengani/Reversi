@@ -229,9 +229,9 @@ public class StrategyTests {
   public void testMinimaxStrategyReturnsAllPossibleMovesInitiallyInCorrectOrder() {
     Assert.assertEquals(this.minimaxStrategy.chooseMove(new ArrayList<>(), this.fullModel),
             new ArrayList<>(List.of(
-                    new AxialPosn(1, -2), new AxialPosn(-1, -1),
-                    new AxialPosn(2, -1), new AxialPosn(-2, 1),
-                    new AxialPosn(1, 1), new AxialPosn(-1, 2))));
+                    new AxialPosn(-1, -1), new AxialPosn(1, 1),
+                    new AxialPosn(1, -2), new AxialPosn(2, -1),
+                    new AxialPosn(-2, 1), new AxialPosn(-1, 2))));
   }
 
   @Test

@@ -18,9 +18,10 @@ public class Model implements IModel {
   private final Map<AxialPosn, Optional<PieceColor>> board;
   private final int numRings;
   private final List<ModelFeatures> listeners;
+  private int passCount;
 
-//   CLASS INVARIANT: The number of key-value pairs in `board` is equal to `3 * numRings *
-//   (numRings + 1) + 1`.
+  // CLASS INVARIANT: The number of key-value pairs in `board` is equal to `3 * numRings *
+  // (numRings + 1) + 1`.
 
   /**
    * Constructs a new Reversi game board with a specified number of rings.
@@ -32,6 +33,7 @@ public class Model implements IModel {
     this.pieceColor1 = PieceColor.BLACK;
     this.pieceColor2 = PieceColor.WHITE;
     this.currentPieceColor = null;
+    this.passCount = 0;
     this.board = new HashMap<>();
     if (numRings < 1) {
       throw new IllegalArgumentException("Number of rings must be at least 1.");
@@ -43,11 +45,12 @@ public class Model implements IModel {
 
   // For copy
   private Model(int numRings, PieceColor pieceColor1, PieceColor pieceColor2,
-                PieceColor currentPieceColor, List<ModelFeatures> listeners,
+                PieceColor currentPieceColor, int passCount, List<ModelFeatures> listeners,
                 Map<AxialPosn, Optional<PieceColor>> board) {
     this.pieceColor1 = pieceColor1;
     this.pieceColor2 = pieceColor2;
     this.currentPieceColor = currentPieceColor;
+    this.passCount = passCount;
     this.board = board;
     this.numRings = numRings;
     this.listeners = listeners;
@@ -63,6 +66,7 @@ public class Model implements IModel {
     this.pieceColor1 = PieceColor.BLACK;
     this.pieceColor2 = PieceColor.WHITE;
     this.currentPieceColor = null;
+    this.passCount = 0;
     this.numRings = this.validateBoard(board);
     this.board = board;
     this.listeners = new ArrayList<>();
@@ -114,21 +118,7 @@ public class Model implements IModel {
   public void startGame() throws IllegalStateException {
     if (this.listeners.size() == 2) {
       this.currentPieceColor = this.pieceColor1;
-      if (this.isGameOver()) {
-        // Notifying that the game is over.
-        for (ModelFeatures f : this.listeners) {
-          f.itsGameOver(this.getWinner());
-        }
-      } else {
-        // Notifying whose move it is.
-        for (ModelFeatures f : this.listeners) {
-          f.notifyTurn(this.currentPieceColor);
-        }
-        // Asking to play a move.
-        for (ModelFeatures f : this.listeners) {
-          f.playAMove(this.currentPieceColor);
-        }
-      }
+      this.notifyListeners();
     }
     else {
       throw new IllegalStateException("There has to be two players in this game.");
@@ -207,7 +197,7 @@ public class Model implements IModel {
 
   @Override
   public boolean isGameOver() {
-    return !(this.anyLegalMoves(this.pieceColor1) || this.anyLegalMoves(this.pieceColor2));
+    return !(this.anyLegalMoves(this.pieceColor1) || this.anyLegalMoves(this.pieceColor2)) || passCount == 2;
   }
 
   @Override
@@ -292,6 +282,7 @@ public class Model implements IModel {
       this.board.put(tempAp, Optional.of(pc));
     }
     
+    this.passCount = 0;
     this.switchTurn();
   }
 
@@ -306,6 +297,8 @@ public class Model implements IModel {
       throw new IllegalStateException("Cannot pass when its not your turn.");
     }
     
+    passCount += 1;
+    
     this.switchTurn();
   }
 
@@ -317,6 +310,10 @@ public class Model implements IModel {
                     ? pieceColor2
                     : pieceColor1;
     
+    this.notifyListeners();
+  }
+  
+  private void notifyListeners() {
     if (this.isGameOver()) {
       // Notifying that the game is over.
       for (ModelFeatures f : this.listeners) {
@@ -333,7 +330,7 @@ public class Model implements IModel {
       }
     }
   }
-
+  
   @Override
   public IROModel getReadOnlyModel() {
     return this;
@@ -347,6 +344,6 @@ public class Model implements IModel {
   @Override
   public IModel copy() {
     return new Model(this.numRings, this.pieceColor1, this.pieceColor2,
-            this.currentPieceColor, new ArrayList<>(), new HashMap<>(this.board));
+            this.currentPieceColor, this.passCount, new ArrayList<>(), new HashMap<>(this.board));
   }
 }

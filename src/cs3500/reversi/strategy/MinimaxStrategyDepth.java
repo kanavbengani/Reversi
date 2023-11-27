@@ -33,7 +33,7 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
    */
   public MinimaxStrategyDepth(ReversiStrategy opponent, int depth) {
     if (depth < 1) {
-      throw new IllegalArgumentException("depth has to be at least 1.");
+      throw new IllegalArgumentException("Depth has to be at least 1.");
     }
     this.opponentStrategy = Objects.requireNonNull(opponent);
     this.initialDepth = depth;
@@ -44,9 +44,6 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
     // TODO: Add passing as a possible move.
     //       Keep in mind though during AI vs. AI,
     //       what if they keep passing because that is the optimal move?
-    
-    // TODO: Change Minimax to have it where opponent strategy is used,
-    //       rather than all valid moves of the opponent.
     this.initializeColors(model);
     Map<AxialPosn, Integer> moves = this.doMinimax(model, initialDepth);
     return new ArrayList<>(moves.keySet());
@@ -79,68 +76,38 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
     return result;
   }
 
-  // Executes the base case moves with depth = 1.
-  private Map<AxialPosn, Integer> doBaseCase(IROModel model) {
-    Map<AxialPosn, Integer> result = new HashMap<>();
-    for (AxialPosn move : model.getAllPosn()) {
-      if (model.isMoveValid(model.getTurn(), move)) {
-        IModel copyModel = model.copy();
-        copyModel.playMove(model.getTurn(), move);
-        if (copyModel.isGameOver()) {
-          if (copyModel.getWinner().isEmpty()) { // Stalemate
-            result.put(move, 0);
-          }
-          else {
-            if (copyModel.getWinner().get().equals(this.myColor)) { // We won.
-              result.put(move, Integer.MIN_VALUE);
-            } else { // Opponent won.
-              result.put(move, Integer.MAX_VALUE);
-            }
-          }
-        } else {
-          int maximizedOpponentMove = this.baseCase(copyModel);
-          result.put(move, maximizedOpponentMove);
-        }
-      }
-    }
-    if (model.getTurn().equals(this.myColor)) {
-      result = this.sortAscending(result, true);
-    } else {
-      result = this.sortAscending(result, false);
-    }
-    return result;
-  }
-
   // Executes the opponent's perspective, hence maximizing each of their moves.
   private Map<AxialPosn, Integer> doOpponentPerspective(IROModel model, int depth) {
     Map<AxialPosn, Integer> result = new HashMap<>();
-    for (AxialPosn move : model.getAllPosn()) {
-      if (model.isMoveValid(this.opponentColor, move)) {
-        IModel copyModel = model.copy();
-        copyModel.playMove(this.opponentColor, move);
-        if (copyModel.isGameOver()) {
-          if (copyModel.getWinner().isEmpty()) { // Stalemate
-            result.put(move, 0);
-          }
-          else {
-            if (copyModel.getWinner().get().equals(this.myColor)) { // We won.
-              result.put(move, Integer.MIN_VALUE);
-            } else { // Opponent won.
-              result.put(move, Integer.MAX_VALUE);
-            }
-          }
-        } else {
-          Collection<Integer> c = this.sortAscending(
-                  this.doMinimax(copyModel, depth - 1), true).values();
-          int maximizedOpponentMove;
-          if (c.isEmpty()) {
-            maximizedOpponentMove = Integer.MAX_VALUE / 2;
-          } else {
-            maximizedOpponentMove = Collections.max(c);
-          }
-          result.put(move, maximizedOpponentMove);
+    AxialPosn move;
+    try {
+      move = this.opponentStrategy.chooseMove(new ArrayList<>(), model).get(0);
+    } catch (IndexOutOfBoundsException ib) {
+      return new HashMap<>();
+    }
+    IModel copyModel = model.copy();
+    copyModel.playMove(this.opponentColor, move);
+    if (copyModel.isGameOver()) {
+      if (copyModel.getWinner().isEmpty()) { // Stalemate
+        result.put(move, 0);
+      }
+      else {
+        if (copyModel.getWinner().get().equals(this.myColor)) { // We won.
+          result.put(move, Integer.MIN_VALUE);
+        } else { // Opponent won.
+          result.put(move, Integer.MAX_VALUE);
         }
       }
+    } else {
+      Collection<Integer> c = this.sortAscending(
+              this.doMinimax(copyModel, depth - 1), true).values();
+      int maximizedOpponentMove;
+      if (c.isEmpty()) {
+        maximizedOpponentMove = Integer.MAX_VALUE / 2;
+      } else {
+        maximizedOpponentMove = Collections.max(c);
+      }
+      result.put(move, maximizedOpponentMove);
     }
     result = this.sortAscending(result, false);
     return result;
@@ -173,12 +140,43 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
           } else {
             maximizedOpponentMove = Collections.min(c);
           }
-
           result.put(move, maximizedOpponentMove);
         }
       }
     }
     result = this.sortAscending(result, true);
+    return result;
+  }
+  
+  // Executes the base case moves with depth = 1.
+  private Map<AxialPosn, Integer> doBaseCase(IROModel model) {
+    Map<AxialPosn, Integer> result = new HashMap<>();
+    for (AxialPosn move : model.getAllPosn()) {
+      if (model.isMoveValid(model.getTurn(), move)) {
+        IModel copyModel = model.copy();
+        copyModel.playMove(model.getTurn(), move);
+        if (copyModel.isGameOver()) {
+          if (copyModel.getWinner().isEmpty()) { // Stalemate
+            result.put(move, 0);
+          }
+          else {
+            if (copyModel.getWinner().get().equals(this.myColor)) { // We won.
+              result.put(move, Integer.MIN_VALUE);
+            } else { // Opponent won.
+              result.put(move, Integer.MAX_VALUE);
+            }
+          }
+        } else {
+          int maximizedOpponentMove = this.baseCase(copyModel);
+          result.put(move, maximizedOpponentMove);
+        }
+      }
+    }
+    if (model.getTurn().equals(this.myColor)) {
+      result = this.sortAscending(result, true);
+    } else {
+      result = this.sortAscending(result, false);
+    }
     return result;
   }
 

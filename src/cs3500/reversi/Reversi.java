@@ -51,7 +51,7 @@ public final class Reversi {
       }
     }
     
-    IModel model = ReversiFactory.makeModel(gt1, gt1Depth, gt2, gt2Depth);
+    IModel model = ReversiFactory.makeModel(5, gt1, gt1Depth, gt2, gt2Depth);
     model.startGame();
   }
   

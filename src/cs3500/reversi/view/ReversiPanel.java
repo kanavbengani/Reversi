@@ -287,7 +287,7 @@ class ReversiPanel extends JPanel {
         for (PlayerFeatures l : ReversiPanel.this.featuresListeners) {
           ReversiPanel.this.highlightedHex = Optional.empty();
           ReversiPanel.this.repaint();
-          l.pass(ReversiPanel.this.pieceColor);
+          l.pass();
         }
         ReversiPanel.this.highlightedHex = Optional.empty();
       }
@@ -298,7 +298,7 @@ class ReversiPanel extends JPanel {
           AxialPosn tempHex = ReversiPanel.this.highlightedHex.get();
           ReversiPanel.this.highlightedHex = Optional.empty();
           ReversiPanel.this.repaint();
-          l.move(ReversiPanel.this.pieceColor, tempHex);
+          l.move(tempHex);
         }
         ReversiPanel.this.highlightedHex = Optional.empty();
       }

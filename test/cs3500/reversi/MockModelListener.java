@@ -23,7 +23,7 @@ class MockModelListener implements ModelFeatures {
 
   @Override
   public void notifyTurn(PieceColor pieceColor) {
-    this.log.append("it's ").append(pieceColor).append("'s move!\n");
+    this.log.append("It's ").append(pieceColor).append("'s move!\n");
   }
   
   @Override
@@ -34,7 +34,7 @@ class MockModelListener implements ModelFeatures {
   
   @Override
   public void itsGameOver(Optional<PieceColor> winner) {
-    this.log.append("it's game over! ")
-        .append(winner.map(pieceColor -> pieceColor + " WON!").orElse("Stalemate!"));
+    this.log.append("It's game over! ")
+        .append(winner.map(pieceColor -> pieceColor + " won!").orElse("Stalemate!\n"));
   }
 }

@@ -324,11 +324,12 @@ public class ReversiModelTests {
     this.model.addListener(new MockModelListener(log));
 
     this.model.playMove(PieceColor.BLACK, new AxialPosn(-1, -1));
-    Assert.assertEquals(log.toString(), "it's BLACK's move!\nit's WHITE's move!\n");
+    Assert.assertEquals(log.toString(), "It's BLACK's move!\nIt's WHITE's move!\n" +
+        "WHITE needs to play a move!\n");
 
     this.model.playMove(PieceColor.WHITE, new AxialPosn(1, 1));
-    Assert.assertEquals(log.toString(), "it's BLACK's move!\nit's WHITE's move!\nit's BLACK's "
-            + "move!\n");
+    Assert.assertEquals(log.toString(), "It's BLACK's move!\nIt's WHITE's move!\n" +
+        "WHITE needs to play a move!\nIt's BLACK's move!\nBLACK needs to play a move!\n");
   }
 
   // Pass
@@ -359,12 +360,12 @@ public class ReversiModelTests {
     this.model.addListener(new MockModelListener(log));
 
     this.model.pass(PieceColor.BLACK);
-    Assert.assertEquals(log.toString(), "it's BLACK's move!\nit's WHITE's move!\n" +
-        "WHITE needs to play a move!");
+    Assert.assertEquals(log.toString(), "It's BLACK's move!\nIt's WHITE's move!\n" +
+        "WHITE needs to play a move!\n");
 
     this.model.pass(PieceColor.WHITE);
-    Assert.assertEquals(log.toString(), "it's BLACK's move!\nit's WHITE's move!\nit's BLACK's "
-            + "move!\n");
+    Assert.assertEquals(log.toString(), "It's BLACK's move!\nIt's WHITE's move!\nWHITE needs to play a " +
+        "move!\nIt's game over! Stalemate!\n");
   }
 
   // GetReadOnlyModel
@@ -383,17 +384,16 @@ public class ReversiModelTests {
     this.model.addListener(new MockModelListener(log2));
 
     this.model.pass(PieceColor.BLACK);
-    Assert.assertEquals(log.toString(), "it's BLACK's move!\nit's BLACK's move!\nit's WHITE's "
+    Assert.assertEquals(log.toString(), "It's BLACK's move!\nIt's BLACK's move!\nIt's WHITE's "
             + "move!\nWHITE needs to play a move!\n");
-    Assert.assertEquals(log2.toString(), "it's BLACK's move!\nit's WHITE's "
+    Assert.assertEquals(log2.toString(), "It's BLACK's move!\nIt's WHITE's "
             + "move!\nWHITE needs to play a move!\n");
 
     this.model.pass(PieceColor.WHITE);
-    Assert.assertEquals(log.toString(), "it's BLACK's move!\nit's BLACK's move!\n" +
-        "it's WHITE's move!\nWHITE needs to play a move!\nit's BLACK's move!\n" +
-        "BLACK needs to play a move!\n");
-    Assert.assertEquals(log2.toString(), "it's BLACK's move!\nit's WHITE's move!\n" +
-        "WHITE needs to play a move!\nit's BLACK's move!\nBLACK needs to play a move!\n");
+    Assert.assertEquals(log.toString(), "It's BLACK's move!\nIt's BLACK's move!\n" +
+        "It's WHITE's move!\nWHITE needs to play a move!\nIt's game over! Stalemate!\n");
+    Assert.assertEquals(log2.toString(), "It's BLACK's move!\nIt's WHITE's move!\n" +
+        "WHITE needs to play a move!\nIt's game over! Stalemate!\n");
   }
 
   // AxialPosn Tests
@@ -428,10 +428,10 @@ public class ReversiModelTests {
     this.model.addListener(new MockModelListener(log));
 
     m1.notifyTurn(PieceColor.BLACK);
-    Assert.assertEquals(log.toString(), "it's BLACK's move!\nit's BLACK's move!\n");
+    Assert.assertEquals(log.toString(), "It's BLACK's move!\nIt's BLACK's move!\n");
 
     m1.notifyTurn(PieceColor.WHITE);
-    Assert.assertEquals(log.toString(), "it's BLACK's move!\nit's BLACK's move!\nit's WHITE's "
+    Assert.assertEquals(log.toString(), "It's BLACK's move!\nIt's BLACK's move!\nIt's WHITE's "
             + "move!\n");
   }
 

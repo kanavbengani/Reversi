@@ -10,16 +10,13 @@ import cs3500.reversi.model.PieceColor;
 public interface PlayerFeatures {
   /**
    * Notifies the listener that a player has chosen to pass their turn.
-   *
-   * @param pieceColor The color of the player passing the turn.
    */
-  void pass(PieceColor pieceColor);
+  void pass();
 
   /**
    * Notifies the listener that a player has made a move on the game board.
    *
-   * @param pieceColor The color of the player making the move.
    * @param axialPosn  The axial position on the game board where the move is made.
    */
-  void move(PieceColor pieceColor, AxialPosn axialPosn);
+  void move(AxialPosn axialPosn);
 }

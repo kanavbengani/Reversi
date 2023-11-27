@@ -18,23 +18,23 @@ public final class ReversiFactory {
     MINIMAX
   }
   
-  public static IModel makeModel(ReversiFactory.GameType gt1, int gt1Depth,
+  public static IModel makeModel(int numRings, ReversiFactory.GameType gt1, int gt1Depth,
                                  ReversiFactory.GameType gt2, int gt2Depth) {
-    IModel model = new Model(5);
+    IModel model = new Model(numRings);
     IView viewBlack = new View(model, PieceColor.BLACK);
     IView viewWhite = new View(model, PieceColor.WHITE);
     
-    Player player1 = ReversiFactory.getPlayer(gt1, gt1Depth, viewBlack, PieceColor.BLACK, model);
-    Player player2  = ReversiFactory.getPlayer(gt2, gt2Depth, viewWhite, PieceColor.WHITE, model);
+    Player player1 = ReversiFactory.getPlayer(gt1, gt1Depth, viewBlack, model);
+    Player player2  = ReversiFactory.getPlayer(gt2, gt2Depth, viewWhite, model);
     
-    new Controller(model, player1, viewBlack);
-    new Controller(model, player2, viewWhite);
+    new Controller(model, player1, viewBlack, PieceColor.BLACK);
+    new Controller(model, player2, viewWhite, PieceColor.WHITE);
     
     return model;
   }
   
   private static Player getPlayer(ReversiFactory.GameType gt, int gtDepth, IView view,
-                                  PieceColor color, IModel model) {
+                                  IModel model) {
     Player player;
     
     if (gtDepth != 0 && !gt.equals(ReversiFactory.GameType.MINIMAX)) {
@@ -50,18 +50,18 @@ public final class ReversiFactory {
         player = new HumanPlayer();
         break;
       case CAPTURE_MOST:
-        player = new AIPlayer(model, new CaptureMostStrategy(), color);
+        player = new AIPlayer(model, new CaptureMostStrategy());
         break;
       case AVOID_EDGES:
         player = new AIPlayer(model, new AndStrategy(
             new AvoidEdgesStrategy(),
             new CaptureMostStrategy()
-        ), color);
+        ));
         break;
       case GO_CORNER:
         player = new AIPlayer(model, new AndStrategy(new GoCornerStrategy(), new AndStrategy(
                 new AvoidEdgesStrategy(),
-                new CaptureMostStrategy())), color);
+                new CaptureMostStrategy())));
         break;
       case MINIMAX:
         if (gtDepth <= 0) {
@@ -69,7 +69,7 @@ public final class ReversiFactory {
         }
         player = new AIPlayer(model, new MinimaxStrategyDepth(new AndStrategy(
             new GoCornerStrategy(), new AndStrategy(new AvoidEdgesStrategy(),
-            new CaptureMostStrategy())), gtDepth), color);
+            new CaptureMostStrategy())), gtDepth));
         break;
       default:
         throw new IllegalArgumentException("Invalid game type");
