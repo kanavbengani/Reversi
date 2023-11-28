@@ -1,6 +1,7 @@
 package cs3500.reversi.view;
 
 import cs3500.reversi.model.PieceColor;
+import cs3500.reversi.player.PlayerFeatures;
 
 /**
  * The interface represents a view for the game of Reversi. It provides methods
@@ -35,5 +36,5 @@ public interface IView {
   /**
    * Tells the view whose turn it is.
    */
-  void itsYourTurn(PieceColor pieceColor);
+  void itsTheTurnOf(PieceColor pieceColor);
 }

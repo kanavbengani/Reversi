@@ -44,7 +44,7 @@ public class StrategyTests {
     this.validPosn.put(new AxialPosn(1, 1), 1);
     this.numRings = 3;
 
-    this.mockModel = new MockModelForStrategy(this.log, this.validPosn, this.numRings);
+    this.mockModel = new MockModel(this.log, this.validPosn, this.numRings);
     this.fullModel = new Model(this.numRings);
     this.captureMostStrategy = new CaptureMostStrategy();
     this.avoidEdgesStrategy = new AvoidEdgesStrategy();

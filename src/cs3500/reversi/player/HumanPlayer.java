@@ -1,7 +1,5 @@
 package cs3500.reversi.player;
 
-import cs3500.reversi.view.PlayerFeatures;
-
 import java.util.ArrayList;
 import java.util.List;
 

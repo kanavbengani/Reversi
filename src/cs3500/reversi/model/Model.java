@@ -258,9 +258,6 @@ public class Model implements IModel {
   @Override
   public void addListener(ModelFeatures modelFeatures) {
     this.listeners.add(modelFeatures);
-    for (ModelFeatures f : this.listeners) {
-      f.notifyTurn(this.currentPieceColor);
-    }
   }
 
   // Operational Methods

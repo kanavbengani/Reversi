@@ -4,6 +4,7 @@ import javax.swing.*;
 
 import cs3500.reversi.model.IROModel;
 import cs3500.reversi.model.PieceColor;
+import cs3500.reversi.player.PlayerFeatures;
 
 /**
  * The View class represents a Swing-based graphical user interface for the Reversi game.
@@ -53,7 +54,7 @@ public class View extends JFrame implements IView {
   }
   
   @Override
-  public void itsYourTurn(PieceColor pieceColor) {
+  public void itsTheTurnOf(PieceColor pieceColor) {
     this.panel.itsYourMove(pieceColor);
   }
 }

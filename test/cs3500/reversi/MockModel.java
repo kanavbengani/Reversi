@@ -15,26 +15,27 @@ import cs3500.reversi.model.PieceColor;
  * Represents a mock model that appends to the given log and returns based
  * on the given parameters in the constructor.
  */
-public class MockModelForStrategy implements IModel {
-
+public class MockModel implements IModel {
   private final StringBuilder log;
   private final Map<AxialPosn, Integer> posnCaptures;
   private final int numRings;
   private final List<AxialPosn> listOfPosn = new ArrayList<>();
-
+  private PieceColor currentPieceColor;
+  
   /**
-   * Constructs a MockModelForStrategy with the given parameters.
+   * Constructs a MockModel with the given parameters.
    *
    * @param log          StringBuilder to store method call logs
    * @param posnCaptures map representing the captures at each axial position
    * @param numRings     number of rings in the game
    */
-  public MockModelForStrategy(StringBuilder log,
-                              Map<AxialPosn, Integer> posnCaptures,
-                              int numRings) {
+  public MockModel(StringBuilder log,
+                   Map<AxialPosn, Integer> posnCaptures,
+                   int numRings) {
     this.log = log;
     this.posnCaptures = posnCaptures;
     this.numRings = numRings;
+    this.currentPieceColor = PieceColor.BLACK;
     this.initializePosn();
   }
 
@@ -59,11 +60,25 @@ public class MockModelForStrategy implements IModel {
   public void playMove(PieceColor pc, AxialPosn ap)
           throws IllegalStateException, IllegalArgumentException {
     this.log.append(pc).append(" wants to play ").append(ap).append("\n");
+    if (pc.equals(this.currentPieceColor)) {
+      this.currentPieceColor = this.currentPieceColor.equals(PieceColor.BLACK)
+          ? PieceColor.WHITE : PieceColor.BLACK;
+    }
+    else {
+      throw new IllegalStateException("Not this player's turn.");
+    }
   }
 
   @Override
   public void pass(PieceColor pc) throws IllegalStateException {
     this.log.append(pc).append(" wants to pass.\n");
+    if (pc.equals(this.currentPieceColor)) {
+      this.currentPieceColor = this.currentPieceColor.equals(PieceColor.BLACK)
+          ? PieceColor.WHITE : PieceColor.BLACK;
+    }
+    else {
+      throw new IllegalStateException("Not this player's turn.");
+    }
   }
 
   @Override
@@ -152,7 +167,7 @@ public class MockModelForStrategy implements IModel {
 
   @Override
   public void addListener(ModelFeatures modelFeatures) {
-    this.log.append("Adding the given class as a listener to this model's triggers.\n");
+    this.log.append("addListener called in MockModel.\n");
   }
 
   @Override

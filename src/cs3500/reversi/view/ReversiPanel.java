@@ -25,11 +25,10 @@ import java.util.Optional;
 import javax.swing.JPanel;
 import javax.swing.event.MouseInputAdapter;
 
-import cs3500.reversi.Reversi;
 import cs3500.reversi.model.AxialPosn;
 import cs3500.reversi.model.IROModel;
-import cs3500.reversi.model.ModelFeatures;
 import cs3500.reversi.model.PieceColor;
+import cs3500.reversi.player.PlayerFeatures;
 
 /**
  * A ReversiPanel is a JPanel that draws the Reversi game board and allows users to interact with
@@ -283,7 +282,6 @@ class ReversiPanel extends JPanel {
     @Override
     public void keyPressed(KeyEvent e) {
       if (e.getKeyCode() == KeyEvent.VK_P) {
-        System.out.println(ReversiPanel.this.pieceColor + " wants to pass.");
         for (PlayerFeatures l : ReversiPanel.this.featuresListeners) {
           ReversiPanel.this.highlightedHex = Optional.empty();
           ReversiPanel.this.repaint();
@@ -292,8 +290,6 @@ class ReversiPanel extends JPanel {
         ReversiPanel.this.highlightedHex = Optional.empty();
       }
       if (e.getKeyCode() == KeyEvent.VK_ENTER && ReversiPanel.this.highlightedHex.isPresent()) {
-        System.out.println(ReversiPanel.this.pieceColor + " wants to play a move at "
-                + ReversiPanel.this.highlightedHex.get() + ".");
         for (PlayerFeatures l : ReversiPanel.this.featuresListeners) {
           AxialPosn tempHex = ReversiPanel.this.highlightedHex.get();
           ReversiPanel.this.highlightedHex = Optional.empty();
@@ -320,7 +316,6 @@ class ReversiPanel extends JPanel {
       // Showing axial coordinate that has been clicked to System.out
       try {
         Optional<PieceColor> pieceColor = ReversiPanel.this.model.getPieceAt(axialPosn);
-        System.out.println(ReversiPanel.this.pieceColor + " selected " + axialPosn + ".");
 
         // Highlight/De-highlight logic
         if (pieceColor.isEmpty()) {

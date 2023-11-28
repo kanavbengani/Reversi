@@ -1,4 +1,4 @@
-package cs3500.reversi.view;
+package cs3500.reversi.player;
 
 import cs3500.reversi.model.AxialPosn;
 import cs3500.reversi.model.PieceColor;

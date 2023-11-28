@@ -9,7 +9,7 @@ import java.util.Optional;
  * The `MockModelListener` class is an implementation of the `ModelFeatures` interface that
  * simulates a cs3500.reversi.player's moves by logging messages to a given log.
  */
-class MockModelListener implements ModelFeatures {
+public class MockModelListener implements ModelFeatures {
   private final StringBuilder log;
 
   /**
