@@ -116,13 +116,11 @@ public class Model implements IModel {
   
   @Override
   public void startGame() throws IllegalStateException {
-    if (this.listeners.size() == 2) {
-      this.currentPieceColor = this.pieceColor1;
-      this.notifyListeners();
-    }
-    else {
+    if (this.listeners.size() != 2) {
       throw new IllegalStateException("There has to be two players in this game.");
     }
+    this.currentPieceColor = this.pieceColor1;
+    this.notifyListeners();
   }
 
   // Observation Methods
@@ -138,16 +136,20 @@ public class Model implements IModel {
   @Override
   public List<AxialPosn> getAllCapturedPieces(PieceColor pieceColor, AxialPosn ap)
           throws IllegalStateException, IllegalArgumentException {
-    if (this.board.getOrDefault(ap, Optional.empty()).isPresent()) {
+    if (!pieceColor.equals(this.currentPieceColor)) {
+      throw new IllegalStateException("Not the piece's turn.");
+    }
+    
+    if (!this.board.containsKey(ap)) {
+      throw new IllegalStateException("Move is not in bounds.");
+    }
+    
+    if (this.board.get(ap).isPresent()) {
       throw new IllegalStateException("Chip cannot be placed in an already occupied cell.");
     }
-
-    if (!pieceColor.equals(this.currentPieceColor)) {
-      throw new IllegalArgumentException("Not the piece's turn.");
-    }
-
+    
     List<AxialPosn> finalPoints = this.validateAllDirections(pieceColor, ap);
-
+    
     if (finalPoints.isEmpty()) {
       throw new IllegalStateException("Move is not valid.");
     }
@@ -159,7 +161,7 @@ public class Model implements IModel {
   private List<AxialPosn> validateAllDirections(PieceColor pieceColor, AxialPosn ap) {
     List<AxialPosn> finalPoints = new ArrayList<>();
 
-    if (this.board.get(ap).isPresent()) {
+    if (this.board.getOrDefault(ap, Optional.empty()).isPresent()) {
       return new ArrayList<>();
     }
 

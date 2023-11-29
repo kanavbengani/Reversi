@@ -33,10 +33,9 @@ public interface IROModel {
    * @param ap The position on the Reversi board where the move is to be made.
    * @return List of captured pieces.
    * @throws IllegalStateException If the move is not valid.
-   * @throws IllegalArgumentException If the provided position is not valid on the board.
    */
   List<AxialPosn> getAllCapturedPieces(PieceColor pieceColor, AxialPosn ap)
-          throws IllegalStateException, IllegalArgumentException;
+          throws IllegalStateException;
 
   /**
    * Gets an optional representing the piece color of the cs3500.reversi.player who has won the

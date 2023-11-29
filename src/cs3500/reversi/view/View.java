@@ -13,7 +13,7 @@ import cs3500.reversi.player.PlayerFeatures;
  */
 public class View extends JFrame implements IView {
   private final ReversiPanel panel;
-
+  
   /**
    * Constructs a View for the Reversi game with the specified model and player color.
    *
@@ -22,25 +22,32 @@ public class View extends JFrame implements IView {
    */
   public View(IROModel model, PieceColor pieceColor) {
     super("Reversi: " + pieceColor.name() + " Player");
-
+    
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.panel = new ReversiPanel(model, pieceColor);
     this.add(panel);
-
+    
+    this.setResizable(false);
+    
     this.pack();
     this.display(true);
   }
-
+  
   @Override
   public void display(boolean b) {
     this.setVisible(b);
   }
-
+  
+  @Override
+  public void disableInput() {
+    this.panel.disableInput();
+  }
+  
   @Override
   public void refresh() {
     this.repaint();
   }
-
+  
   @Override
   public void addListener(PlayerFeatures features) {
     this.panel.addFeaturesListener(features);

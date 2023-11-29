@@ -1,7 +1,6 @@
 package cs3500.reversi;
 
 import cs3500.reversi.model.IModel;
-import cs3500.reversi.model.ReversiFactory;
 
 /**
  * A main runner for a program of Reversi.

@@ -4,7 +4,7 @@ This Reversi game project is a two-player game with a graphical interface. The g
 the classic Reversi game with a hexagonal grid. The codebase allows for human players to play
 against each other or even the possibility of implementing AI players in future versions. For this
 iteration of the homework, we have implemented a `Model`, a `View` and a `ReversiStrategy` pattern to develop certain
-strategies for the game.
+strategies for the game. We have also implemented a `Controller` that synchronizes the `Model` and the `View`.
 
 ### Extra Credit
 - Strategy 2 -- See `strategy/AvoidEdgesStrategy.java`.
@@ -13,10 +13,28 @@ strategies for the game.
 can take in a depth greater than 1).
 - Composing Strategies -- See `AndStrategy.java`. (Allows recombination easily and efficiently).
 - Hints for which moves are valid. (Green for valid, red for invalid) -- See `screenshots/CellSelected.png`.
-- Shows how many will be captured when cell is clicked -- See `screenshots/ExtraCreditHint.png`.
-- In order to run the program and see the strategy in action against each other, see `StrategyRunner.java`.
+- Shows how many will be captured when cell is clicked (you are unable to select cells that are already occupied) -- See
+`screenshots/ExtraCreditHint.png`.
+
+### Command Line Arguments
+- "human" -- Allows you to create a human player
+- "strategy1" -- Minimax
+  - Required argument: `depth` -- Must be passed in as a number greater than 0 right after "strategy1".
+- "strategy2" -- Go Corners Strategy (no additional arguments needed)
+- "strategy3" -- Avoid Edges Strategy (no additional arguments needed)
+- "strategy4" -- Capture Most Strategy (no additional arguments needed)
+
+For all of the above strategies, refer to the `strategy` package.
+
+Example usage: 
+- `human human` -- Human (Black) v/s Human (White)
+- `human strategy1 3` -- Human (Black) v/s Minimax w/ Depth 3 (White)
+- `strategy4 human` -- Capture Most Strategy (Black) v/s Human (White)
+- `strategy1 2 strategy1 4` -- Minimax w/ Depth 2 (Black) v/s Minimax w/ Depth 4 (White)
 
 ### Changelog
+
+#### Changes for Part 2
 The following are changes made to the `model` package from the previous assignment (Assignment 5). 
 - Removed the concrete class of the read-only model since the concrete `Model` class was able to outline
 all the read-only observation methods by simply implementing `IModel` (which in-turn extended `IROModel`). 
@@ -34,6 +52,12 @@ on the given axial coordinate.
 - Refactored the `PlayerListener` interface to the `ModelFeatures` interface in the `model` package as this interface 
 could be implemented by a non-player. Also, these features are events that are triggered by the model, hence the 
 refactoring of the package. 
+
+#### Changes for Part 3
+The following are changes made from the previous assignment (Assignment 6).
+- Added a package-private method to test the behavior of the mouse and the keyboard listeners.
+- Removed old implementation of single-depth minimax and refactored recursive, multiple-depth minimax.
+- Split notification of turn and prompting of player move in `ModelFeatures`
 
 ### Quick start
 The game can be interacted with by running the `main` method in `Reversi.java`. As the "player", you can click on
@@ -55,7 +79,10 @@ querying the game state.
 such as playing a move and switching turns.
 - `Model` -- Concrete implementations of their `IModel` interface.
 - `AxialPosn` -- An axial position represents the `q` and `r` coordinates in a hexagonal grid.
-- `Direction` -- A direction represents the offset of each hexagonal cell. 
+- `Direction` -- A direction represents the offset of each hexagonal cell.
+- `ModelFeatures` -- A set of features that the model will be triggering to its listeners. All listeners to the model
+should implement the above interface. 
+- `ReversiFactory` -- A factory class used to configure and create a game of Reversi. 
 
 **Coordinate System**
 
@@ -89,6 +116,29 @@ being returned is sorted by topmost, leftmost.
 - `TextualView` -- A light-weight text-based view to visualize the game of Reversi, mostly for testing purposes.
 - `IView` -- A Swing-based graphical user interface for interacting with a Reversi model.
 
+### Controller
+- No interface is needed for the controller because there are no publicly facing methods in the Controller. Although
+there is a logical interface for the controller which surrounds the implementations for `ModelFeatures` and
+`PlayerFeatures`, there is no Java interface because the behavior of the above features classes cannot be promised
+through an 'IController'. The above is also a case because of the way our controller is designed where it 'has-a' 
+features rather than is one. 
+- `Controller` -- A standalone class that is responsible for aggregating all the listeners to be used to allow the user 
+to play the game or to set up an AI. The constructor of the controller adds these listeners to the `model`, `player`, 
+and `view`.
+- `ModelFeaturesImpl` -- Defines the actions to take when the model triggers certain events. 
+- `PlayerFeatures` -- Defines the actions to take when the player/view triggers certain events.
+
+### Player
+- Defines the representation of a player in the game of Reversi
+- `PlayerFeatures` -- A set of features that the player/view will be triggering to its listeners. 
+All listeners to the view or player should implement the above interface.
+- `HumanPlayer` -- Represents a human player. The `playAMove()` method does nothing since the view can emit that the 
+user wants to play a move. This deals with the asynchronous nature of the human interaction. 
+- `AIPlayer` -- Represents an AI player. The `playAMove()` method uses the given strategy to synchronously play a 
+move. 
+- As a result, the Player interface bridges the gap present between the asynchronous nature of the human interaction
+and the synchronous nature of the AI interaction.
+
 ## Screenshots
 | Initial State<br/><image src="./screenshots/InitialState.png">           | Cell Selected<br/><image src="./screenshots/CellSelected.png">        |
 |--------------------------------------------------------------------------|-----------------------------------------------------------------------|
@@ -104,7 +154,6 @@ being returned is sorted by topmost, leftmost.
 ├── src
 │   └── cs3500
 │       └── reversi
-│           ├── StrategyRunner.java
 │           ├── Reversi.java
 │           ├── model
 │           │   ├── AxialPosn.java

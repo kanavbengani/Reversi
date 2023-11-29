@@ -25,7 +25,7 @@ import cs3500.reversi.model.PieceColor;
 /**
  * A JUnit4 testing class for testing Reversi strategies.
  */
-public class StrategyTests {
+public class ReversiStrategyTests {
   private StringBuilder log;
   private final Map<AxialPosn, Integer> validPosn = new HashMap<>();
   private int numRings;
@@ -336,7 +336,7 @@ public class StrategyTests {
   }
 
   @Test
-  public void testMinimaxStrategyWorksDifferentlyAtDifferentDepths() {
+  public void testMinimaxStrategyWorksDifferentlyAtDifferentDepth() {
     this.minimaxStrategy = new MinimaxStrategyDepth(new AndStrategy(
             new GoCornerStrategy(),
             new AndStrategy(new AvoidEdgesStrategy(), new CaptureMostStrategy())), 3);

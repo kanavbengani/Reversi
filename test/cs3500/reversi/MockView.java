@@ -14,7 +14,13 @@ public class MockView implements IView {
   
   @Override
   public void display(boolean b) {
-    String result = "display called with " + b + "\n";
+    String result = "display called with " + b + ".\n";
+    this.log.append(result);
+  }
+  
+  @Override
+  public void disableInput() {
+    String result = "disableInput called.\n";
     this.log.append(result);
   }
   

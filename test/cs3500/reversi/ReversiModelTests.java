@@ -4,9 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import cs3500.reversi.model.Direction;
 import cs3500.reversi.model.IModel;
@@ -35,8 +33,8 @@ public class ReversiModelTests {
     this.roModel = this.model.getReadOnlyModel();
     this.logBlack = new StringBuilder();
     this.logWhite = new StringBuilder();
-    this.model.addListener(new MockModelListener(logBlack));
-    this.model.addListener(new MockModelListener(logWhite));
+    this.model.addListener(new MockModelListener(this.logBlack));
+    this.model.addListener(new MockModelListener(this.logWhite));
     this.model.startGame();
   }
 
@@ -99,7 +97,76 @@ public class ReversiModelTests {
     this.initTest();
     Assert.assertTrue(this.roModel.isGameOver());
   }
-
+  
+  // GetAllCapturedPieces
+  @Test
+  public void testGetAllCapturedPiecesInvalidTurn() {
+    Assert.assertThrows(IllegalStateException.class,
+        () -> this.model.getAllCapturedPieces(PieceColor.WHITE, new AxialPosn(0, 0)));
+  }
+  
+  @Test
+  public void testGetAllCapturedPiecesInvalidMoveOutOfBounds() {
+    Assert.assertThrows(IllegalStateException.class,
+        () -> this.model.getAllCapturedPieces(PieceColor.BLACK, new AxialPosn(10, 10)));
+  }
+  
+  @Test
+  public void testGetAllCapturedPiecesInvalidMoveOnOccupiedCell() {
+    Assert.assertThrows(IllegalStateException.class,
+        () -> this.model.getAllCapturedPieces(PieceColor.BLACK, new AxialPosn(1, 0)));
+  }
+  
+  @Test
+  public void testGetAllCapturedPiecesInvalidMove() {
+    Assert.assertThrows(IllegalStateException.class,
+        () -> this.model.getAllCapturedPieces(PieceColor.BLACK, new AxialPosn(0, 0)));
+  }
+  
+  @Test
+  public void testGetAllCapturedPiecesValidMove() {
+    Assert.assertEquals(this.model.getAllCapturedPieces(PieceColor.BLACK,
+        new AxialPosn(1, -2)), new ArrayList<>(List.of(new AxialPosn(1, -1))));
+  }
+  
+  // GetAllPosn
+  @Test
+  public void testGetAllPosn() {
+    this.model = new Model(1);
+    Assert.assertEquals(this.model.getAllPosn(), new ArrayList<>(List.of(
+        new AxialPosn(0, -1), new AxialPosn(1, 0), new AxialPosn(0, 0),
+        new AxialPosn(-1, 0), new AxialPosn(0, 1), new AxialPosn(-1, 1),
+        new AxialPosn(1, -1))));
+  }
+  
+  // Copy
+  @Test
+  public void testCopyReturnsANonMutableReference() {
+    Assert.assertNotEquals(this.model, this.model.copy());
+  }
+  
+  @Test
+  public void testCopyMakesAValidCopy() {
+    this.numRings = 1;
+    this.initTest();
+    Assert.assertEquals(this.model.getNumRings(), this.model.copy().getNumRings());
+    Assert.assertEquals(this.model.getTurn(), this.model.copy().getTurn());
+    Assert.assertEquals(this.model.getPieceAt(new AxialPosn(0, 0)),
+        this.model.copy().getPieceAt(new AxialPosn(0, 0)));
+    Assert.assertEquals(this.model.getPieceAt(new AxialPosn(1, 0)),
+        this.model.copy().getPieceAt(new AxialPosn(1, 0)));
+    Assert.assertEquals(this.model.getPieceAt(new AxialPosn(0, 1)),
+        this.model.copy().getPieceAt(new AxialPosn(0, 1)));
+    Assert.assertEquals(this.model.getPieceAt(new AxialPosn(-1, 1)),
+        this.model.copy().getPieceAt(new AxialPosn(-1, 1)));
+    Assert.assertEquals(this.model.getPieceAt(new AxialPosn(-1, 0)),
+        this.model.copy().getPieceAt(new AxialPosn(-1, 0)));
+    Assert.assertEquals(this.model.getPieceAt(new AxialPosn(0, -1)),
+        this.model.copy().getPieceAt(new AxialPosn(0, -1)));
+    Assert.assertEquals(this.model.getPieceAt(new AxialPosn(1, -1)),
+        this.model.copy().getPieceAt(new AxialPosn(1, -1)));
+  }
+  
   // GetWinner
   @Test
   public void testROMGetWinnerExceptionThrownWhenGameIsNotOver() {
@@ -211,8 +278,19 @@ public class ReversiModelTests {
     Assert.assertEquals(this.roModel.getScore(PieceColor.BLACK), 5);
     Assert.assertEquals(this.roModel.getScore(PieceColor.WHITE), 5);
   }
+  
+  // AddListener
+  @Test
+  public void testMAddListener() {
+    // Listeners are added correctly because start game passes after two are added.
+    this.model = new Model(this.numRings);
+    Assert.assertThrows(IllegalStateException.class, () -> this.model.startGame());
+    this.model.addListener(new MockModelListener(new StringBuilder()));
+    Assert.assertThrows(IllegalStateException.class, () -> this.model.startGame());
+    this.model.addListener(new MockModelListener(new StringBuilder()));
+    this.model.startGame();
+  }
 
-  // IModel Tests (Operations Methods)
   // Constructor
   @Test
   public void testMConstructorInvalidRingsNumberTooLow() {
@@ -224,7 +302,35 @@ public class ReversiModelTests {
     Assert.assertEquals(this.model.getNumRings(), this.numRings);
     Assert.assertEquals(this.model.getTurn(), PieceColor.BLACK);
   }
-
+  
+  // IModel Tests (Operation Methods)
+  // GetReadOnlyModel
+  @Test
+  public void testMGetReadOnlyModel() {
+    Assert.assertEquals(this.model.getReadOnlyModel(), this.roModel);
+  }
+  
+  // StartGame
+  @Test
+  public void testStartGameInvalid() {
+    this.model = new Model(this.numRings);
+    Assert.assertNull(this.model.getTurn());
+    Assert.assertThrows(IllegalStateException.class, () -> this.model.startGame());
+  }
+  
+  @Test
+  public void testStartGameCorrectlyAssignsTurn() {
+    Assert.assertEquals(this.model.getTurn(), PieceColor.BLACK);
+  }
+  
+  @Test
+  public void testStartGameCorrectlyNotifiesListeners() {
+    Assert.assertEquals(this.logBlack.toString(), "It's BLACK's move!\n" +
+        "BLACK needs to play a move!\n");
+    Assert.assertEquals(this.logWhite.toString(), "It's BLACK's move!\n" +
+        "BLACK needs to play a move!\n");
+  }
+  
   // PlayMove
   @Test
   public void testMPlayMoveInvalidCoordinatesOutOfBounds() {
@@ -249,7 +355,7 @@ public class ReversiModelTests {
 
   @Test
   public void testMPlayMoveInvalidIllegalPlayer() {
-    Assert.assertThrows(IllegalArgumentException.class, () -> this.model.playMove(PieceColor.WHITE,
+    Assert.assertThrows(IllegalStateException.class, () -> this.model.playMove(PieceColor.WHITE,
             new AxialPosn(1, 1)));
   }
 
@@ -376,18 +482,6 @@ public class ReversiModelTests {
         "It's WHITE's move!\n" +
         "WHITE needs to play a move!\n" +
         "It's game over! Stalemate!\n");
-  }
-
-  // GetReadOnlyModel
-  @Test
-  public void testMGetReadOnlyModel() {
-    Assert.assertEquals(this.model.getReadOnlyModel(), this.roModel);
-  }
-
-  // AddListener
-  @Test
-  public void testMAddListener() {
-    // TODO
   }
 
   // AxialPosn Tests

@@ -14,7 +14,12 @@ public interface IView {
    * @param b A boolean indicating whether the view should be shown or not.
    */
   void display(boolean b);
-
+  
+  /**
+   * Disables clicking functionality for the view.
+   */
+  void disableInput();
+  
   /**
    * Refresh this view.
    */

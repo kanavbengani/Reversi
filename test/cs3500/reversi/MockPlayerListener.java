@@ -17,7 +17,7 @@ public class MockPlayerListener implements PlayerFeatures {
   
   @Override
   public void move(AxialPosn axialPosn) {
-    String result = "Move was called with axial position " + axialPosn + "\n";
+    String result = "Move was called with axial position " + axialPosn + ".\n";
     this.log.append(result);
   }
 }

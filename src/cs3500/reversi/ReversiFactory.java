@@ -1,6 +1,9 @@
-package cs3500.reversi.model;
+package cs3500.reversi;
 
 import cs3500.reversi.controller.Controller;
+import cs3500.reversi.model.IModel;
+import cs3500.reversi.model.Model;
+import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.player.AIPlayer;
 import cs3500.reversi.player.HumanPlayer;
 import cs3500.reversi.player.Player;
@@ -70,10 +73,6 @@ public final class ReversiFactory {
       throw new IllegalArgumentException("Depth must be 0 for non-minimax strategies.");
     }
     
-    if (!gt.equals(ReversiFactory.GameType.HUMAN)) {
-      view.display(true);
-    }
-    
     switch (gt) {
       case HUMAN:
         player = new HumanPlayer();
@@ -102,6 +101,10 @@ public final class ReversiFactory {
         break;
       default:
         throw new IllegalArgumentException("Invalid game type");
+    }
+    
+    if (!gt.equals(GameType.HUMAN)) {
+      view.disableInput();
     }
     
     return player;

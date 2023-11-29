@@ -42,6 +42,8 @@ class ReversiPanel extends JPanel {
 
   private final IROModel model;
   private final int numRings;
+  private MouseAdapter mouse;
+  private final KeyListener keyboard;
   private final List<PlayerFeatures> featuresListeners = new ArrayList<>();
   private final PieceColor pieceColor;
   private final double hexagonRadius;
@@ -61,11 +63,11 @@ class ReversiPanel extends JPanel {
     this.hexagonRadius = this.computeHexagonRadius();
     
     // adds mouse and key listeners
-    MouseAdapter mouse = new MouseEventsListener();
-    this.addMouseListener(mouse);
-    this.addMouseMotionListener(mouse);
-    KeyListener keyboard = new ReversiPanel.KeyboardEventListener();
-    this.addKeyListener(keyboard);
+    this.mouse = new MouseEventsListener();
+    this.addMouseListener(this.mouse);
+    this.addMouseMotionListener(this.mouse);
+    this.keyboard = new KeyboardEventListener();
+    this.addKeyListener(this.keyboard);
     this.setFocusable(true);
     this.requestFocus();
 
@@ -84,7 +86,21 @@ class ReversiPanel extends JPanel {
 
     return Math.min(horizontalMaxRadius, verticalMaxRadius);
   }
+  
+  MouseAdapter getMouseAdapter() {
+    return this.mouse;
+  }
+  
+  KeyListener getKeyListener() {
+    return this.keyboard;
+  }
 
+  public void disableInput() {
+    this.removeMouseListener(this.mouse);
+    this.removeMouseMotionListener(this.mouse);
+    this.removeKeyListener(this.keyboard);
+  }
+  
   @Override
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
@@ -282,6 +298,7 @@ class ReversiPanel extends JPanel {
     @Override
     public void keyPressed(KeyEvent e) {
       if (e.getKeyCode() == KeyEvent.VK_P) {
+        System.out.println(ReversiPanel.this.featuresListeners);
         for (PlayerFeatures l : ReversiPanel.this.featuresListeners) {
           ReversiPanel.this.highlightedHex = Optional.empty();
           ReversiPanel.this.repaint();
