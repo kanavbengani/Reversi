@@ -4,9 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class HumanPlayer implements Player {
+/**
+ * The HumanPlayer class represents a human player in the Reversi game.
+ */
+ public class HumanPlayer implements Player {
   private final List<PlayerFeatures> listeners;
-  
+
+  /**
+   * Constructs a new HumanPlayer with an empty list of listeners.
+   */
   public HumanPlayer() {
     this.listeners = new ArrayList<>();
   }

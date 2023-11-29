@@ -7,11 +7,13 @@ import cs3500.reversi.view.IView;
 
 import java.util.Optional;
 
+// Creates a concrete implementation of the model features.
 class ModelFeaturesImpl implements ModelFeatures {
   private Player player;
   private IView view;
   private PieceColor color;
-  
+
+  // Constructs a new ModelFeatures implementation using the passed in player, view, and color.
   ModelFeaturesImpl(Player player, IView view, PieceColor color) {
     this.player = player;
     this.view = view;

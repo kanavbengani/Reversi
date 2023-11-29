@@ -39,7 +39,6 @@ class ReversiPanel extends JPanel {
   private static final int PADDING = 10;
   private static final int HEIGHT = 700;
   private static final int WIDTH = 700;
-
   private final IROModel model;
   private final int numRings;
   private MouseAdapter mouse;
@@ -62,7 +61,7 @@ class ReversiPanel extends JPanel {
     this.pieceColor = pieceColor;
     this.hexagonRadius = this.computeHexagonRadius();
     
-    // adds mouse and key listeners
+    // Adds mouse and key listeners
     this.mouse = new MouseEventsListener();
     this.addMouseListener(this.mouse);
     this.addMouseMotionListener(this.mouse);
@@ -95,6 +94,9 @@ class ReversiPanel extends JPanel {
     return this.keyboard;
   }
 
+  /**
+   * Disables all mouse and keyboard input.
+   */
   public void disableInput() {
     this.removeMouseListener(this.mouse);
     this.removeMouseMotionListener(this.mouse);
@@ -145,7 +147,8 @@ class ReversiPanel extends JPanel {
 
     g2d.setColor(oldColor);
   }
-  
+
+  // Displays the turn message with the given Graphics2D object.
   private void displayTurn(Graphics2D g2d) {
     if (!this.isMyMove || this.model.isGameOver()) {
       return;
@@ -210,6 +213,7 @@ class ReversiPanel extends JPanel {
     g2d.setColor(oldColor);
   }
 
+  // Displays how many pieces will be captured if the player plays the given move.
   private void writeHowManyCaptured(Graphics2D g2d, CartesianPosn p, int numCaptures) {
     Color oldColor = g2d.getColor();
     AffineTransform oldTransform = g2d.getTransform();
@@ -239,6 +243,7 @@ class ReversiPanel extends JPanel {
     g2d.setTransform(oldTransform);
   }
 
+  // Adds the passed in PlayerFeatures as a listener
   void addFeaturesListener(PlayerFeatures features) {
     if (features == null) {
       throw new IllegalArgumentException("Features cannot be null");
@@ -286,7 +291,12 @@ class ReversiPanel extends JPanel {
 
     return new CartesianPosn(x, -y);
   }
-  
+
+  /**
+   * Notifies the player it is their turn by updating this panel.
+   *
+   * @param pieceColor the piece color of the player's turn
+   */
   public void itsYourMove(PieceColor pieceColor) {
     this.isMyMove = this.pieceColor.equals(pieceColor);
     this.repaint();

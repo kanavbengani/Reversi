@@ -7,11 +7,21 @@ import cs3500.reversi.strategy.ReversiStrategy;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class AIPlayer implements Player {
+/**
+ * The AIPlayer class represents an AI-controlled player in the Reversi game. It uses a specified
+ * ReversiStrategy to make moves based on the given game model.
+ */
+ public final class AIPlayer implements Player {
   private final ReversiStrategy strategy;
   private final IROModel model;
   private final List<PlayerFeatures> listeners;
-  
+
+  /**
+   * Constructs a new AIPlayer with the specified game model and ReversiStrategy.
+   *
+   * @param model The game model implementing IROModel.
+   * @param strategy The ReversiStrategy used by the AIPlayer to make moves.
+   */
   public AIPlayer(IROModel model, ReversiStrategy strategy) {
     this.model = model;
     this.strategy = strategy;

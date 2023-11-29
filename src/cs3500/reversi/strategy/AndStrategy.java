@@ -12,7 +12,6 @@ import cs3500.reversi.model.IROModel;
  * the second strategy to further refine the selection based on the results of the first strategy.
  */
 public class AndStrategy implements ReversiStrategy {
-
   private final ReversiStrategy strat1;
   private final ReversiStrategy strat2;
 

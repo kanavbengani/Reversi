@@ -23,6 +23,7 @@ public interface ModelFeatures {
   
   /**
    * This method is called when the game is over.
+   *
    * @param winner the color of the piece who won. It will be empty if it is a stalemate.
    */
   void itsGameOver(Optional<PieceColor> winner);

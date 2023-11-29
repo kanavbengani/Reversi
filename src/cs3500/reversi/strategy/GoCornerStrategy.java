@@ -13,7 +13,6 @@ import cs3500.reversi.model.IROModel;
  * the game board.
  */
 public class GoCornerStrategy implements ReversiStrategy {
-
   @Override
   public List<AxialPosn> chooseMove(List<AxialPosn> possibleMoves, IROModel model) {
     List<AxialPosn> corners = this.getCorners(model);

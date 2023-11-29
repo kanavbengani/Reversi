@@ -53,8 +53,8 @@ public final class Reversi {
     IModel model = ReversiFactory.makeModel(5, gt1, gt1Depth, gt2, gt2Depth);
     model.startGame();
   }
-  
-  
+
+  // Parses the passed-in string to return enum variants of the appropriate player types.
   private static ReversiFactory.GameType parseGameType(String arg) {
     switch (arg) {
       case "human":
