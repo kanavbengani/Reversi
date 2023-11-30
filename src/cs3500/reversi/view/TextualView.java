@@ -8,7 +8,7 @@ import cs3500.reversi.model.PieceColor;
 /**
  * The TextualView class provides a textual representation of a read-only Reversi model.
  */
-public class TextualView implements ITextualView {
+public class TextualView {
   private final IROModel model;
 
   /**

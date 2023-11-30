@@ -6,9 +6,15 @@ import java.util.Objects;
 /**
  * This class represents a Cartesian position with x and y coordinates.
  */
-public class CartesianPosn {
-  public final double x;
-  public final double y;
+class CartesianPosn {
+  /**
+   * Represents the x-coordinate of a cartesian position.
+   */
+  final double x;
+  /**
+   * Represents the y-coordinate of a cartesian position.
+   */
+  final double y;
 
   /**
    * Constructs a CartesianPosn object with the given x and y coordinates.
@@ -16,7 +22,7 @@ public class CartesianPosn {
    * @param x the x coordinate.
    * @param y the y coordinate.
    */
-  public CartesianPosn(double x, double y) {
+  CartesianPosn(double x, double y) {
     this.x = x;
     this.y = y;
   }

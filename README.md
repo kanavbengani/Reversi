@@ -1,21 +1,21 @@
 # Reversi
-### Overview
+## Overview
 This Reversi game project is a two-player game with a graphical interface. The goal is to implement
 the classic Reversi game with a hexagonal grid. The codebase allows for human players to play
 against each other or even the possibility of implementing AI players in future versions. For this
 iteration of the homework, we have implemented a `Model`, a `View` and a `ReversiStrategy` pattern to develop certain
 strategies for the game. We have also implemented a `Controller` that synchronizes the `Model` and the `View`.
 
-### Extra Credit
+## Extra Credit
 - Strategy 2 -- See `strategy/AvoidEdgesStrategy.java`.
 - Strategy 3 -- See `strategy/GoCornerStrategy.java`.
 - Strategy 4 -- See `strategy/MinimaxStrategy.java` (one layer) and `strategy/MinimaxStrategyDepth.java` (recursion - 
 can take in a depth greater than 1).
 - Composing Strategies -- See `AndStrategy.java`. (Allows recombination easily and efficiently).
 - Hints for which moves are valid. (Green for valid, red for invalid) -- See `screenshots/CellSelected.png`.
-- Shows how many will be captured when cell is clicked (you are unable to select cells that are already occupied) -- See
-`screenshots/ExtraCreditHint.png`.
+- Shows how many will be captured when cell is clicked -- See `screenshots/ExtraCreditHint.png`.
 
+## Quick start
 ### Command Line Arguments
 - "human" -- Allows you to create a human player
 - "strategy1" -- Minimax
@@ -32,9 +32,15 @@ Example usage:
 - `strategy4 human` -- Capture Most Strategy (Black) v/s Human (White)
 - `strategy1 2 strategy1 4` -- Minimax w/ Depth 2 (Black) v/s Minimax w/ Depth 4 (White)
 
-### Changelog
+### How to interact with the game as a human
+As a human, you can click on unoccupied cells, and they will be highlighted red (invalid move) or green (valid move) 
+with the number of capturable pieces as a hint. You can use your keyboard to do certain actions such as passing 
+(`p` key) or playing a move at the selected cell (`ENTER` key). To know when it is your turn, refer to the top of your 
+view where it will prompt you whether it is your turn. 
 
-#### Changes for Part 2
+## Changelog
+
+### Changes for Part 2
 The following are changes made to the `model` package from the previous assignment (Assignment 5). 
 - Removed the concrete class of the read-only model since the concrete `Model` class was able to outline
 all the read-only observation methods by simply implementing `IModel` (which in-turn extended `IROModel`). 
@@ -53,24 +59,21 @@ on the given axial coordinate.
 could be implemented by a non-player. Also, these features are events that are triggered by the model, hence the 
 refactoring of the package. 
 
-#### Changes for Part 3
-The following are changes made from the previous assignment (Assignment 6).
-- Added a package-private method to test the behavior of the mouse and the keyboard listeners.
+### Changes for Part 3
+The following are changes made to the code from the previous assignment (Assignment 6).
+- Added a package-private method to the view to test the behavior of the mouse and the keyboard listeners.
+- Added a `disableInput` method to the view to not allow any input on an AI's view.
 - Removed old implementation of single-depth minimax and refactored recursive, multiple-depth minimax.
-- Split notification of turn and prompting of player move in `ModelFeatures`
-
-### Quick start
-The game can be interacted with by running the `main` method in `Reversi.java`. As the "player", you can click on
-certain cells and they will be highlighted red (invalid move) or green (valid move). You can also use your keyboard to
-do certain actions such as passing (`P` key) or playing a move at the selected cell (`ENTER` key). For now, these
-would be logged to `System.out`. The view also converts your physical click coordinates to logical axial coordinates on
-the board.
+- Split notification of turn and prompting of player move in `ModelFeatures` and added a `itsGameOver` method.
 
 ## Invariant
 - The number of key-value pairs in `board` is equal to `3 * numRings * (numRings + 1) + 1`. This is a class variant
 because it is a true logical statement about the instantaneous state of the class. It is preserved in all constructors
 since it is either validated if a board is passed in or the board is created based on the given number of rings. It is 
 also preserved by all the methods because `numRings` is final and the board is never added or removed from.
+
+## Code Explanations
+- `ReversiFactory` -- A factory class used to configure and create a game of Reversi.
 
 ### Model
 - `IROModel` -- A read-only interface that allows the user to make observations on the cs3500.reversi.model such as 
@@ -82,7 +85,6 @@ such as playing a move and switching turns.
 - `Direction` -- A direction represents the offset of each hexagonal cell.
 - `ModelFeatures` -- A set of features that the model will be triggering to its listeners. All listeners to the model
 should implement the above interface. 
-- `ReversiFactory` -- A factory class used to configure and create a game of Reversi. 
 
 **Coordinate System**
 
@@ -147,52 +149,70 @@ and the synchronous nature of the AI interaction.
 ## Source organization
 ```
 ├── README.md
+├── Reversi.jar
+├── strategy-transcript.txt
 ├── screenshots
-│   ├── CellSelected.png
-│   ├── InitialState.png
-│   └── IntermediaryState.png
+│    ├── CellSelected.png
+│    ├── ExtraCreditHint.png
+│    ├── InitialState.png
+│    └── IntermediaryState.png
 ├── src
-│   └── cs3500
-│       └── reversi
-│           ├── Reversi.java
-│           ├── model
-│           │   ├── AxialPosn.java
-│           │   ├── Direction.java
-│           │   ├── IModel.java
-│           │   ├── IROModel.java
-│           │   ├── ModelFeatures.java
-│           │   ├── Model.java
-│           │   └── PieceColor.java
-│           ├── strategy
-│           │   ├── AndStrategy.java
-│           │   ├── AvoidEdgesStrategy.java
-│           │   ├── CaptureMostStrategy.java
-│           │   ├── GoCornerStrategy.java
-│           │   ├── MinimaxStrategy.java
-│           │   ├── MinimaxStrategyDepth.java
-│           │   └── ReversiStrategy.java
-│           └── view
-│               ├── CartesianPosn.java
-│               ├── ITextualView.java
-│               ├── IView.java
-│               ├── ReversiPanel.java
-│               ├── TextualView.java
-│               ├── ViewFeatures.java
-│               └── View.java
+│    └── cs3500
+│         └── reversi
+│              ├── Reversi.java
+│              ├── ReversiFactory.java
+│              ├── controller
+│              │    ├── Controller.java
+│              │    ├── ModelFeaturesImpl.java
+│              │    └── PlayerFeaturesImpl.java
+│              ├── model
+│              │    ├── AxialPosn.java
+│              │    ├── Direction.java
+│              │    ├── IModel.java
+│              │    ├── IROModel.java
+│              │    ├── Model.java
+│              │    ├── ModelFeatures.java
+│              │    └── PieceColor.java
+│              ├── player
+│              │    ├── AIPlayer.java
+│              │    ├── HumanPlayer.java
+│              │    ├── Player.java
+│              │    └── PlayerFeatures.java
+│              ├── strategy
+│              │    ├── AndStrategy.java
+│              │    ├── AvoidEdgesStrategy.java
+│              │    ├── CaptureMostStrategy.java
+│              │    ├── GoCornerStrategy.java
+│              │    ├── MinimaxStrategyDepth.java
+│              │    └── ReversiStrategy.java
+│              └── view
+│                   ├── CartesianPosn.java
+│                   ├── IView.java
+│                   ├── ReversiPanel.java
+│                   ├── TextualView.java
+│                   └── View.java
 └── test
-    └── cs3500
-        └── reversi
-            ├── MockModelForStrategy.java
-            ├── MockModelListener.java
-            ├── ReversiModelTests.java
-            └── StrategyTests.java
+     └── cs3500
+          └── reversi
+               ├── MockModel.java
+               ├── MockModelListener.java
+               ├── MockPlayer.java
+               ├── MockPlayerListener.java
+               ├── MockStrategy.java
+               ├── MockView.java
+               ├── ReversiControllerTests.java
+               ├── ReversiModelTests.java
+               ├── ReversiPlayerTests.java
+               ├── ReversiStrategyTests.java
+               ├── controller
+               │    └── PackagePrivateListenersTests.java
+               └── view
+                    └── PackagePrivateViewTests.java
 ```
 
-This is the organization of all the files in the codebase. All `Model` related files are in a 
-package called `cs3500.reversi.model`. We have also implemented an interface for a `PlayerListener` along with a 
-mock for the same in a package called `MockPlayer`. Finally, we have a simple `TextualView` in a 
-package called `cs3500.reversi.view`. This ensures that the code is organized in a logical manner, ensuring 
-suitable visibility and encapsulation of each of the components.
+This is the organization of all the files in the codebase. 
+The way it is currently organized ensures that the code is organized in a logical manner, 
+ensuring suitable visibility and encapsulation of each of the components.
 
 **Note:** This README file provides a high-level overview of the project. For detailed information 
 about classes, interfaces, and methods, refer to the Javadoc comments within the code.

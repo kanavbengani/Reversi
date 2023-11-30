@@ -6,7 +6,10 @@ import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.view.IView;
 import cs3500.reversi.player.PlayerFeatures;
 
-// Creates a concrete implementation of the player features.
+/**
+ * A concrete implementation of the player features that listens to all player/view triggers and
+ * acts based on that.
+ */
 class PlayerFeaturesImpl implements PlayerFeatures {
   private final IModel model;
   private final IView view;

@@ -1,6 +1,7 @@
 package cs3500.reversi.view;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import cs3500.reversi.model.IROModel;
 import cs3500.reversi.model.PieceColor;
@@ -25,7 +26,7 @@ public class View extends JFrame implements IView {
     
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.panel = new ReversiPanel(model, pieceColor);
-    this.add(panel);
+    this.add(this.panel);
     
     this.setResizable(false);
     
@@ -56,12 +57,12 @@ public class View extends JFrame implements IView {
   @Override
   public void promptMessage(String message) {
     if (this.isVisible()) {
-      JOptionPane.showMessageDialog(this, message);
+      JOptionPane.showMessageDialog(this.panel, message);
     }
   }
   
   @Override
   public void itsTheTurnOf(PieceColor pieceColor) {
-    this.panel.itsYourMove(pieceColor);
+    this.panel.itsTheTurnOf(pieceColor);
   }
 }

@@ -1,7 +1,6 @@
 package cs3500.reversi.strategy;
 
 import java.util.List;
-import java.util.Optional;
 
 import cs3500.reversi.model.AxialPosn;
 import cs3500.reversi.model.IROModel;
@@ -12,25 +11,25 @@ import cs3500.reversi.model.IROModel;
  * the second strategy to further refine the selection based on the results of the first strategy.
  */
 public class AndStrategy implements ReversiStrategy {
-  private final ReversiStrategy strat1;
-  private final ReversiStrategy strat2;
+  private final ReversiStrategy strategy1;
+  private final ReversiStrategy strategy2;
 
   /**
    * Constructs an AndStrategy with the specified two strategies.
    *
-   * @param strat1 The first Reversi strategy to be applied.
-   * @param strat2 The second Reversi strategy to be applied based on the results of the first
+   * @param strategy1 The first Reversi strategy to be applied.
+   * @param strategy2 The second Reversi strategy to be applied based on the results of the first
    *               strategy.
    */
-  public AndStrategy(ReversiStrategy strat1, ReversiStrategy strat2) {
-    this.strat1 = strat1;
-    this.strat2 = strat2;
+  public AndStrategy(ReversiStrategy strategy1, ReversiStrategy strategy2) {
+    this.strategy1 = strategy1;
+    this.strategy2 = strategy2;
   }
 
   @Override
   public List<AxialPosn> chooseMove(List<AxialPosn> possibleMoves, IROModel model) {
-    List<AxialPosn> move1 = strat1.chooseMove(possibleMoves, model);
+    List<AxialPosn> move1 = this.strategy1.chooseMove(possibleMoves, model);
 
-    return strat2.chooseMove(move1, model);
+    return this.strategy2.chooseMove(move1, model);
   }
 }

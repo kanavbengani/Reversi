@@ -30,7 +30,9 @@ public interface IModel extends IROModel {
   IROModel getReadOnlyModel();
   
   /**
-   * Starts the game of Reversi, allowing the set-up of the game to be separated from the playthrough.
+   * Starts the game of Reversi, allowing the set-up of the game to be separated from the play.
+   * Also, it allows the model to ensure setup has be done accurately with two listeners
+   * (signifying two players).
    */
   void startGame();
 }

@@ -89,6 +89,7 @@ public class MockModel implements IModel {
   
   @Override
   public void startGame() {
+    this.log.append("Calling startGame.\n");
   }
   
   @Override

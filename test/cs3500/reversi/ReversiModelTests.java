@@ -4,16 +4,18 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import cs3500.reversi.model.Direction;
 import cs3500.reversi.model.IModel;
 import cs3500.reversi.model.IROModel;
 import cs3500.reversi.model.AxialPosn;
 import cs3500.reversi.model.Model;
-import cs3500.reversi.model.ModelFeatures;
 import cs3500.reversi.model.PieceColor;
-import cs3500.reversi.view.ITextualView;
 import cs3500.reversi.view.TextualView;
 
 /**
@@ -325,10 +327,10 @@ public class ReversiModelTests {
   
   @Test
   public void testStartGameCorrectlyNotifiesListeners() {
-    Assert.assertEquals(this.logBlack.toString(), "It's BLACK's move!\n" +
-        "BLACK needs to play a move!\n");
-    Assert.assertEquals(this.logWhite.toString(), "It's BLACK's move!\n" +
-        "BLACK needs to play a move!\n");
+    Assert.assertEquals(this.logBlack.toString(), "It's BLACK's move!\n"
+        + "BLACK needs to play a move!\n");
+    Assert.assertEquals(this.logWhite.toString(), "It's BLACK's move!\n"
+        + "BLACK needs to play a move!\n");
   }
   
   // PlayMove
@@ -432,18 +434,18 @@ public class ReversiModelTests {
   @Test
   public void testMPlayMoveCallsPlayerListener() {
     this.model.playMove(PieceColor.BLACK, new AxialPosn(-1, -1));
-    Assert.assertEquals(this.logBlack.toString(), "It's BLACK's move!\n" +
-        "BLACK needs to play a move!\n" +
-        "It's WHITE's move!\n" +
-        "WHITE needs to play a move!\n");
+    Assert.assertEquals(this.logBlack.toString(), "It's BLACK's move!\n"
+        + "BLACK needs to play a move!\n"
+        + "It's WHITE's move!\n"
+        + "WHITE needs to play a move!\n");
 
     this.model.playMove(PieceColor.WHITE, new AxialPosn(1, 1));
-    Assert.assertEquals(this.logBlack.toString(), "It's BLACK's move!\n" +
-        "BLACK needs to play a move!\n" +
-        "It's WHITE's move!\n" +
-        "WHITE needs to play a move!\n" +
-        "It's BLACK's move!\n" +
-        "BLACK needs to play a move!\n");
+    Assert.assertEquals(this.logBlack.toString(), "It's BLACK's move!\n"
+        + "BLACK needs to play a move!\n"
+        + "It's WHITE's move!\n"
+        + "WHITE needs to play a move!\n"
+        + "It's BLACK's move!\n"
+        + "BLACK needs to play a move!\n");
   }
 
   // Pass
@@ -471,17 +473,17 @@ public class ReversiModelTests {
   @Test
   public void testMPassCallsModelListener() {
     this.model.pass(PieceColor.BLACK);
-    Assert.assertEquals(this.logBlack.toString(), "It's BLACK's move!\n" +
-        "BLACK needs to play a move!\n" +
-        "It's WHITE's move!\n" +
-        "WHITE needs to play a move!\n");
+    Assert.assertEquals(this.logBlack.toString(), "It's BLACK's move!\n"
+        + "BLACK needs to play a move!\n"
+        + "It's WHITE's move!\n"
+        + "WHITE needs to play a move!\n");
 
     this.model.pass(PieceColor.WHITE);
-    Assert.assertEquals(this.logWhite.toString(), "It's BLACK's move!\n" +
-        "BLACK needs to play a move!\n" +
-        "It's WHITE's move!\n" +
-        "WHITE needs to play a move!\n" +
-        "It's game over! Stalemate!\n");
+    Assert.assertEquals(this.logWhite.toString(), "It's BLACK's move!\n"
+        + "BLACK needs to play a move!\n"
+        + "It's WHITE's move!\n"
+        + "WHITE needs to play a move!\n"
+        + "It's game over! Stalemate!\n");
   }
 
   // AxialPosn Tests
@@ -511,7 +513,7 @@ public class ReversiModelTests {
   // TextualView
   @Test
   public void testTextualView() {
-    ITextualView view = new TextualView(this.roModel);
+    TextualView view = new TextualView(this.roModel);
 
     Assert.assertEquals(view.toString(),
             "  _ _ _ \n"

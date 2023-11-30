@@ -9,10 +9,10 @@ public enum Direction {
   RIGHT(1, 0), DOWNRIGHT(0, 1),
   DOWNLEFT(-1, 1), LEFT(-1, 0);
 
-  public final int deltaQ;
-  public final int deltaR;
+  final int deltaQ;
+  final int deltaR;
 
-  // Constructs a new Direction using the delta value of q- and r-coodinate.
+  // Constructs a new Direction using the delta value of q- and r-coordinate.
   Direction(int deltaQ, int deltaR) {
     this.deltaQ = deltaQ;
     this.deltaR = deltaR;

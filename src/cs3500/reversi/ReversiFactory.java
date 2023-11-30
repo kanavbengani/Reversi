@@ -1,13 +1,21 @@
 package cs3500.reversi;
 
 import cs3500.reversi.controller.Controller;
+
 import cs3500.reversi.model.IModel;
 import cs3500.reversi.model.Model;
 import cs3500.reversi.model.PieceColor;
+
 import cs3500.reversi.player.AIPlayer;
 import cs3500.reversi.player.HumanPlayer;
 import cs3500.reversi.player.Player;
-import cs3500.reversi.strategy.*;
+
+import cs3500.reversi.strategy.AndStrategy;
+import cs3500.reversi.strategy.AvoidEdgesStrategy;
+import cs3500.reversi.strategy.CaptureMostStrategy;
+import cs3500.reversi.strategy.GoCornerStrategy;
+import cs3500.reversi.strategy.MinimaxStrategyDepth;
+
 import cs3500.reversi.view.IView;
 import cs3500.reversi.view.View;
 

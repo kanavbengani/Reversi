@@ -11,7 +11,7 @@ import java.util.List;
  * The AIPlayer class represents an AI-controlled player in the Reversi game. It uses a specified
  * ReversiStrategy to make moves based on the given game model.
  */
- public final class AIPlayer implements Player {
+public final class AIPlayer implements Player {
   private final ReversiStrategy strategy;
   private final IROModel model;
   private final List<PlayerFeatures> listeners;

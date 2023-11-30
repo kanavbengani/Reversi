@@ -28,8 +28,8 @@ public interface IView {
   /**
    * Add a feature listener to the Reversi view to allow interaction with the game.
    *
-   * @param playerFeatures An instance of {@link PlayerFeatures} that is going to be a listener to all
-   *                 events triggered by the view.
+   * @param playerFeatures An instance of {@link PlayerFeatures} that is going to be a listener to
+   *                       all events triggered by the view.
    */
   void addListener(PlayerFeatures playerFeatures);
   

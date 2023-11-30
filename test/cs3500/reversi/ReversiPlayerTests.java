@@ -11,6 +11,9 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a set of JUnit tests that test the functionality of the cs3500.reversi.player.
+ */
 public class ReversiPlayerTests {
   private StringBuilder logStrategy;
   private StringBuilder logPlayerListener;

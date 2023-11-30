@@ -105,7 +105,8 @@ public class Model implements IModel {
   }
 
   // Returns the number of rings for the board passed in.
-  private int validateBoard(Map<AxialPosn, Optional<PieceColor>> board) throws IllegalArgumentException {
+  private int validateBoard(Map<AxialPosn, Optional<PieceColor>> board)
+      throws IllegalArgumentException {
     int posnCount = board.keySet().size();
     double numRings = (-3 + Math.sqrt(-3 + 12 * posnCount)) / 6;
     if (numRings % 1 != 0) {
@@ -199,7 +200,8 @@ public class Model implements IModel {
 
   @Override
   public boolean isGameOver() {
-    return !(this.anyLegalMoves(this.pieceColor1) || this.anyLegalMoves(this.pieceColor2)) || passCount == 2;
+    return !(this.anyLegalMoves(this.pieceColor1) || this.anyLegalMoves(this.pieceColor2))
+        || passCount == 2;
   }
 
   @Override
@@ -316,7 +318,7 @@ public class Model implements IModel {
     if (this.isGameOver()) {
       // Notifying that the game is over.
       for (ModelFeatures f : this.listeners) {
-          f.itsGameOver(this.getWinner());
+        f.itsGameOver(this.getWinner());
       }
     } else {
       // Notifying whose move it is.

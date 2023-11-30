@@ -15,7 +15,11 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Optional;
 
-public class PackagePrivateListenersTests {
+/**
+ * Represents a set of JUnit tests that test the package-private functionality of the
+ * cs3500.reversi.controller.
+ */
+public class PackagePrivateControllerTests {
   private StringBuilder mockModelLog;
   private StringBuilder mockPlayerLog;
   private StringBuilder mockViewLog;
@@ -64,7 +68,8 @@ public class PackagePrivateListenersTests {
   @Test
   public void testMFIPublishesForItsGameOverBlackWon() {
     this.mfi.itsGameOver(Optional.of(PieceColor.BLACK));
-    Assert.assertEquals(this.mockViewLog.toString(), "promptMessage called with message: BLACK WON!\n");
+    Assert.assertEquals(this.mockViewLog.toString(),
+        "promptMessage called with message: BLACK WON!\n");
     Assert.assertEquals(this.mockPlayerLog.toString(), "");
   }
   
@@ -82,10 +87,10 @@ public class PackagePrivateListenersTests {
     this.pfi.pass();
     this.pfi.pass();
     
-    Assert.assertEquals(this.mockModelLog.toString(), "BLACK wants to pass.\n" +
-        "BLACK wants to pass.\n");
-    Assert.assertEquals(this.mockViewLog.toString(), "refresh called\n" +
-        "promptMessage called with message: Not this player's turn.\n");
+    Assert.assertEquals(this.mockModelLog.toString(), "BLACK wants to pass.\n"
+        + "BLACK wants to pass.\n");
+    Assert.assertEquals(this.mockViewLog.toString(), "refresh called\n"
+        + "promptMessage called with message: Not this player's turn.\n");
   }
   
   @Test
@@ -101,9 +106,9 @@ public class PackagePrivateListenersTests {
     this.pfi.move(new AxialPosn(0, 0));
     this.pfi.move(new AxialPosn(1, 1));
     
-    Assert.assertEquals(this.mockModelLog.toString(), "BLACK wants to play (0, 0)\n" +
-        "BLACK wants to play (1, 1)\n");
-    Assert.assertEquals(this.mockViewLog.toString(), "refresh called\n" +
-        "promptMessage called with message: Not this player's turn.\n");
+    Assert.assertEquals(this.mockModelLog.toString(), "BLACK wants to play (0, 0)\n"
+        + "BLACK wants to play (1, 1)\n");
+    Assert.assertEquals(this.mockViewLog.toString(), "refresh called\n"
+        + "promptMessage called with message: Not this player's turn.\n");
   }
 }

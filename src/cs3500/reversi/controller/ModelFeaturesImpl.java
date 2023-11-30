@@ -7,11 +7,14 @@ import cs3500.reversi.view.IView;
 
 import java.util.Optional;
 
-// Creates a concrete implementation of the model features.
+/**
+ * A concrete implementation of the model features that listens to all model triggers and acts
+ * based on that.
+ */
 class ModelFeaturesImpl implements ModelFeatures {
-  private Player player;
-  private IView view;
-  private PieceColor color;
+  private final Player player;
+  private final IView view;
+  private final PieceColor color;
 
   // Constructs a new ModelFeatures implementation using the passed in player, view, and color.
   ModelFeaturesImpl(Player player, IView view, PieceColor color) {

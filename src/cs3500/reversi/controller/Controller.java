@@ -1,12 +1,13 @@
 package cs3500.reversi.controller;
 
-import cs3500.reversi.model.*;
+import cs3500.reversi.model.IModel;
+import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.view.IView;
 import cs3500.reversi.player.Player;
 
 /**
- * The Controller class facilitates communication between the Reversi game's model, player, and view.
- * It sets up listeners to coordinate interactions during the game.
+ * The Controller class facilitates communication between the Reversi game's model, player, and
+ * view. It sets up listeners to coordinate interactions during the game.
  */
 public final class Controller {
   /**

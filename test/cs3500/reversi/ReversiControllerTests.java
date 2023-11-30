@@ -16,6 +16,9 @@ import org.junit.Test;
 
 import java.util.HashMap;
 
+/**
+ * Represents a set of JUnit tests that test the functionality of the cs3500.reversi.controller.
+ */
 public class ReversiControllerTests {
   private StringBuilder mockModelLog;
   private StringBuilder mockPlayerLogBlack;
@@ -74,16 +77,16 @@ public class ReversiControllerTests {
     Assert.assertEquals(this.mockModelLog.toString(),
         "addListener called in MockModel.\n");
     Assert.assertEquals(this.mockPlayerLogBlack.toString(),
-        "addListener called in MockPlayer.\n" +
-        "playAMove called\n");
+        "addListener called in MockPlayer.\n"
+            + "playAMove called\n");
     Assert.assertEquals(this.mockViewLogBlack.toString(),
-        "addListener called in MockView.\n" +
-        "itsTheTurnOf BLACK\n");
+        "addListener called in MockView.\n"
+            + "itsTheTurnOf BLACK\n");
     Assert.assertEquals(this.mockPlayerLogWhite.toString(),
         "addListener called in MockPlayer.\n");
     Assert.assertEquals(this.mockViewLogWhite.toString(),
-        "addListener called in MockView.\n" +
-        "itsTheTurnOf BLACK\n");
+        "addListener called in MockView.\n"
+            + "itsTheTurnOf BLACK\n");
   }
   
   @Test
@@ -96,13 +99,13 @@ public class ReversiControllerTests {
     Assert.assertEquals(this.mockPlayerLogBlack.toString(),
         "addListener called in MockPlayer.\nplayAMove called\n");
     Assert.assertEquals(this.mockViewLogBlack.toString(),
-        "addListener called in MockView.\n" +
-            "itsTheTurnOf BLACK\nitsTheTurnOf WHITE\n");
+        "addListener called in MockView.\n"
+            + "itsTheTurnOf BLACK\nitsTheTurnOf WHITE\n");
     Assert.assertEquals(this.mockPlayerLogWhite.toString(),
         "addListener called in MockPlayer.\nplayAMove called\n");
     Assert.assertEquals(this.mockViewLogWhite.toString(),
-        "addListener called in MockView.\n" +
-            "itsTheTurnOf BLACK\nitsTheTurnOf WHITE\n");
+        "addListener called in MockView.\n"
+            + "itsTheTurnOf BLACK\nitsTheTurnOf WHITE\n");
   }
   
   @Test
@@ -115,13 +118,13 @@ public class ReversiControllerTests {
     Assert.assertEquals(this.mockPlayerLogBlack.toString(),
         "addListener called in MockPlayer.\nplayAMove called\n");
     Assert.assertEquals(this.mockViewLogBlack.toString(),
-        "addListener called in MockView.\n" +
-        "itsTheTurnOf BLACK\nitsTheTurnOf WHITE\n");
+        "addListener called in MockView.\n"
+            + "itsTheTurnOf BLACK\nitsTheTurnOf WHITE\n");
     Assert.assertEquals(this.mockPlayerLogWhite.toString(),
         "addListener called in MockPlayer.\nplayAMove called\n");
     Assert.assertEquals(this.mockViewLogWhite.toString(),
-        "addListener called in MockView.\n" +
-        "itsTheTurnOf BLACK\nitsTheTurnOf WHITE\n");
+        "addListener called in MockView.\n"
+            + "itsTheTurnOf BLACK\nitsTheTurnOf WHITE\n");
   }
   
   @Test
@@ -130,17 +133,17 @@ public class ReversiControllerTests {
     this.player.playAMove();
     
     Assert.assertEquals(this.mockModelLog.toString(),
-        "addListener called in MockModel.\n" +
-            "BLACK wants to play (1, -2)\n");
+        "addListener called in MockModel.\n"
+            + "BLACK wants to play (1, -2)\n");
     Assert.assertEquals(this.mockPlayerLogBlack.toString(),
         "addListener called in MockPlayer.\nplayAMove called\n");
     Assert.assertEquals(this.mockViewLogBlack.toString(),
-        "addListener called in MockView.\n" +
-            "itsTheTurnOf BLACK\n");
+        "addListener called in MockView.\n"
+            + "itsTheTurnOf BLACK\n");
     Assert.assertEquals(this.mockPlayerLogWhite.toString(),
         "addListener called in MockPlayer.\n");
     Assert.assertEquals(this.mockViewLogWhite.toString(),
-        "addListener called in MockView.\n" +
-            "itsTheTurnOf BLACK\n");
+        "addListener called in MockView.\n"
+            + "itsTheTurnOf BLACK\n");
   }
 }

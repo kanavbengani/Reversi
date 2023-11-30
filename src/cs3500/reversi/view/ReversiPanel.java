@@ -41,7 +41,7 @@ class ReversiPanel extends JPanel {
   private static final int WIDTH = 700;
   private final IROModel model;
   private final int numRings;
-  private MouseAdapter mouse;
+  private final MouseAdapter mouse;
   private final KeyListener keyboard;
   private final List<PlayerFeatures> featuresListeners = new ArrayList<>();
   private final PieceColor pieceColor;
@@ -55,7 +55,7 @@ class ReversiPanel extends JPanel {
    * @param model      The Reversi game model.
    * @param pieceColor The color of the player using this panel.
    */
-  public ReversiPanel(IROModel model, PieceColor pieceColor) {
+  ReversiPanel(IROModel model, PieceColor pieceColor) {
     this.model = Objects.requireNonNull(model);
     this.numRings = this.model.getNumRings();
     this.pieceColor = pieceColor;
@@ -86,10 +86,12 @@ class ReversiPanel extends JPanel {
     return Math.min(horizontalMaxRadius, verticalMaxRadius);
   }
   
+  // Helps in testing the view mouse input triggers the correct events.
   MouseAdapter getMouseAdapter() {
     return this.mouse;
   }
   
+  // Helps in testing the view keyboard input triggers the correct events.
   KeyListener getKeyListener() {
     return this.keyboard;
   }
@@ -97,7 +99,7 @@ class ReversiPanel extends JPanel {
   /**
    * Disables all mouse and keyboard input.
    */
-  public void disableInput() {
+  void disableInput() {
     this.removeMouseListener(this.mouse);
     this.removeMouseMotionListener(this.mouse);
     this.removeKeyListener(this.keyboard);
@@ -297,7 +299,7 @@ class ReversiPanel extends JPanel {
    *
    * @param pieceColor the piece color of the player's turn
    */
-  public void itsYourMove(PieceColor pieceColor) {
+  void itsTheTurnOf(PieceColor pieceColor) {
     this.isMyMove = this.pieceColor.equals(pieceColor);
     this.repaint();
   }

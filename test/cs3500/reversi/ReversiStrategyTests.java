@@ -23,7 +23,7 @@ import cs3500.reversi.model.Model;
 import cs3500.reversi.model.PieceColor;
 
 /**
- * A JUnit4 testing class for testing Reversi strategies.
+ * Represents a set of JUnit tests that test the functionality of the cs3500.reversi.strategy.
  */
 public class ReversiStrategyTests {
   private StringBuilder log;
@@ -63,8 +63,8 @@ public class ReversiStrategyTests {
     this.captureMostStrategy.chooseMove(new ArrayList<>(), mockModel);
 
     for (AxialPosn ap : this.mockModel.getAllPosn()) {
-      Assert.assertTrue(this.log.toString().contains("Calling isMoveValid to check if BLACK" +
-              " can play on " + ap.toString()));
+      Assert.assertTrue(this.log.toString().contains("Calling isMoveValid to check if BLACK"
+          + " can play on " + ap.toString()));
     }
   }
 
