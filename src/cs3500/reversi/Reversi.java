@@ -12,7 +12,10 @@ public final class Reversi {
    */
   public static void main(String[] args) {
     if (args.length < 2 || args.length > 4) {
-      throw new IllegalArgumentException("Missing game configuration options.");
+      System.err.println("Missing/too many game configuration options.");
+      System.exit(0);
+      // The below statement will never be reached. This is only for type-checker.
+      return;
     }
     ReversiFactory.GameType gt1;
     ReversiFactory.GameType gt2;
@@ -20,23 +23,50 @@ public final class Reversi {
     int gt2Depth = 0;
     
     if (args.length == 2) {
-      gt1 = Reversi.parseGameType(args[0]);
-      gt2 = Reversi.parseGameType(args[1]);
+      try {
+        gt1 = Reversi.parseGameType(args[0]);
+        gt2 = Reversi.parseGameType(args[1]);
+      } catch (IllegalArgumentException ia) {
+        System.err.println(ia.getMessage());
+        System.exit(0);
+        // The below statement will never be reached. This is only for type-checker.
+        return;
+      }
     }
     else if (args.length == 3) {
-      gt1 = Reversi.parseGameType(args[0]);
       try {
-        gt2 = Reversi.parseGameType(args[1]);
-        gt2Depth = Integer.parseInt(args[2]);
-      } catch (NumberFormatException e) {
-        throw new IllegalArgumentException("Minimax depth must be an integer greater than 0");
-      } catch (IllegalArgumentException ia) {
+        gt1 = Reversi.parseGameType(args[0]);
         try {
-          gt1Depth = Integer.parseInt(args[1]);
-          gt2 = Reversi.parseGameType(args[2]);
+          gt2 = Reversi.parseGameType(args[1]);
+          gt2Depth = Integer.parseInt(args[2]);
         } catch (NumberFormatException e) {
-          throw new IllegalArgumentException("Minimax depth must be an integer greater than 0");
+          System.err.println("Minimax depth must be an integer greater than 0.");
+          System.exit(0);
+          // The below statement will never be reached. This is only for type-checker.
+          return;
+        } catch (IllegalArgumentException ia) {
+          try {
+            gt1Depth = Integer.parseInt(args[1]);
+            try {
+              gt2 = Reversi.parseGameType(args[2]);
+            } catch (IllegalArgumentException i) {
+              System.err.println(ia.getMessage());
+              System.exit(0);
+              // The below statement will never be reached. This is only for type-checker.
+              return;
+            }
+          } catch (NumberFormatException e) {
+            System.err.println("Minimax depth must be an integer greater than 0.");
+            System.exit(0);
+            // The below statement will never be reached. This is only for type-checker.
+            return;
+          }
         }
+      } catch (IllegalArgumentException ia) {
+        System.err.println(ia.getMessage());
+        System.exit(0);
+        // The below statement will never be reached. This is only for type-checker.
+        return;
       }
     }
     else {
@@ -46,7 +76,15 @@ public final class Reversi {
         gt2 = Reversi.parseGameType(args[2]);
         gt2Depth = Integer.parseInt(args[3]);
       } catch (NumberFormatException e) {
-        throw new IllegalArgumentException("Depth must be an integer greater than 0.");
+        System.err.println("Minimax depth must be an integer greater than 0.");
+        System.exit(0);
+        // The below statement will never be reached. This is only for type-checker.
+        return;
+      } catch (IllegalArgumentException ia) {
+        System.err.println(ia.getMessage());
+        System.exit(0);
+        // The below statement will never be reached. This is only for type-checker.
+        return;
       }
     }
     

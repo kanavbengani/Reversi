@@ -26,11 +26,15 @@ can take in a depth greater than 1).
 
 For all of the above strategies, refer to the `strategy` package.
 
+**Note:** A depth of 0 can optionally be passed in for non-strategy1 arguments, denoting no depth to be taken into
+consideration.
+
 Example usage: 
-- `human human` -- Human (Black) v/s Human (White)
-- `human strategy1 3` -- Human (Black) v/s Minimax w/ Depth 3 (White)
-- `strategy4 human` -- Capture Most Strategy (Black) v/s Human (White)
-- `strategy1 2 strategy1 4` -- Minimax w/ Depth 2 (Black) v/s Minimax w/ Depth 4 (White)
+- `human human` -- Human (Black) vs. Human (White)
+- `human strategy1 3` -- Human (Black) vs. Minimax w/Depth 3 (White)
+- `strategy4 human` -- Capture Most Strategy (Black) vs. Human (White)
+- `strategy1 2 strategy1 4` -- Minimax w/Depth 2 (Black) vs. Minimax w/Depth 4 (White)
+- `strategy2 0 strategy3` -- Go Corners (Black) vs. AvoidEdges (White)
 
 ### How to interact with the game as a human
 As a human, you can click on unoccupied cells, and they will be highlighted red (invalid move) or green (valid move) 

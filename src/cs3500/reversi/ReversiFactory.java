@@ -70,15 +70,16 @@ public final class ReversiFactory {
    * @param view    The view associated with the player.
    * @param model   The Reversi model associated with the player.
    * @return A new Player instance configured based on the specified parameters.
-   * @throws IllegalArgumentException If the depth is non-zero for non-minimax strategies,
-   *                                  or if an invalid game type is provided.
    */
   private static Player getPlayer(ReversiFactory.GameType gt, int gtDepth, IView view,
                                   IModel model) {
     Player player;
     
     if (gtDepth != 0 && !gt.equals(ReversiFactory.GameType.MINIMAX)) {
-      throw new IllegalArgumentException("Depth must be 0 for non-minimax strategies.");
+      System.err.println("Depth must not be outlined for non-minimax strategies.");
+      System.exit(0);
+      // The below statement will never be reached. This is only for type-checker.
+      return null;
     }
     
     switch (gt) {
@@ -101,14 +102,20 @@ public final class ReversiFactory {
         break;
       case MINIMAX:
         if (gtDepth <= 0) {
-          throw new IllegalArgumentException("Depth of Minimax must be at least 1");
+          System.err.println("Depth of Minimax must exist and be at least 1.");
+          System.exit(0);
+          // The below statement will never be reached. This is only for type-checker.
+          return null;
         }
         player = new AIPlayer(model, new MinimaxStrategyDepth(new AndStrategy(
             new GoCornerStrategy(), new AndStrategy(new AvoidEdgesStrategy(),
             new CaptureMostStrategy())), gtDepth));
         break;
       default:
-        throw new IllegalArgumentException("Invalid game type");
+        System.err.println("Invalid game type");
+        System.exit(0);
+        // The below statement will never be reached. This is only for type-checker.
+        return null;
     }
     
     if (!gt.equals(GameType.HUMAN)) {

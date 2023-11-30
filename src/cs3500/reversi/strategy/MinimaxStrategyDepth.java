@@ -185,7 +185,6 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
       throw new IllegalStateException("Game is over, move cannot be chosen.");
     }
     List<AxialPosn> it;
-
     PieceColor turn = model.getTurn();
 
     if (turn.equals(this.opponentColor)) {
@@ -204,9 +203,19 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
         return Integer.MAX_VALUE / 2;
       }
     }
-
+    
+    Map<AxialPosn, Integer> result = computeResult(model, it);
+    
+    return turn.equals(this.opponentColor)
+            ? Collections.max(result.values())
+            : Collections.min(result.values());
+  }
+  
+  // Computes the base case result hashmap by making a copy of the model and playing all the
+  // moves passed in
+  private Map<AxialPosn, Integer> computeResult(IROModel model, List<AxialPosn> it) {
+    PieceColor turn = model.getTurn();
     Map<AxialPosn, Integer> result = new HashMap<>();
-
     for (AxialPosn move : it) {
       IModel copyModel = model.copy();
       copyModel.playMove(turn, move);
@@ -226,12 +235,9 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
                 copyModel.getScore(this.opponentColor) - copyModel.getScore(this.myColor));
       }
     }
-
-    return turn.equals(this.opponentColor)
-            ? Collections.max(result.values())
-            : Collections.min(result.values());
+    return result;
   }
-
+  
   // Sorts the passed in Map in the order of score
   // followed by the axial position (topmost leftmost).
   private Map<AxialPosn, Integer> sortAscending(Map<AxialPosn, Integer> result, boolean ascending) {
