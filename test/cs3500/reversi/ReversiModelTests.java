@@ -19,7 +19,7 @@ import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.view.TextualView;
 
 /**
- * Represents a set of JUnit tests that test the functionality of the cs3500.reversi.model.
+ * Represents a set of JUnit tests that NeedToDeleteTests the functionality of the cs3500.reversi.model.
  */
 public class ReversiModelTests {
   private IModel model;
@@ -152,7 +152,7 @@ public class ReversiModelTests {
     this.numRings = 1;
     this.initTest();
     Assert.assertEquals(this.model.getNumRings(), this.model.copy().getNumRings());
-    Assert.assertEquals(this.model.getTurn(), this.model.copy().getTurn());
+    Assert.assertEquals(this.model.getTurnColor(), this.model.copy().getTurnColor());
     Assert.assertEquals(this.model.getPieceAt(new AxialPosn(0, 0)),
         this.model.copy().getPieceAt(new AxialPosn(0, 0)));
     Assert.assertEquals(this.model.getPieceAt(new AxialPosn(1, 0)),
@@ -196,7 +196,7 @@ public class ReversiModelTests {
   // AnyLegalMoves
   @Test
   public void testROMAnyLegalMovesStartOfGame() {
-    Assert.assertTrue(this.roModel.anyLegalMoves());
+    Assert.assertTrue(this.roModel.anyLegalMoves(this.roModel.getTurnColor()));
   }
 
   @Test
@@ -207,7 +207,7 @@ public class ReversiModelTests {
     this.model.playMove(PieceColor.WHITE, new AxialPosn(1, -2));
     this.model.playMove(PieceColor.BLACK, new AxialPosn(-1, 2));
     this.model.playMove(PieceColor.WHITE, new AxialPosn(-2, 1));
-    Assert.assertFalse(this.roModel.anyLegalMoves());
+    Assert.assertFalse(this.roModel.anyLegalMoves(this.roModel.getTurnColor()));
   }
 
   // GetPieceAt
@@ -246,16 +246,16 @@ public class ReversiModelTests {
   // GetTurn
   @Test
   public void testROMGetTurnAfterSwitchingTurn() {
-    Assert.assertEquals(PieceColor.BLACK, this.roModel.getTurn());
+    Assert.assertEquals(PieceColor.BLACK, this.roModel.getTurnColor());
     this.model.pass(PieceColor.BLACK);
-    Assert.assertEquals(PieceColor.WHITE, this.roModel.getTurn());
+    Assert.assertEquals(PieceColor.WHITE, this.roModel.getTurnColor());
   }
 
   @Test
   public void testROMGetTurnAfterMovingPiece() {
-    Assert.assertEquals(PieceColor.BLACK, this.roModel.getTurn());
+    Assert.assertEquals(PieceColor.BLACK, this.roModel.getTurnColor());
     this.model.playMove(PieceColor.BLACK, new AxialPosn(1, 1));
-    Assert.assertEquals(PieceColor.WHITE, this.roModel.getTurn());
+    Assert.assertEquals(PieceColor.WHITE, this.roModel.getTurnColor());
   }
 
   // GetRings
@@ -302,7 +302,7 @@ public class ReversiModelTests {
   @Test
   public void testMConstructorWorks() {
     Assert.assertEquals(this.model.getNumRings(), this.numRings);
-    Assert.assertEquals(this.model.getTurn(), PieceColor.BLACK);
+    Assert.assertEquals(this.model.getTurnColor(), PieceColor.BLACK);
   }
   
   // IModel Tests (Operation Methods)
@@ -316,13 +316,12 @@ public class ReversiModelTests {
   @Test
   public void testStartGameInvalid() {
     this.model = new Model(this.numRings);
-    Assert.assertNull(this.model.getTurn());
     Assert.assertThrows(IllegalStateException.class, () -> this.model.startGame());
   }
   
   @Test
   public void testStartGameCorrectlyAssignsTurn() {
-    Assert.assertEquals(this.model.getTurn(), PieceColor.BLACK);
+    Assert.assertEquals(this.model.getTurnColor(), PieceColor.BLACK);
   }
   
   @Test
@@ -426,9 +425,9 @@ public class ReversiModelTests {
 
   @Test
   public void testMPlayMoveSwitchesTurn() {
-    Assert.assertEquals(this.model.getTurn(), PieceColor.BLACK);
+    Assert.assertEquals(this.model.getTurnColor(), PieceColor.BLACK);
     this.model.playMove(PieceColor.BLACK, new AxialPosn(1, 1));
-    Assert.assertEquals(this.model.getTurn(), PieceColor.WHITE);
+    Assert.assertEquals(this.model.getTurnColor(), PieceColor.WHITE);
   }
 
   @Test
@@ -463,11 +462,11 @@ public class ReversiModelTests {
 
   @Test
   public void testMPassValid() {
-    Assert.assertEquals(this.model.getTurn(), PieceColor.BLACK);
+    Assert.assertEquals(this.model.getTurnColor(), PieceColor.BLACK);
     this.model.pass(PieceColor.BLACK);
-    Assert.assertEquals(this.model.getTurn(), PieceColor.WHITE);
+    Assert.assertEquals(this.model.getTurnColor(), PieceColor.WHITE);
     this.model.pass(PieceColor.WHITE);
-    Assert.assertEquals(this.model.getTurn(), PieceColor.BLACK);
+    Assert.assertEquals(this.model.getTurnColor(), PieceColor.BLACK);
   }
 
   @Test

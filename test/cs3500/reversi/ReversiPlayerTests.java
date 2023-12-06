@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a set of JUnit tests that test the functionality of the cs3500.reversi.player.
+ * Represents a set of JUnit tests that NeedToDeleteTests the functionality of the cs3500.reversi.player.
  */
 public class ReversiPlayerTests {
   private StringBuilder logStrategy;

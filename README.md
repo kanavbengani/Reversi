@@ -65,7 +65,7 @@ refactoring of the package.
 
 ### Changes for Part 3
 The following are changes made to the code from the previous assignment (Assignment 6).
-- Added a package-private method to the view to test the behavior of the mouse and the keyboard listeners.
+- Added a package-private method to the view to NeedToDeleteTests the behavior of the mouse and the keyboard listeners.
 - Added a `disableInput` method to the view to not allow any input on an AI's view.
 - Removed old implementation of single-depth minimax and refactored recursive, multiple-depth minimax.
 - Split notification of turn and prompting of player move in `ModelFeatures` and added a `itsGameOver` method.
@@ -195,7 +195,7 @@ and the synchronous nature of the AI interaction.
 │                   ├── ReversiPanel.java
 │                   ├── TextualView.java
 │                   └── View.java
-└── test
+└── NeedToDeleteTests
      └── cs3500
           └── reversi
                ├── MockModel.java

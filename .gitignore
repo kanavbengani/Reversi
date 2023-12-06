@@ -1,7 +1,7 @@
 ### IntelliJ IDEA ###
 out/
 !**/src/main/**/out/
-!**/src/test/**/out/
+!**/src/NeedToDeleteTests/**/out/
 
 # ZIP
 *.zip
@@ -16,7 +16,7 @@ out/
 .sts4-cache
 bin/
 !**/src/main/**/bin/
-!**/src/test/**/bin/
+!**/src/NeedToDeleteTests/**/bin/
 
 ### NetBeans ###
 /nbproject/private/

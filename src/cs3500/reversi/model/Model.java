@@ -232,7 +232,10 @@ public class Model implements IModel {
   }
 
   @Override
-  public PieceColor getTurn() {
+  public PieceColor getTurnColor() throws IllegalStateException {
+    if (this.currentPieceColor == null) {
+      throw new IllegalStateException("Game has not started yet.");
+    }
     return this.currentPieceColor;
   }
 
@@ -247,14 +250,10 @@ public class Model implements IModel {
             .filter(optional -> optional.equals(Optional.of(pieceColor)))
             .count();
   }
-
-  @Override
-  public boolean anyLegalMoves() {
-    return this.anyLegalMoves(this.currentPieceColor);
-  }
-
+  
   // Returns whether there are any valid moves for the passed in color.
-  private boolean anyLegalMoves(PieceColor color) {
+  @Override
+  public boolean anyLegalMoves(PieceColor color) {
     return this.board.keySet().stream()
             .anyMatch(ap -> !this.validateAllDirections(color, ap).isEmpty());
   }

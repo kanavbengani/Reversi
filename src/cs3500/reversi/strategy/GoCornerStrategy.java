@@ -21,7 +21,7 @@ public class GoCornerStrategy implements ReversiStrategy {
     Iterable<AxialPosn> it = possibleMoves.isEmpty() ? corners : possibleMoves;
 
     for (AxialPosn move : it) {
-      if (model.isMoveValid(model.getTurn(), move) && corners.contains(move)) {
+      if (model.isMoveValid(model.getTurnColor(), move) && corners.contains(move)) {
         moves.add(move);
       }
     }

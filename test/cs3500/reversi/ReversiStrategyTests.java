@@ -23,7 +23,7 @@ import cs3500.reversi.model.Model;
 import cs3500.reversi.model.PieceColor;
 
 /**
- * Represents a set of JUnit tests that test the functionality of the cs3500.reversi.strategy.
+ * Represents a set of JUnit tests that NeedToDeleteTests the functionality of the cs3500.reversi.strategy.
  */
 public class ReversiStrategyTests {
   private StringBuilder log;

@@ -21,7 +21,7 @@ public class AvoidEdgesStrategy implements ReversiStrategy {
     Iterable<AxialPosn> it = possibleMoves.isEmpty() ? model.getAllPosn() : possibleMoves;
 
     for (AxialPosn move : it) {
-      if (model.isMoveValid(model.getTurn(), move) && !edges.contains(move)) {
+      if (model.isMoveValid(model.getTurnColor(), move) && !edges.contains(move)) {
         moves.add(move);
       }
     }

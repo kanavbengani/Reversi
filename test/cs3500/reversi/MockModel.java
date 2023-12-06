@@ -143,7 +143,7 @@ public class MockModel implements IModel {
   }
 
   @Override
-  public PieceColor getTurn() {
+  public PieceColor getTurnColor() {
     this.log.append("Calling getTurn.\n");
     return PieceColor.BLACK;
   }
@@ -159,9 +159,9 @@ public class MockModel implements IModel {
     this.log.append("Calling getScore for ").append(color).append(".\n");
     return 0;
   }
-
+  
   @Override
-  public boolean anyLegalMoves() {
+  public boolean anyLegalMoves(PieceColor pieceColor) {
     this.log.append("Calling anyLegalMoves.\n");
     return false;
   }

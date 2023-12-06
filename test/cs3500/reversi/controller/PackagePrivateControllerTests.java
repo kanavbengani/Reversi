@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Optional;
 
 /**
- * Represents a set of JUnit tests that test the package-private functionality of the
+ * Represents a set of JUnit tests that NeedToDeleteTests the package-private functionality of the
  * cs3500.reversi.controller.
  */
 public class PackagePrivateControllerTests {

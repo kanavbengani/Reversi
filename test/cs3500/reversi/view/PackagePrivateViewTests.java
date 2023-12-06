@@ -14,7 +14,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 /**
- * Represents a set of JUnit tests that test the package-private functionality of the
+ * Represents a set of JUnit tests that NeedToDeleteTests the package-private functionality of the
  * cs3500.reversi.view.
  */
 public class PackagePrivateViewTests {
@@ -54,7 +54,7 @@ public class PackagePrivateViewTests {
   
   @Test
   public void testViewKeyboardEnterOutputsNothingToPlayerFeatures() {
-    // This test serves as a way to test whether the view is computing the correct logical
+    // This NeedToDeleteTests serves as a way to NeedToDeleteTests whether the view is computing the correct logical
     // coordinates of the clicked cell. This is because it takes in a mouse clicked coordinate
     // and the log outputs the correct coordinate.
     

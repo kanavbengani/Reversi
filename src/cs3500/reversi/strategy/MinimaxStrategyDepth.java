@@ -49,7 +49,7 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
   // Initializes the colors for the player and
   // the opponent based on the current turn in the game.
   private void initializeColors(IROModel model) {
-    this.myColor = model.getTurn();
+    this.myColor = model.getTurnColor();
     this.opponentColor = this.myColor.equals(PieceColor.BLACK)
             ? PieceColor.WHITE
             : PieceColor.BLACK;
@@ -149,9 +149,9 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
   private Map<AxialPosn, Integer> doBaseCase(IROModel model) {
     Map<AxialPosn, Integer> result = new HashMap<>();
     for (AxialPosn move : model.getAllPosn()) {
-      if (model.isMoveValid(model.getTurn(), move)) {
+      if (model.isMoveValid(model.getTurnColor(), move)) {
         IModel copyModel = model.copy();
-        copyModel.playMove(model.getTurn(), move);
+        copyModel.playMove(model.getTurnColor(), move);
         if (copyModel.isGameOver()) {
           if (copyModel.getWinner().isEmpty()) { // Stalemate
             result.put(move, 0);
@@ -169,7 +169,7 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
         }
       }
     }
-    if (model.getTurn().equals(this.myColor)) {
+    if (model.getTurnColor().equals(this.myColor)) {
       result = this.sortAscending(result, true);
     } else {
       result = this.sortAscending(result, false);
@@ -185,7 +185,7 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
       throw new IllegalStateException("Game is over, move cannot be chosen.");
     }
     List<AxialPosn> it;
-    PieceColor turn = model.getTurn();
+    PieceColor turn = model.getTurnColor();
 
     if (turn.equals(this.opponentColor)) {
       // If end is opponent's turn, go through only moves picked in their strategy.
@@ -214,7 +214,7 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
   // Computes the base case result hashmap by making a copy of the model and playing all the
   // moves passed in
   private Map<AxialPosn, Integer> computeResult(IROModel model, List<AxialPosn> it) {
-    PieceColor turn = model.getTurn();
+    PieceColor turn = model.getTurnColor();
     Map<AxialPosn, Integer> result = new HashMap<>();
     for (AxialPosn move : it) {
       IModel copyModel = model.copy();

@@ -10,14 +10,14 @@ import cs3500.reversi.player.PlayerFeatures;
  * A concrete implementation of the player features that listens to all player/view triggers and
  * acts based on that.
  */
-class PlayerFeaturesImpl implements PlayerFeatures {
-  private final IModel model;
+public class PlayerFeaturesImpl implements PlayerFeatures {
+  protected final IModel model;
   private final IView view;
   private final PieceColor color;
 
 
   // Constructs a new player features implementation using the passed in model, view, and color.
-  PlayerFeaturesImpl(IModel model, IView view, PieceColor color) {
+  public PlayerFeaturesImpl(IModel model, IView view, PieceColor color) {
     this.model = model;
     this.view = view;
     this.color = color;

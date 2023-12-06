@@ -62,8 +62,9 @@ public interface IROModel {
    * Gets the piece color whose turn it currently is in the Reversi game.
    *
    * @return The piece color whose turn it is.
+   * @throws IllegalStateException if the game has not been started.
    */
-  PieceColor getTurn();
+  PieceColor getTurnColor() throws IllegalStateException;
 
   /**
    * Gets the number of rings in the hexagonal grid. Each ring consists of
@@ -86,7 +87,7 @@ public interface IROModel {
    *
    * @return Whether the current piece color has any legal moves.
    */
-  boolean anyLegalMoves();
+  boolean anyLegalMoves(PieceColor pieceColor);
 
   /**
    * Adds the given features class to be added as a listener to when the cs3500.reversi.model

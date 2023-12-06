@@ -22,8 +22,8 @@ public class CaptureMostStrategy implements ReversiStrategy {
 
     for (AxialPosn ap : it) {
       try {
-        if (model.isMoveValid(model.getTurn(), ap)) {
-          int captured = model.getAllCapturedPieces(model.getTurn(), ap).size();
+        if (model.isMoveValid(model.getTurnColor(), ap)) {
+          int captured = model.getAllCapturedPieces(model.getTurnColor(), ap).size();
           if (maxCaptured < captured) {
             maxCaptured = captured;
             ties = new ArrayList<>();
