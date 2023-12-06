@@ -1,14 +1,24 @@
 package cs3500.reversi;
 
+import cs3500.reversi.adapter.ControllerAdapter;
+import cs3500.reversi.adapter.ModelAdapter;
+import cs3500.reversi.adapter.StrategyAdapter;
+import cs3500.reversi.adapter.ViewAdapter;
 import cs3500.reversi.controller.Controller;
 
 import cs3500.reversi.model.IModel;
-import cs3500.reversi.model.Model;
 import cs3500.reversi.model.PieceColor;
 
 import cs3500.reversi.player.AIPlayer;
 import cs3500.reversi.player.HumanPlayer;
 import cs3500.reversi.player.Player;
+
+import cs3500.reversi.provider.strategies.ChooseBestStrategy;
+import cs3500.reversi.provider.strategies.MakeZeroOpponentTurnZero;
+import cs3500.reversi.provider.strategies.MaximizeScore;
+import cs3500.reversi.provider.strategies.PlayCorner;
+import cs3500.reversi.provider.strategies.PlaySide;
+import cs3500.reversi.provider.strategies.PlayThreeFrom;
 
 import cs3500.reversi.strategy.AndStrategy;
 import cs3500.reversi.strategy.AvoidEdgesStrategy;
@@ -30,11 +40,15 @@ public final class ReversiFactory {
    * Enum representing different game types supported by the ReversiFactory.
    */
   public enum GameType {
-    HUMAN,
-    CAPTURE_MOST,
-    GO_CORNER,
-    AVOID_EDGES,
-    MINIMAX
+    OUR_HUMAN,
+    OUR_STRATEGY4,
+    OUR_STRATEGY3,
+    OUR_STRATEGY2,
+    OUR_STRATEGY1,
+    PROVIDER_HUMAN,
+    PROVIDER_STRATEGY1,
+    PROVIDER_STRATEGY2,
+    PROVIDER_STRATEGY3
   }
   
   /**
@@ -49,17 +63,45 @@ public final class ReversiFactory {
    */
   public static IModel makeModel(int numRings, ReversiFactory.GameType gt1, int gt1Depth,
                                  ReversiFactory.GameType gt2, int gt2Depth) {
-    IModel model = new Model(numRings);
+    ModelAdapter model = new ModelAdapter(numRings);
     IView viewBlack = new View(model, PieceColor.BLACK);
-    IView viewWhite = new View(model, PieceColor.WHITE);
+    IView viewWhite = ReversiFactory.getView2(gt2, model);
     
     Player player1 = ReversiFactory.getPlayer(gt1, gt1Depth, viewBlack, model);
     Player player2 = ReversiFactory.getPlayer(gt2, gt2Depth, viewWhite, model);
     
     new Controller(model, player1, viewBlack, PieceColor.BLACK);
-    new Controller(model, player2, viewWhite, PieceColor.WHITE);
+    ReversiFactory.initializeController2(gt2, model, player2, viewWhite);
     
     return model;
+  }
+  
+  private static IView getView2(ReversiFactory.GameType gt, ModelAdapter model) {
+    switch (gt) {
+      case PROVIDER_HUMAN:
+      case PROVIDER_STRATEGY1:
+      case PROVIDER_STRATEGY2:
+      case PROVIDER_STRATEGY3:
+        IView v =  new ViewAdapter(model);
+        v.display(true);
+        return v;
+      default:
+        return new View(model, PieceColor.WHITE); // Second player is always WHITE
+    }
+  }
+  
+  private static void initializeController2(ReversiFactory.GameType gt, IModel model,
+                                            Player player2, IView viewWhite) {
+    switch (gt) {
+      case PROVIDER_HUMAN:
+      case PROVIDER_STRATEGY1:
+      case PROVIDER_STRATEGY2:
+      case PROVIDER_STRATEGY3:
+        new ControllerAdapter(model, player2, viewWhite, PieceColor.WHITE);
+        break;
+      default:
+        new Controller(model, player2, viewWhite, PieceColor.WHITE);
+    }
   }
   
   /**
@@ -75,7 +117,7 @@ public final class ReversiFactory {
                                   IModel model) {
     Player player;
     
-    if (gtDepth != 0 && !gt.equals(ReversiFactory.GameType.MINIMAX)) {
+    if (gtDepth != 0 && !gt.equals(ReversiFactory.GameType.OUR_STRATEGY1)) {
       System.err.println("Depth must not be outlined for non-minimax strategies.");
       System.exit(0);
       // The below statement will never be reached. This is only for type-checker.
@@ -83,24 +125,25 @@ public final class ReversiFactory {
     }
     
     switch (gt) {
-      case HUMAN:
+      case OUR_HUMAN:
+      case PROVIDER_HUMAN:
         player = new HumanPlayer();
         break;
-      case CAPTURE_MOST:
+      case OUR_STRATEGY4:
         player = new AIPlayer(model, new CaptureMostStrategy());
         break;
-      case AVOID_EDGES:
+      case OUR_STRATEGY2:
         player = new AIPlayer(model, new AndStrategy(
             new AvoidEdgesStrategy(),
             new CaptureMostStrategy()
         ));
         break;
-      case GO_CORNER:
+      case OUR_STRATEGY3:
         player = new AIPlayer(model, new AndStrategy(new GoCornerStrategy(), new AndStrategy(
             new AvoidEdgesStrategy(),
             new CaptureMostStrategy())));
         break;
-      case MINIMAX:
+      case OUR_STRATEGY1:
         if (gtDepth <= 0) {
           System.err.println("Depth of Minimax must exist and be at least 1.");
           System.exit(0);
@@ -111,6 +154,18 @@ public final class ReversiFactory {
             new GoCornerStrategy(), new AndStrategy(new AvoidEdgesStrategy(),
             new CaptureMostStrategy())), gtDepth));
         break;
+      case PROVIDER_STRATEGY1:
+        player = new AIPlayer(model, new StrategyAdapter(
+            new ChooseBestStrategy(new MaximizeScore())));
+        break;
+      case PROVIDER_STRATEGY2:
+        player = new AIPlayer(model, new StrategyAdapter(new ChooseBestStrategy(new PlayCorner(),
+            new PlayThreeFrom(), new MaximizeScore())));
+        break;
+      case PROVIDER_STRATEGY3:
+        player = new AIPlayer(model, new StrategyAdapter(new MakeZeroOpponentTurnZero(),
+            new PlayCorner(), new PlayThreeFrom(), new PlaySide(), new MaximizeScore()));
+        break;
       default:
         System.err.println("Invalid game type");
         System.exit(0);
@@ -118,7 +173,7 @@ public final class ReversiFactory {
         return null;
     }
     
-    if (!gt.equals(GameType.HUMAN)) {
+    if (!gt.equals(GameType.OUR_HUMAN)) {
       view.disableInput();
     }
     

@@ -226,7 +226,6 @@ public class HexagonPanel extends JPanel {
           else if (checkNoSelectedHexagon()) {
             setSelectedHexagon(logicalCoords);
           }
-          System.out.println("here");
         }
       }
     }

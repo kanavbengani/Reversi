@@ -310,7 +310,6 @@ class ReversiPanel extends JPanel {
     @Override
     public void keyPressed(KeyEvent e) {
       if (e.getKeyCode() == KeyEvent.VK_P) {
-        System.out.println(ReversiPanel.this.featuresListeners);
         for (PlayerFeatures l : ReversiPanel.this.featuresListeners) {
           ReversiPanel.this.highlightedHex = Optional.empty();
           ReversiPanel.this.repaint();

@@ -17,7 +17,7 @@ import org.junit.Test;
 import java.util.HashMap;
 
 /**
- * Represents a set of JUnit tests that NeedToDeleteTests the functionality of the cs3500.reversi.controller.
+ * Represents a set of JUnit tests that tests the functionality of the cs3500.reversi.controller.
  */
 public class ReversiControllerTests {
   private StringBuilder mockModelLog;
@@ -49,11 +49,11 @@ public class ReversiControllerTests {
     this.player = new AIPlayer(this.model.getReadOnlyModel(), new CaptureMostStrategy());
     
     
-    // Mock model to NeedToDeleteTests player and view are correctly publishing to model through controller.
+    // Mock model to tests player and view are correctly publishing to model through controller.
     new Controller(mockModel, this.player,
         view, PieceColor.BLACK);
     
-    // Mock player to NeedToDeleteTests model is correctly publishing to player and view through controller.
+    // Mock player to tests model is correctly publishing to player and view through controller.
     new Controller(this.model, mockPlayerBlack,
         mockViewBlack, PieceColor.BLACK);
     new Controller(this.model, mockPlayerWhite,

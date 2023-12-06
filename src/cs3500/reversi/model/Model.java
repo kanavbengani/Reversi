@@ -12,13 +12,13 @@ import java.util.Optional;
  * the `IModel` interface and provides methods for making moves, checking game status, and more.
  */
 public class Model implements IModel {
-  private final PieceColor pieceColor1;
-  private final PieceColor pieceColor2;
-  private PieceColor currentPieceColor;
-  private final Map<AxialPosn, Optional<PieceColor>> board;
-  private final int numRings;
-  private final List<ModelFeatures> listeners;
-  private int passCount;
+  protected final PieceColor pieceColor1;
+  protected final PieceColor pieceColor2;
+  protected PieceColor currentPieceColor;
+  protected final Map<AxialPosn, Optional<PieceColor>> board;
+  protected final int numRings;
+  protected List<ModelFeatures> listeners;
+  protected int passCount;
 
   // CLASS INVARIANT: The number of key-value pairs in `board` is equal to `3 * numRings *
   // (numRings + 1) + 1`.
@@ -44,9 +44,9 @@ public class Model implements IModel {
   }
 
   // For copy
-  private Model(int numRings, PieceColor pieceColor1, PieceColor pieceColor2,
-                PieceColor currentPieceColor, int passCount, List<ModelFeatures> listeners,
-                Map<AxialPosn, Optional<PieceColor>> board) {
+  protected Model(int numRings, PieceColor pieceColor1, PieceColor pieceColor2,
+                  PieceColor currentPieceColor, int passCount, List<ModelFeatures> listeners,
+                  Map<AxialPosn, Optional<PieceColor>> board) {
     this.pieceColor1 = pieceColor1;
     this.pieceColor2 = pieceColor2;
     this.currentPieceColor = currentPieceColor;

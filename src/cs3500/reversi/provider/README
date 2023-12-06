@@ -29,12 +29,12 @@ This way, the view, or any other future class that may need a delegate of the mo
 to mutate the model as they will only be able to access the read only version.
 
 Quickstart:
-Currently, the way that we NeedToDeleteTests the code, is to first instantiate a model, then call methods on it
+Currently, the way that we test the code, is to first instantiate a model, then call methods on it
 to run through actions that an active game may play.
 For example:
 ReversiModel model = new BasicReversi(5);
 model.makePlay(0, 1);
-To visually NeedToDeleteTests if this move was correctly made, we implemented a ReversiTextualView that allows
+To visually test if this move was correctly made, we implemented a ReversiTextualView that allows
 the current state of the game to be written out as an ASCII image in the Build Output.
 For example:
 TextualView view = new ReversiTextualView(model);
@@ -72,7 +72,7 @@ Overview and Changes for Part 2:
 In this version of our Reversi implementation, we made some great changes to our model. First,
 we abstracted our previous model implementation into an AbstractReversi class, which allowed us to
 easily implement and reuse as much code as we could for our BasicReversiWithAi class. Next, we
-implemented a GUI, and a mock/stub controller allowing us to NeedToDeleteTests the functionality of the GUI,
+implemented a GUI, and a mock/stub controller allowing us to test the functionality of the GUI,
 and the feature to see every time a cell is selected/deselected. Since the GUI is navigated through
 mouse input, there is no conversion or shift for the logical coordinates of the array. Finally,
 we implemented a mock ReversiAi class, that keeps track and makes sure all of the possible positions

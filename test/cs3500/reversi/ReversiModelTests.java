@@ -19,7 +19,7 @@ import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.view.TextualView;
 
 /**
- * Represents a set of JUnit tests that NeedToDeleteTests the functionality of the cs3500.reversi.model.
+ * Represents a set of JUnit tests that tests the functionality of the cs3500.reversi.model.
  */
 public class ReversiModelTests {
   private IModel model;

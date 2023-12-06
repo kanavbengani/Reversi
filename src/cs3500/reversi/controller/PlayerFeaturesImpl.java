@@ -12,11 +12,16 @@ import cs3500.reversi.player.PlayerFeatures;
  */
 public class PlayerFeaturesImpl implements PlayerFeatures {
   protected final IModel model;
-  private final IView view;
-  private final PieceColor color;
-
-
-  // Constructs a new player features implementation using the passed in model, view, and color.
+  protected final IView view;
+  protected final PieceColor color;
+  
+  /**
+   * Constructs a new PlayerFeaturesImpl.
+   *
+   * @param model The model in the game of Reversi.
+   * @param view The view to be used by the player.
+   * @param color The color assigned to the player.
+   */
   public PlayerFeaturesImpl(IModel model, IView view, PieceColor color) {
     this.model = model;
     this.view = view;

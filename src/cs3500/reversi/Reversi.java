@@ -25,7 +25,7 @@ public final class Reversi {
     if (args.length == 2) {
       try {
         gt1 = Reversi.parseGameType(args[0]);
-        gt2 = Reversi.parseGameType(args[1]);
+        gt2 = Reversi.parseGameType2(args[1]);
       } catch (IllegalArgumentException ia) {
         System.err.println(ia.getMessage());
         System.exit(0);
@@ -37,7 +37,7 @@ public final class Reversi {
       try {
         gt1 = Reversi.parseGameType(args[0]);
         try {
-          gt2 = Reversi.parseGameType(args[1]);
+          gt2 = Reversi.parseGameType2(args[1]);
           gt2Depth = Integer.parseInt(args[2]);
         } catch (NumberFormatException e) {
           System.err.println("Minimax depth must be an integer greater than 0.");
@@ -48,7 +48,7 @@ public final class Reversi {
           try {
             gt1Depth = Integer.parseInt(args[1]);
             try {
-              gt2 = Reversi.parseGameType(args[2]);
+              gt2 = Reversi.parseGameType2(args[2]);
             } catch (IllegalArgumentException i) {
               System.err.println(ia.getMessage());
               System.exit(0);
@@ -73,7 +73,7 @@ public final class Reversi {
       try {
         gt1 = Reversi.parseGameType(args[0]);
         gt1Depth = Integer.parseInt(args[1]);
-        gt2 = Reversi.parseGameType(args[2]);
+        gt2 = Reversi.parseGameType2(args[2]);
         gt2Depth = Integer.parseInt(args[3]);
       } catch (NumberFormatException e) {
         System.err.println("Minimax depth must be an integer greater than 0.");
@@ -96,17 +96,32 @@ public final class Reversi {
   private static ReversiFactory.GameType parseGameType(String arg) {
     switch (arg) {
       case "human":
-        return ReversiFactory.GameType.HUMAN;
+        return ReversiFactory.GameType.OUR_HUMAN;
       case "strategy1":
-        return ReversiFactory.GameType.MINIMAX;
+        return ReversiFactory.GameType.OUR_STRATEGY1;
       case "strategy2":
-        return ReversiFactory.GameType.GO_CORNER;
+        return ReversiFactory.GameType.OUR_STRATEGY3;
       case "strategy3":
-        return ReversiFactory.GameType.AVOID_EDGES;
+        return ReversiFactory.GameType.OUR_STRATEGY2;
       case "strategy4":
-        return ReversiFactory.GameType.CAPTURE_MOST;
+        return ReversiFactory.GameType.OUR_STRATEGY4;
       default:
         throw new IllegalArgumentException("Unsupported game type found: " + arg);
+    }
+  }
+  
+  private static ReversiFactory.GameType parseGameType2(String arg) {
+    switch (arg) {
+      case "providerHuman":
+        return ReversiFactory.GameType.PROVIDER_HUMAN;
+      case "providerStrategy1":
+        return ReversiFactory.GameType.PROVIDER_STRATEGY1;
+      case "providerStrategy2":
+        return ReversiFactory.GameType.PROVIDER_STRATEGY2;
+      case "providerStrategy3":
+        return ReversiFactory.GameType.PROVIDER_STRATEGY3;
+      default:
+        return Reversi.parseGameType(arg);
     }
   }
 }

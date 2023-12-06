@@ -1,7 +1,6 @@
 package cs3500.reversi.view;
 
 import cs3500.reversi.MockPlayerListener;
-import cs3500.reversi.model.AxialPosn;
 import cs3500.reversi.model.Model;
 import cs3500.reversi.model.PieceColor;
 import org.junit.Assert;
@@ -54,9 +53,9 @@ public class PackagePrivateViewTests {
   
   @Test
   public void testViewKeyboardEnterOutputsNothingToPlayerFeatures() {
-    // This NeedToDeleteTests serves as a way to NeedToDeleteTests whether the view is computing the correct logical
-    // coordinates of the clicked cell. This is because it takes in a mouse clicked coordinate
-    // and the log outputs the correct coordinate.
+    // This NeedToDeleteTests serves as a way to NeedToDeleteTests whether the view is computing
+    // the correct logical coordinates of the clicked cell. This is because it takes in a mouse
+    // clicked coordinate and the log outputs the correct coordinate.
     
     // Highlighting (0, 0)
     this.mouseAdapter.mouseReleased(new MouseEvent(this.rp, MouseEvent.BUTTON1,
