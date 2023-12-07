@@ -1,4 +1,3 @@
-# Review of Our Provider's Code
 Our providers as a team were very helpful throughout the process with prompt and helpful replies. No complains :)
 Regarding their codebase, it was most definitely functional. However, there were a couple of unusual
 design decisions made by them during the development process as listed below. 
@@ -34,18 +33,3 @@ It was a little frustrating because our provider's code did have design decision
 for instance, their view did not support prompting the user when it is their as well as hints for how 
 many cells would be captured given a selected cell. This functionality that our code provided was diminished
 when our code adapted to their view implementation.
-
-# Review of experience
-This experience was definitely very helpful. We learned the importance of having a codebase that 
-is modular, so that any component can be replaced with another component that is implemented 
-differently. This experience taught us the significance of comprehensive documentation and the 
-need for designing code that is not only functional but also easily adaptable. Overall, we learned
-a great deal not only about the coding aspects but also efficient communication from both perspectives:
-a provider and a customer. 
-
-Unsurprisingly, being a customer to a completely new codebase did feel
-a lot more tiresome/frustrating in comparison to being a provider. This also is because we fortunately
-did not have to change any of the code that we sent over to our customers. Rather, it was solely helping
-them out with understanding certain parts of the code that may have been a little unclear. This part of
-the process was definitely satisfying. Also, at the end of the day, it felt amazing that we were able to 
-adapt to our provider's code perfectly without any apparent flaws! 
