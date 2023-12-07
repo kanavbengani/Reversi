@@ -7,6 +7,8 @@ import cs3500.reversi.model.IROModel;
 import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.player.PlayerFeatures;
 
+import java.awt.*;
+
 /**
  * The View class represents a Swing-based graphical user interface for the Reversi game.
  * It extends JFrame and implements the IView interface. The view consists of a ReversiPanel that

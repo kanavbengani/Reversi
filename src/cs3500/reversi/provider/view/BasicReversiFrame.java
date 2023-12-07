@@ -36,7 +36,7 @@ public class BasicReversiFrame extends JFrame implements ReversiView {
     
     this.setPreferredSize(new Dimension(calculateFrameWidth(model),
             calculateFrameHeight(model)));
-
+    
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
     //adding the panel to the frame
