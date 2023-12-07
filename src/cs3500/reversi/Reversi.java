@@ -6,6 +6,7 @@ import cs3500.reversi.model.IModel;
  * A main runner for a program of Reversi.
  */
 public final class Reversi {
+  private static int NUM_RINGS = 5;
   /**
    * Runs the main program using the Model and the View.
    * @param args String command line arguments
@@ -17,81 +18,111 @@ public final class Reversi {
       // The below statement will never be reached. This is only for type-checker.
       return;
     }
+    
+    IModel model;
+    
+    if (args.length == 2) {
+      model = Reversi.parseLengthTwo(args);
+    }
+    else if (args.length == 3) {
+      model = Reversi.parseLengthThree(args);
+    }
+    else {
+      model = Reversi.parseLengthFour(args);
+    }
+    
+    model.startGame();
+  }
+  
+  // Parses the command line arguments when two arguments are passed in.
+  private static IModel parseLengthTwo(String[] args) {
+    ReversiFactory.GameType gt1;
+    ReversiFactory.GameType gt2;
+    try {
+      gt1 = Reversi.parseGameType(args[0]);
+      gt2 = Reversi.parseGameType2(args[1]);
+    } catch (IllegalArgumentException ia) {
+      System.err.println(ia.getMessage());
+      System.exit(0);
+      // The below statement will never be reached. This is only for type-checker.
+      return null;
+    }
+    
+    return ReversiFactory.makeModel(Reversi.NUM_RINGS, gt1, 0, gt2, 0);
+  }
+  
+  // Parses the command line arguments when three arguments are passed in.
+  private static IModel parseLengthThree(String[] args) {
     ReversiFactory.GameType gt1;
     ReversiFactory.GameType gt2;
     int gt1Depth = 0;
     int gt2Depth = 0;
     
-    if (args.length == 2) {
+    try {
+      gt1 = Reversi.parseGameType(args[0]);
       try {
-        gt1 = Reversi.parseGameType(args[0]);
         gt2 = Reversi.parseGameType2(args[1]);
-      } catch (IllegalArgumentException ia) {
-        System.err.println(ia.getMessage());
-        System.exit(0);
-        // The below statement will never be reached. This is only for type-checker.
-        return;
-      }
-    }
-    else if (args.length == 3) {
-      try {
-        gt1 = Reversi.parseGameType(args[0]);
-        try {
-          gt2 = Reversi.parseGameType2(args[1]);
-          gt2Depth = Integer.parseInt(args[2]);
-        } catch (NumberFormatException e) {
-          System.err.println("Minimax depth must be an integer greater than 0.");
-          System.exit(0);
-          // The below statement will never be reached. This is only for type-checker.
-          return;
-        } catch (IllegalArgumentException ia) {
-          try {
-            gt1Depth = Integer.parseInt(args[1]);
-            try {
-              gt2 = Reversi.parseGameType2(args[2]);
-            } catch (IllegalArgumentException i) {
-              System.err.println(ia.getMessage());
-              System.exit(0);
-              // The below statement will never be reached. This is only for type-checker.
-              return;
-            }
-          } catch (NumberFormatException e) {
-            System.err.println("Minimax depth must be an integer greater than 0.");
-            System.exit(0);
-            // The below statement will never be reached. This is only for type-checker.
-            return;
-          }
-        }
-      } catch (IllegalArgumentException ia) {
-        System.err.println(ia.getMessage());
-        System.exit(0);
-        // The below statement will never be reached. This is only for type-checker.
-        return;
-      }
-    }
-    else {
-      try {
-        gt1 = Reversi.parseGameType(args[0]);
-        gt1Depth = Integer.parseInt(args[1]);
-        gt2 = Reversi.parseGameType2(args[2]);
-        gt2Depth = Integer.parseInt(args[3]);
+        gt2Depth = Integer.parseInt(args[2]);
       } catch (NumberFormatException e) {
         System.err.println("Minimax depth must be an integer greater than 0.");
         System.exit(0);
-        // The below statement will never be reached. This is only for type-checker.
-        return;
+        // This code below will never be reached. Only there for type checker.
+        return null;
       } catch (IllegalArgumentException ia) {
-        System.err.println(ia.getMessage());
-        System.exit(0);
-        // The below statement will never be reached. This is only for type-checker.
-        return;
+        try {
+          gt1Depth = Integer.parseInt(args[1]);
+          try {
+            gt2 = Reversi.parseGameType2(args[2]);
+          } catch (IllegalArgumentException i) {
+            System.err.println(ia.getMessage());
+            System.exit(0);
+            // This code below will never be reached. Only there for type checker.
+            return null;
+          }
+        } catch (NumberFormatException e) {
+          System.err.println("Minimax depth must be an integer greater than 0.");
+          System.exit(0);
+          // This code below will never be reached. Only there for type checker.
+          return null;
+        }
       }
+    } catch (IllegalArgumentException ia) {
+      System.err.println(ia.getMessage());
+      System.exit(0);
+      // This code below will never be reached. Only there for type checker.
+      return null;
     }
     
-    IModel model = ReversiFactory.makeModel(5, gt1, gt1Depth, gt2, gt2Depth);
-    model.startGame();
+    return ReversiFactory.makeModel(Reversi.NUM_RINGS, gt1, gt1Depth, gt2, gt2Depth);
   }
-
+  
+  // Parses the command line arguments when four arguments are passed in.
+  private static IModel parseLengthFour(String[] args) {
+    ReversiFactory.GameType gt1;
+    ReversiFactory.GameType gt2;
+    int gt1Depth = 0;
+    int gt2Depth = 0;
+    
+    try {
+      gt1 = Reversi.parseGameType(args[0]);
+      gt1Depth = Integer.parseInt(args[1]);
+      gt2 = Reversi.parseGameType2(args[2]);
+      gt2Depth = Integer.parseInt(args[3]);
+    } catch (NumberFormatException e) {
+      System.err.println("Minimax depth must be an integer greater than 0.");
+      System.exit(0);
+      // The below statement will never be reached. This is only for type-checker.
+      return null;
+    } catch (IllegalArgumentException ia) {
+      System.err.println(ia.getMessage());
+      System.exit(0);
+      // The below statement will never be reached. This is only for type-checker.
+      return null;
+    }
+    
+    return ReversiFactory.makeModel(Reversi.NUM_RINGS, gt1, gt1Depth, gt2, gt2Depth);
+  }
+  
   // Parses the passed-in string to return enum variants of the appropriate player types.
   private static ReversiFactory.GameType parseGameType(String arg) {
     switch (arg) {
@@ -110,6 +141,7 @@ public final class Reversi {
     }
   }
   
+  // Parses the passed-in string to return the appropriate game type for player 2.
   private static ReversiFactory.GameType parseGameType2(String arg) {
     switch (arg) {
       case "providerHuman":

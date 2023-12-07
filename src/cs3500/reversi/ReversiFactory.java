@@ -63,6 +63,8 @@ public final class ReversiFactory {
    */
   public static IModel makeModel(int numRings, ReversiFactory.GameType gt1, int gt1Depth,
                                  ReversiFactory.GameType gt2, int gt2Depth) {
+    // Using type ModelAdapter to allow for passing between provider and our implementation.
+    // This is because ModelAdapter implements both IModel (Ours) and ReversiModel (Provider).
     ModelAdapter model = new ModelAdapter(numRings);
     IView viewBlack = new View(model, PieceColor.BLACK);
     IView viewWhite = ReversiFactory.getView2(gt2, model);

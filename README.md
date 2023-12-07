@@ -10,7 +10,9 @@ strategies for the game. We have also implemented a `Controller` that synchroniz
 We were able to successfully implement all the features using our provider's code.
 
 However, there are certain things that provider's view simply do not allow such as prompting the user that it's their 
-turn as well as hints for how many pieces will be captured if a piece is placed on a selected cell. 
+turn as well as hints for how many pieces will be captured if a piece is placed on a selected cell. One thing that we
+were unable to do was to get the provider's board render to match the size of our `View` window since the provider's
+view did not offer us functionality to change these dimensions. 
 
 ## Quick start
 ### Command Line Arguments
