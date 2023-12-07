@@ -6,7 +6,8 @@ import cs3500.reversi.model.IModel;
  * A main runner for a program of Reversi.
  */
 public final class Reversi {
-  private static int NUM_RINGS = 5;
+  private static final int NUM_RINGS = 5;
+  
   /**
    * Runs the main program using the Model and the View.
    * @param args String command line arguments

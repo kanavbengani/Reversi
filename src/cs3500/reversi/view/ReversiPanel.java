@@ -120,16 +120,19 @@ class ReversiPanel extends JPanel {
     if (this.highlightedHex.isPresent()) {
       AxialPosn posn = this.highlightedHex.get();
       Color color;
+      int howManyCaptured;
 
       if (this.model.isMoveValid(this.pieceColor, posn)) {
         color = Color.GREEN;
-        this.makeHexagon(g2d, this.transformLogicalToPhysical(posn), color);
-        this.writeHowManyCaptured(g2d, this.transformLogicalToPhysical(posn),
-                this.model.getAllCapturedPieces(this.pieceColor, this.highlightedHex.get()).size());
+        howManyCaptured = this.model.getAllCapturedPieces(this.pieceColor,
+            this.highlightedHex.get()).size();
       } else {
         color = Color.RED;
-        this.makeHexagon(g2d, this.transformLogicalToPhysical(posn), color);
+        howManyCaptured = 0;
       }
+      this.makeHexagon(g2d, this.transformLogicalToPhysical(posn), color);
+      this.writeHowManyCaptured(g2d, this.transformLogicalToPhysical(posn),
+          howManyCaptured);
     }
   }
 
