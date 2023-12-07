@@ -3,9 +3,9 @@ package cs3500.reversi.model;
 import java.util.Objects;
 
 /**
- * The `AxialPosn` class represents a position in a hexagonal grid using axial coordinates (q, r).
+ * The `HexPosn` class represents a position in a hexagonal grid using axial coordinates (q, r).
  */
-public class AxialPosn {
+public class HexPosn implements Posn {
   /**
    * The q-coordinate in axial coordinates, representing horizontal positioning.
    */
@@ -19,33 +19,44 @@ public class AxialPosn {
 
 
   /**
-   * Constructs a new `AxialPosn` object with the specified axial coordinates (q, r).
+   * Constructs a new `HexPosn` object with the specified axial coordinates (q, r).
    *
    * @param q The q-coordinate representing the horizontal axis.
    * @param r The r-coordinate representing the diagonal axis going from top-left to
    *          bottom-right (horizontal axis oriented 30 degrees clockwise)
    */
-  public AxialPosn(int q, int r) {
+  public HexPosn(int q, int r) {
     this.q = q;
     this.r = r;
   }
   
 
   /**
-   * Adds the given `AxialPosn` to this `AxialPosn`, returning a new `AxialPosn` representing
+   * Adds the given `HexPosn` to this `HexPosn`, returning a new `HexPosn` representing
    * the sum of the two positions.
    *
-   * @param other The `AxialPosn` to add to this `AxialPosn`.
-   * @return A new `AxialPosn` representing the sum of the two positions.
+   * @param other The `HexPosn` to add to this `HexPosn`.
+   * @return A new `HexPosn` representing the sum of the two positions.
    */
-  public AxialPosn add(Direction other) {
-    return new AxialPosn(this.q + other.deltaQ, this.r + other.deltaR);
+  @Override
+  public Posn add(Direction other) {
+    return other.compute(this);
   }
-
+  
+  @Override
+  public int getFirst() {
+    return this.r;
+  }
+  
+  @Override
+  public int getSecond() {
+    return this.q;
+  }
+  
   /**
-   * Compares this `AxialPosn` object to another object to check if they are equal.
+   * Compares this `HexPosn` object to another object to check if they are equal.
    *
-   * @param o The object to compare to this `AxialPosn`.
+   * @param o The object to compare to this `HexPosn`.
    * @return `true` if the objects are equal, `false` otherwise.
    */
   @Override
@@ -58,15 +69,15 @@ public class AxialPosn {
       return false;
     }
 
-    AxialPosn that = (AxialPosn) o;
+    HexPosn that = (HexPosn) o;
 
     return this.q == that.q && this.r == that.r;
   }
 
   /**
-   * Generates a hash code for this `AxialPosn` object, based on its axial coordinates.
+   * Generates a hash code for this `HexPosn` object, based on its axial coordinates.
    *
-   * @return The hash code for this `AxialPosn` object.
+   * @return The hash code for this `HexPosn` object.
    */
   @Override
   public int hashCode() {
@@ -74,9 +85,9 @@ public class AxialPosn {
   }
 
   /**
-   * Returns a string representation of this `AxialPosn` object in the format "(q, r)".
+   * Returns a string representation of this `HexPosn` object in the format "(q, r)".
    *
-   * @return A string representation of this `AxialPosn` object.
+   * @return A string representation of this `HexPosn` object.
    */
   @Override
   public String toString() {

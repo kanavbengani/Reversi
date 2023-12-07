@@ -2,8 +2,9 @@ package cs3500.reversi.strategy;
 
 import java.util.List;
 
-import cs3500.reversi.model.AxialPosn;
+import cs3500.reversi.model.HexPosn;
 import cs3500.reversi.model.IROModel;
+import cs3500.reversi.model.Posn;
 
 /**
  * Represents a composite Reversi strategy that combines two strategies using the logical AND
@@ -27,8 +28,8 @@ public class AndStrategy implements ReversiStrategy {
   }
 
   @Override
-  public List<AxialPosn> chooseMove(List<AxialPosn> possibleMoves, IROModel model) {
-    List<AxialPosn> move1 = this.strategy1.chooseMove(possibleMoves, model);
+  public List<Posn> chooseMove(List<Posn> possibleMoves, IROModel model) {
+    List<Posn> move1 = this.strategy1.chooseMove(possibleMoves, model);
 
     return this.strategy2.chooseMove(move1, model);
   }

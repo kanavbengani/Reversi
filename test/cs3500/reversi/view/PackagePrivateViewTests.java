@@ -1,7 +1,7 @@
 package cs3500.reversi.view;
 
 import cs3500.reversi.MockPlayerListener;
-import cs3500.reversi.model.Model;
+import cs3500.reversi.model.HexModel;
 import cs3500.reversi.model.PieceColor;
 import org.junit.Assert;
 import org.junit.Before;
@@ -24,7 +24,7 @@ public class PackagePrivateViewTests {
   
   @Before
   public void setupTests() {
-    this.rp = new ReversiPanel(new Model(5).getReadOnlyModel(), PieceColor.BLACK);
+    this.rp = new ReversiPanel(new HexModel(5).getReadOnlyModel(), PieceColor.BLACK);
     this.log = new StringBuilder();
     this.rp.addFeaturesListener(new MockPlayerListener(this.log));
     this.keyListener = this.rp.getKeyListener();

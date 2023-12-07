@@ -1,7 +1,8 @@
 package cs3500.reversi;
 
-import cs3500.reversi.model.AxialPosn;
+import cs3500.reversi.model.HexPosn;
 import cs3500.reversi.model.IROModel;
+import cs3500.reversi.model.Posn;
 import cs3500.reversi.strategy.ReversiStrategy;
 
 import java.util.List;
@@ -12,19 +13,19 @@ import java.util.List;
  */
 public class MockStrategy implements ReversiStrategy {
   private final StringBuilder log;
-  private final List<AxialPosn> validMoves;
+  private final List<Posn> validMoves;
   
   /**
    * Constructs a mock strategy to execute the purpose statement of this class.
    * @param log represents the string builder that will keep track of which methods were called.
    */
-  public MockStrategy(StringBuilder log, List<AxialPosn> validMoves) {
+  public MockStrategy(StringBuilder log, List<Posn> validMoves) {
     this.log = log;
     this.validMoves = validMoves;
   }
   
   @Override
-  public List<AxialPosn> chooseMove(List<AxialPosn> possibleMoves, IROModel model) {
+  public List<Posn> chooseMove(List<Posn> possibleMoves, IROModel model) {
     this.log.append("chooseMove called.\n");
     
     return this.validMoves;

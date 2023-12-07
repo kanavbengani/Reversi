@@ -1,20 +1,21 @@
 package cs3500.reversi.model;
 
-/**
- * An enum of six predefined `AxialPosn` directional offsets representing the six neighboring
- * positions in a hexagonal grid.
- */
-public enum Direction {
-  UPLEFT(0, -1), UPRIGHT(1, -1),
-  RIGHT(1, 0), DOWNRIGHT(0, 1),
-  DOWNLEFT(-1, 1), LEFT(-1, 0);
-
-  final int deltaQ;
-  final int deltaR;
-
-  // Constructs a new Direction using the delta value of q- and r-coordinate.
-  Direction(int deltaQ, int deltaR) {
-    this.deltaQ = deltaQ;
-    this.deltaR = deltaR;
-  }
+public interface Direction {
+  /**
+   * Computes the hexagonal position for the given position added to this direction.
+   *
+   * @param hexPosn represents the hexagonal position to add this direction to.
+   * @return the final hexagonal position after the direction has been added.
+   * @throws IllegalArgumentException if this direction is not compatible with given position.
+   */
+  HexPosn compute(HexPosn hexPosn) throws IllegalArgumentException;
+  
+  /**
+   * Computes the square position for the given position added to this direction.
+   *
+   * @param squarePosn represents the square position to add this direction to.
+   * @return the final square position after the direction has been added.
+   * @throws IllegalArgumentException if this direction is not compatible with given position.
+   */
+  SquarePosn compute(SquarePosn squarePosn) throws IllegalArgumentException;
 }

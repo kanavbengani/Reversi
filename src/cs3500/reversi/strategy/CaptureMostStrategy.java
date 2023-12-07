@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import cs3500.reversi.model.AxialPosn;
+import cs3500.reversi.model.Posn;
 import cs3500.reversi.model.IROModel;
 
 /**
@@ -15,29 +15,29 @@ import cs3500.reversi.model.IROModel;
  */
 public class CaptureMostStrategy implements ReversiStrategy {
   @Override
-  public List<AxialPosn> chooseMove(List<AxialPosn> possibleMoves, IROModel model) {
+  public List<Posn> chooseMove(List<Posn> possibleMoves, IROModel model) {
     int maxCaptured = 0;
-    List<AxialPosn> ties = new ArrayList<>();
-    Iterable<AxialPosn> it = possibleMoves.isEmpty() ? model.getAllPosn() : possibleMoves;
+    List<Posn> ties = new ArrayList<>();
+    Iterable<Posn> it = possibleMoves.isEmpty() ? model.getAllPosn() : possibleMoves;
 
-    for (AxialPosn ap : it) {
+    for (Posn posn : it) {
       try {
-        if (model.isMoveValid(model.getTurnColor(), ap)) {
-          int captured = model.getAllCapturedPieces(model.getTurnColor(), ap).size();
+        if (model.isMoveValid(model.getTurnColor(), posn)) {
+          int captured = model.getAllCapturedPieces(model.getTurnColor(), posn).size();
           if (maxCaptured < captured) {
             maxCaptured = captured;
             ties = new ArrayList<>();
           }
 
           if (maxCaptured == captured) {
-            ties.add(ap);
+            ties.add(posn);
           }
         }
       } catch (IllegalStateException | IllegalArgumentException ignored) {
       }
     }
 
-    ties.sort(Comparator.comparingInt((AxialPosn ap) -> ap.r).thenComparingInt(ap -> ap.q));
+    ties.sort(Comparator.comparingInt(Posn::getFirst).thenComparingInt(Posn::getSecond));
 
     return ties;
   }

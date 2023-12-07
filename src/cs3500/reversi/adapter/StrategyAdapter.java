@@ -1,8 +1,9 @@
 package cs3500.reversi.adapter;
 
-import cs3500.reversi.model.AxialPosn;
+import cs3500.reversi.model.HexPosn;
 import cs3500.reversi.model.IModel;
 import cs3500.reversi.model.IROModel;
+import cs3500.reversi.model.Posn;
 import cs3500.reversi.provider.strategies.ChooseBestStrategy;
 import cs3500.reversi.provider.strategies.ReversiStrategy;
 
@@ -28,10 +29,10 @@ public class StrategyAdapter extends ChooseBestStrategy
   }
   
   @Override
-  public List<AxialPosn> chooseMove(List<AxialPosn> possibleMoves, IROModel model) {
+  public List<Posn> chooseMove(List<Posn> possibleMoves, IROModel model) {
     IModel m = model.copy();
     
-    int[] move = super.chooseMove((ModelAdapter) model);
+    int[] move = super.chooseMove((HexModelAdapter) model);
     
     if (Arrays.equals(move, new int[]{-1, -1})) {
       return new ArrayList<>();

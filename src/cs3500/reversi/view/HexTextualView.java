@@ -1,22 +1,23 @@
 package cs3500.reversi.view;
 
-import cs3500.reversi.model.AxialPosn;
+import cs3500.reversi.model.HexPosn;
 import java.util.Optional;
+
 import cs3500.reversi.model.IROModel;
 import cs3500.reversi.model.PieceColor;
 
 /**
- * The TextualView class provides a textual representation of a read-only Reversi model.
+ * The HexTextualView class provides a textual representation of a read-only Reversi model.
  */
-public class TextualView {
+public class HexTextualView {
   private final IROModel model;
 
   /**
-   * Constructs a TextualView with a given read-only cs3500.reversi.model.
+   * Constructs a HexTextualView with a given read-only cs3500.reversi.model.
    *
    * @param model The read-only cs3500.reversi.model to be displayed.
    */
-  public TextualView(IROModel model) {
+  public HexTextualView(IROModel model) {
     this.model = model;
   }
 
@@ -32,7 +33,7 @@ public class TextualView {
 
       for (int q = -rings; q <= rings; q++) {
         try {
-          Optional<PieceColor> cell = this.model.getPieceAt(new AxialPosn(q, r));
+          Optional<PieceColor> cell = this.model.getPieceAt(new HexPosn(q, r));
           if (cell.isEmpty()) {
             str.append("_");
           } else {

@@ -1,7 +1,7 @@
 package cs3500.reversi;
 
 import cs3500.reversi.adapter.ControllerAdapter;
-import cs3500.reversi.adapter.ModelAdapter;
+import cs3500.reversi.adapter.HexModelAdapter;
 import cs3500.reversi.adapter.StrategyAdapter;
 import cs3500.reversi.adapter.ViewAdapter;
 import cs3500.reversi.controller.Controller;
@@ -63,9 +63,9 @@ public final class ReversiFactory {
    */
   public static IModel makeModel(int numRings, ReversiFactory.GameType gt1, int gt1Depth,
                                  ReversiFactory.GameType gt2, int gt2Depth) {
-    // Using type ModelAdapter to allow for passing between provider and our implementation.
-    // This is because ModelAdapter implements both IModel (Ours) and ReversiModel (Provider).
-    ModelAdapter model = new ModelAdapter(numRings);
+    // Using type HexModelAdapter to allow for passing between provider and our implementation.
+    // This is because HexModelAdapter implements both IModel (Ours) and ReversiModel (Provider).
+    HexModelAdapter model = new HexModelAdapter(numRings);
     IView viewBlack = new View(model, PieceColor.BLACK);
     IView viewWhite = ReversiFactory.getView2(gt2, model);
     
@@ -78,7 +78,7 @@ public final class ReversiFactory {
     return model;
   }
   
-  private static IView getView2(ReversiFactory.GameType gt, ModelAdapter model) {
+  private static IView getView2(ReversiFactory.GameType gt, HexModelAdapter model) {
     switch (gt) {
       case PROVIDER_HUMAN:
       case PROVIDER_STRATEGY1:

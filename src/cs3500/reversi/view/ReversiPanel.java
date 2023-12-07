@@ -25,9 +25,8 @@ import java.util.Optional;
 import javax.swing.JPanel;
 import javax.swing.event.MouseInputAdapter;
 
-import cs3500.reversi.model.AxialPosn;
-import cs3500.reversi.model.IROModel;
-import cs3500.reversi.model.PieceColor;
+import cs3500.reversi.model.*;
+import cs3500.reversi.model.Posn;
 import cs3500.reversi.player.PlayerFeatures;
 
 /**
@@ -46,7 +45,7 @@ class ReversiPanel extends JPanel {
   private final List<PlayerFeatures> featuresListeners = new ArrayList<>();
   private final PieceColor pieceColor;
   private final double hexagonRadius;
-  private Optional<AxialPosn> highlightedHex = Optional.empty();
+  private Optional<Posn> highlightedHex = Optional.empty();
   private boolean isMyMove = false;
 
   /**
@@ -118,7 +117,7 @@ class ReversiPanel extends JPanel {
     this.displayTurn(g2d);
 
     if (this.highlightedHex.isPresent()) {
-      AxialPosn posn = this.highlightedHex.get();
+      Posn posn = this.highlightedHex.get();
       Color color;
       int howManyCaptured;
 
@@ -140,13 +139,13 @@ class ReversiPanel extends JPanel {
   private void drawBoard(Graphics2D g2d) {
     Color oldColor = g2d.getColor();
 
-    for (AxialPosn axialPosn : this.model.getAllPosn()) {
-      CartesianPosn p = this.transformLogicalToPhysical(axialPosn);
+    for (Posn posn : this.model.getAllPosn()) {
+      CartesianPosn p = this.transformLogicalToPhysical(posn);
 
       this.makeHexagon(g2d, p, Color.LIGHT_GRAY);
-      if (this.model.getPieceAt(axialPosn).isPresent()) {
+      if (this.model.getPieceAt(posn).isPresent()) {
         this.makeCircle(g2d, p, this.hexagonRadius / 2,
-                this.model.getPieceAt(axialPosn).get().color);
+                this.model.getPieceAt(posn).get().color);
       }
     }
 
@@ -263,7 +262,7 @@ class ReversiPanel extends JPanel {
 
   // Converts a given physical point assuming the origin is in the middle of the screen into a
   // logical coordinate (in axial).
-  private AxialPosn transformPhysicalToLogical(CartesianPosn physicalP) {
+  private Posn transformPhysicalToLogical(CartesianPosn physicalP) {
     double x = physicalP.x;
     double y = physicalP.y;
 
@@ -285,14 +284,14 @@ class ReversiPanel extends JPanel {
       rRounded = -qRounded - sRounded;
     }
 
-    return new AxialPosn((int) qRounded, (int) rRounded);
+    return new HexPosn((int) qRounded, (int) rRounded);
   }
 
   // Transforms logical axial coordinates to the cartesian coordinate of the center of the
   // hexagon in the view.
-  private CartesianPosn transformLogicalToPhysical(AxialPosn axial) {
-    double x = this.hexagonRadius * (Math.sqrt(3) * axial.q + Math.sqrt(3) / 2 * axial.r);
-    double y = this.hexagonRadius * (3.0 / 2.0 * axial.r);
+  private CartesianPosn transformLogicalToPhysical(Posn axial) {
+    double x = this.hexagonRadius * (Math.sqrt(3) * axial.getSecond() + Math.sqrt(3) / 2 * axial.getFirst());
+    double y = this.hexagonRadius * (3.0 / 2.0 * axial.getFirst());
 
     return new CartesianPosn(x, -y);
   }
@@ -322,7 +321,7 @@ class ReversiPanel extends JPanel {
       }
       if (e.getKeyCode() == KeyEvent.VK_ENTER && ReversiPanel.this.highlightedHex.isPresent()) {
         for (PlayerFeatures l : ReversiPanel.this.featuresListeners) {
-          AxialPosn tempHex = ReversiPanel.this.highlightedHex.get();
+          Posn tempHex = ReversiPanel.this.highlightedHex.get();
           ReversiPanel.this.highlightedHex = Optional.empty();
           ReversiPanel.this.repaint();
           l.move(tempHex);
@@ -341,21 +340,21 @@ class ReversiPanel extends JPanel {
       physicalP.x -= ReversiPanel.WIDTH / 2;
       physicalP.y -= ReversiPanel.HEIGHT / 2;
 
-      AxialPosn axialPosn =
+      Posn hexPosn =
               ReversiPanel.this.transformPhysicalToLogical(new CartesianPosn(physicalP));
 
       // Showing axial coordinate that has been clicked to System.out
       try {
-        Optional<PieceColor> pieceColor = ReversiPanel.this.model.getPieceAt(axialPosn);
+        Optional<PieceColor> pieceColor = ReversiPanel.this.model.getPieceAt(hexPosn);
 
         // Highlight/De-highlight logic
         if (pieceColor.isEmpty()) {
           if (ReversiPanel.this.highlightedHex.isPresent()
-                  && axialPosn.equals(ReversiPanel.this.highlightedHex.get())) {
+                  && hexPosn.equals(ReversiPanel.this.highlightedHex.get())) {
             throw new IllegalArgumentException("Cell is already highlighted.");
           }
           ReversiPanel.this.highlightedHex =
-                  Optional.of(axialPosn);
+                  Optional.of(hexPosn);
         } else {
           throw new IllegalArgumentException("There is already a chip there.");
         }
