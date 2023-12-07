@@ -1,8 +1,6 @@
 package cs3500.reversi.adapter;
 
-import cs3500.reversi.model.AxialPosn;
 import cs3500.reversi.model.Model;
-import cs3500.reversi.model.ModelFeatures;
 import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.provider.controller.ReversiController;
 import cs3500.reversi.provider.model.Color;

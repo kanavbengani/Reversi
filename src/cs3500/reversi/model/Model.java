@@ -313,6 +313,7 @@ public class Model implements IModel {
     this.notifyListeners();
   }
   
+  // Notifies all the listeners of this game
   private void notifyListeners() {
     if (this.isGameOver()) {
       // Notifying that the game is over.

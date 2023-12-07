@@ -1,0 +1,51 @@
+# Review of Our Provider's Code
+Our providers as a team were very helpful throughout the process with prompt and helpful replies. No complains :)
+Regarding their codebase, it was most definitely functional. However, there were a couple of unusual
+design decisions made by them during the development process as listed below. 
+
+- Redundancy in logically similar code 
+There were multiple instances of logically the same code (for example, in the case of 
+KeyAdapter, our providers had two instances of the adapter; one of them was an external class while the other
+was a private class in the view). Therefore, when a key was being clicked, both of these instances were being
+called upon. After talking to our providers, we were told that one of them was redundant and unnecessary (the external 
+class) since that code was the remnants of previous iterations. Essentially, we were told that it could remain 
+as a stub. However, in the debugging process, we noticed that even this method required the view to be refreshed. 
+This did turn out to be a little frustrating. 
+
+- Conflating idea of ReversiController with Feature Listeners (composition could have worked better)
+Our providers chose to use inheritance instead of composition which resulted in difficulty in being able to 
+adapt only the listeners. We were forced to adapt the whole controller interface even though it was not 
+completely necessary. This is proven by the numerous stub methods in the `ControllerAdapter` class. Also,
+though it semantically did not make too much sense (since their controller extended a logical equivalent of 
+`PlayerFeatures`), we were forced to implement their controller interface while extending our `PlayerFeaturesImpl`. 
+
+- Model implementing ModelFeatures
+The `ReversiModel` was a listener itself. This listener interface was responsible for receiving turn switching 
+information and move playing information to the players. However, the decision of making a model a listener itself 
+deviated from its original purpose statement. It led to multiple stubs while we implemented the 
+`ModelAdapter` (which was implementing the `ReversiModel`) as these methods were simply not needed.
+
+- README was hard to digest
+Our providers used a text file instead of a markdown file, significantly reducing the readability of the document.
+Moreover, the README file lacked significant information about the coordinate system being used by our providers.
+
+- Lack of certain view features
+It was a little frustrating because our provider's code did have design decisions that differed from us; 
+for instance, their view did not support prompting the user when it is their as well as hints for how 
+many cells would be captured given a selected cell. This functionality that our code provided was diminished
+when our code adapted to their view implementation.
+
+# Review of experience
+This experience was definitely very helpful. We learned the importance of having a codebase that 
+is modular, so that any component can be replaced with another component that is implemented 
+differently. This experience taught us the significance of comprehensive documentation and the 
+need for designing code that is not only functional but also easily adaptable. Overall, we learned
+a great deal not only about the coding aspects but also efficient communication from both perspectives:
+a provider and a customer. 
+
+Unsurprisingly, being a customer to a completely new codebase did feel
+a lot more tiresome/frustrating in comparison to being a provider. This also is because we fortunately
+did not have to change any of the code that we sent over to our customers. Rather, it was solely helping
+them out with understanding certain parts of the code that may have been a little unclear. This part of
+the process was definitely satisfying. Also, at the end of the day, it felt amazing that we were able to 
+adapt to our provider's code perfectly without any apparent flaws! 

@@ -6,14 +6,11 @@ against each other or even the possibility of implementing AI players in future 
 iteration of the homework, we have implemented a `Model`, a `View` and a `ReversiStrategy` pattern to develop certain
 strategies for the game. We have also implemented a `Controller` that synchronizes the `Model` and the `View`.
 
-## Extra Credit
-- Strategy 2 -- See `strategy/AvoidEdgesStrategy.java`.
-- Strategy 3 -- See `strategy/GoCornerStrategy.java`.
-- Strategy 4 -- See `strategy/MinimaxStrategy.java` (one layer) and `strategy/MinimaxStrategyDepth.java` (recursion - 
-can take in a depth greater than 1).
-- Composing Strategies -- See `AndStrategy.java`. (Allows recombination easily and efficiently).
-- Hints for which moves are valid. (Green for valid, red for invalid) -- See `screenshots/CellSelected.png`.
-- Shows how many will be captured when cell is clicked -- See `screenshots/ExtraCreditHint.png`.
+## Implemented Features For Assignment 8
+We were able to successfully implement all the features using our provider's code.
+
+However, there are certain things that provider's view simply do not allow such as prompting the user that it's their 
+turn as well as hints for how many pieces will be captured if a piece is placed on a selected cell. 
 
 ## Quick start
 ### Command Line Arguments
@@ -23,18 +20,39 @@ can take in a depth greater than 1).
 - "strategy2" -- Go Corners Strategy (no additional arguments needed)
 - "strategy3" -- Avoid Edges Strategy (no additional arguments needed)
 - "strategy4" -- Capture Most Strategy (no additional arguments needed)
+- "providerHuman" -- Provider's Human Strategy (no additional arguments needed) (Only allowed as second player)
+- "providerStrategy1" -- Provider's **Easy** Strategy (no additional arguments needed) (Only allowed as second player)
+- "providerStrategy2" -- Provider's **Medium** Strategy (no additional arguments needed) (Only allowed as second player)
+- "providerStrategy3" -- Provider's **Hard** Strategy (no additional arguments needed) (Only allowed as second player)
 
 For all of the above strategies, refer to the `strategy` package.
 
 **Note:** A depth of 0 can optionally be passed in for non-strategy1 arguments, denoting no depth to be taken into
 consideration.
 
-Example usage: 
+Example usage:
 - `human human` -- Human (Black) vs. Human (White)
 - `human strategy1 3` -- Human (Black) vs. Minimax w/Depth 3 (White)
 - `strategy4 human` -- Capture Most Strategy (Black) vs. Human (White)
 - `strategy1 2 strategy1 4` -- Minimax w/Depth 2 (Black) vs. Minimax w/Depth 4 (White)
 - `strategy2 0 strategy3` -- Go Corners (Black) vs. AvoidEdges (White)
+
+Including providers code:
+
+- `human providerHuman` -- Our Human (Black) vs. Provider's Human (White)
+- `strategy2 providerHuman` -- Go Corners (Black) vs/  vs. Provider's Human (White)
+- `human providerStrategy1` -- Our Human (Black) vs. Provider's Easy Strategy (White)
+- `strategy1 4 providerStrategy2` -- Minimax w/Depth 4 (Black) vs. Provider's Medium Strategy (White)
+- `strategy3 providerStrategy3` -- AvoidEdges (Black) vs. Provider's Hard Strategy (White)
+
+## Extra Credit
+- Strategy 2 -- See `strategy/AvoidEdgesStrategy.java`.
+- Strategy 3 -- See `strategy/GoCornerStrategy.java`.
+- Strategy 4 -- See `strategy/MinimaxStrategy.java` (one layer) and `strategy/MinimaxStrategyDepth.java` (recursion - 
+can take in a depth greater than 1).
+- Composing Strategies -- See `AndStrategy.java`. (Allows recombination easily and efficiently).
+- Hints for which moves are valid. (Green for valid, red for invalid) -- See `screenshots/CellSelected.png`.
+- Shows how many will be captured when cell is clicked -- See `screenshots/ExtraCreditHint.png`.
 
 ### How to interact with the game as a human
 As a human, you can click on unoccupied cells, and they will be highlighted red (invalid move) or green (valid move) 
@@ -69,6 +87,18 @@ The following are changes made to the code from the previous assignment (Assignm
 - Added a `disableInput` method to the view to not allow any input on an AI's view.
 - Removed old implementation of single-depth minimax and refactored recursive, multiple-depth minimax.
 - Split notification of turn and prompting of player move in `ModelFeatures` and added a `itsGameOver` method.
+
+### Changes for Part 4
+The following are changes made to the code from the previous assignment (Assignment 7) to adapt
+to the provider's code. Apart from these changes, the ReversiFactor was obviously changed to add functionality
+of being able to receive provider strategies through the command line. 
+- Made all fields of the `Model` protected instead of private in order to allow copying functionality of the adapter.
+- Made the copying constructor for the `Model` protected instead of private
+- Made `ModelFeaturesImpl` and `PlayerFeaturesImpl` public so that the various adapter classes
+can use these implementations as well. 
+- Changed the method name of `getTurn()` in `IROModel` to `getTurnColor()` to mitigate naming collisions.
+
+No changes were made for the code that was sent to our customers. 
 
 ## Invariant
 - The number of key-value pairs in `board` is equal to `3 * numRings * (numRings + 1) + 1`. This is a class variant

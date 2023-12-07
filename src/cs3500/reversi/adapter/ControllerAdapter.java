@@ -64,13 +64,11 @@ public final class ControllerAdapter extends PlayerFeaturesImpl implements Rever
   @Override
   public void handleCellClick(int row, int col) {
     super.view.refresh();
-    // Stub, because providers said that this method is from previous iterations.
   }
   
   @Override
   public void handleKeyPress(int keyCode) {
     super.view.refresh();
-    // Stub, because providers said that this method is from previous iterations
   }
   
   @Override
