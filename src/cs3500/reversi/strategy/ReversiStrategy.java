@@ -2,7 +2,6 @@ package cs3500.reversi.strategy;
 
 import java.util.List;
 
-import cs3500.reversi.model.HexPosn;
 import cs3500.reversi.model.IROModel;
 import cs3500.reversi.model.Posn;
 

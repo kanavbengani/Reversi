@@ -1,7 +1,11 @@
 package cs3500.reversi;
 
-import cs3500.reversi.model.*;
-import cs3500.reversi.view.HexTextualView;
+import cs3500.reversi.model.IModel;
+import cs3500.reversi.model.IROModel;
+import cs3500.reversi.model.PieceColor;
+import cs3500.reversi.model.Posn;
+import cs3500.reversi.model.hex.HexModel;
+import cs3500.reversi.view.hex.HexTextualView;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import cs3500.reversi.model.HexPosn;
+import cs3500.reversi.model.hex.HexPosn;
 
 /**
  * Represents a set of JUnit tests that tests the functionality of the cs3500.reversi.model.
@@ -485,8 +489,9 @@ public class ReversiHexModelTests {
   // Add
   @Test
   public void testAxialPosnAdd() {
-    Assert.assertEquals(new HexPosn(0, 0).add(HexDirection.LEFT), new HexPosn(-1, 0));
-    Assert.assertEquals(new HexPosn(-1, 0).add(HexDirection.DOWNRIGHT),
+    Assert.assertEquals(new HexPosn(0, 0).add(this.roModel.getDirections()[5]),
+        new HexPosn(-1, 0));
+    Assert.assertEquals(new HexPosn(-1, 0).add(this.roModel.getDirections()[3]),
             new HexPosn(-1 , 1));
   }
 

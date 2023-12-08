@@ -1,4 +1,7 @@
-package cs3500.reversi.model;
+package cs3500.reversi.model.hex;
+
+import cs3500.reversi.model.Direction;
+import cs3500.reversi.model.Posn;
 
 import java.util.Objects;
 
@@ -44,12 +47,12 @@ public class HexPosn implements Posn {
   }
   
   @Override
-  public int getFirst() {
+  public int getSecondCoord() {
     return this.r;
   }
   
   @Override
-  public int getSecond() {
+  public int getFirstCoord() {
     return this.q;
   }
   

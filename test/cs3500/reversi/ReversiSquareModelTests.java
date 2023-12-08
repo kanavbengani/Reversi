@@ -1,7 +1,9 @@
 package cs3500.reversi;
 
 import cs3500.reversi.model.*;
-import cs3500.reversi.view.SquareTextualView;
+import cs3500.reversi.model.square.SquareModel;
+import cs3500.reversi.model.square.SquarePosn;
+import cs3500.reversi.view.square.SquareTextualView;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,7 +40,5 @@ public class ReversiSquareModelTests {
     this.model.playMove(PieceColor.WHITE, new SquarePosn(0, -1));
     this.model.playMove(PieceColor.BLACK, new SquarePosn(-1, -1));
     this.model.playMove(PieceColor.WHITE, new SquarePosn(-1, 1));
-    System.out.println(new SquareTextualView(this.model.getReadOnlyModel()));
-    System.out.println(this.model.getWinner());
   }
 }

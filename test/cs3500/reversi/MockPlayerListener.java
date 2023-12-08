@@ -1,6 +1,5 @@
 package cs3500.reversi;
 
-import cs3500.reversi.model.HexPosn;
 import cs3500.reversi.model.Posn;
 import cs3500.reversi.player.PlayerFeatures;
 

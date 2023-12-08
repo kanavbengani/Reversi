@@ -1,4 +1,6 @@
-package cs3500.reversi.model;
+package cs3500.reversi.model.hex;
+
+import cs3500.reversi.model.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;

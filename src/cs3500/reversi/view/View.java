@@ -6,26 +6,24 @@ import javax.swing.JOptionPane;
 import cs3500.reversi.model.IROModel;
 import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.player.PlayerFeatures;
+import cs3500.reversi.view.hex.HexPanel;
 
 /**
  * The View class represents a Swing-based graphical user interface for the Reversi game.
- * It extends JFrame and implements the IView interface. The view consists of a ReversiPanel that
+ * It extends JFrame and implements the IView interface. The view consists of a HexPanel that
  * displays the game board and allows user interaction.
  */
 public class View extends JFrame implements IView {
-  private final ReversiPanel panel;
+  private final AbstractPanel panel;
   
   /**
-   * Constructs a View for the Reversi game with the specified model and player color.
-   *
-   * @param model      The Reversi game model.
-   * @param pieceColor The color of the player associated with this view.
+   * Constructs a View for the Reversi game with the specified panel.
    */
-  public View(IROModel model, PieceColor pieceColor) {
-    super("Reversi: " + pieceColor.name() + " Player");
+  public View(AbstractPanel panel) {
+    super("Reversi");
     
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    this.panel = new ReversiPanel(model, pieceColor);
+    this.panel = panel;
     this.add(this.panel);
     
     this.setResizable(false);

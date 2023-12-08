@@ -1,4 +1,7 @@
-package cs3500.reversi.model;
+package cs3500.reversi.model.square;
+
+import cs3500.reversi.model.Direction;
+import cs3500.reversi.model.Posn;
 
 import java.util.Objects;
 
@@ -34,12 +37,12 @@ public class SquarePosn implements Posn {
   }
   
   @Override
-  public int getFirst() {
+  public int getSecondCoord() {
     return this.y;
   }
   
   @Override
-  public int getSecond() {
+  public int getFirstCoord() {
     return this.x;
   }
   

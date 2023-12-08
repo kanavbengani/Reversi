@@ -1,5 +1,8 @@
 package cs3500.reversi.model;
 
+import cs3500.reversi.model.hex.HexPosn;
+import cs3500.reversi.model.square.SquarePosn;
+
 public interface Direction {
   /**
    * Computes the hexagonal position for the given position added to this direction.

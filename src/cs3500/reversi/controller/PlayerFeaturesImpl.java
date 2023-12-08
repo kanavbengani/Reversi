@@ -1,6 +1,5 @@
 package cs3500.reversi.controller;
 
-import cs3500.reversi.model.HexPosn;
 import cs3500.reversi.model.IModel;
 import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.model.Posn;

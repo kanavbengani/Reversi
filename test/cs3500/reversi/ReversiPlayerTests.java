@@ -1,7 +1,7 @@
 package cs3500.reversi;
 
-import cs3500.reversi.model.HexModel;
-import cs3500.reversi.model.HexPosn;
+import cs3500.reversi.model.hex.HexModel;
+import cs3500.reversi.model.hex.HexPosn;
 import cs3500.reversi.model.Posn;
 import cs3500.reversi.player.AIPlayer;
 import cs3500.reversi.player.Player;

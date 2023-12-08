@@ -1,7 +1,15 @@
 package cs3500.reversi.model;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
+/**
+ * Represents an abstract model that is responsible to set up and keep track of the game of
+ * Reversi. It promises all the methods defined in IModel.
+ */
 public abstract class AbstractModel implements IModel {
   protected final PieceColor pieceColor1;
   protected final PieceColor pieceColor2;

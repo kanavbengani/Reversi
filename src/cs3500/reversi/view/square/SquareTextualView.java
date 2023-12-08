@@ -1,6 +1,8 @@
-package cs3500.reversi.view;
+package cs3500.reversi.view.square;
 
 import cs3500.reversi.model.*;
+import cs3500.reversi.model.square.SquarePosn;
+import cs3500.reversi.view.ITextualView;
 
 import java.util.Optional;
 

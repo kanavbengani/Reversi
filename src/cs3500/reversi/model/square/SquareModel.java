@@ -1,4 +1,11 @@
-package cs3500.reversi.model;
+package cs3500.reversi.model.square;
+
+import cs3500.reversi.model.AbstractModel;
+import cs3500.reversi.model.Direction;
+import cs3500.reversi.model.IModel;
+import cs3500.reversi.model.ModelFeatures;
+import cs3500.reversi.model.PieceColor;
+import cs3500.reversi.model.Posn;
 
 import java.util.*;
 
@@ -23,8 +30,8 @@ public class SquareModel extends AbstractModel {
   
   // For copy
   protected SquareModel(int numRings, PieceColor pieceColor1, PieceColor pieceColor2,
-                     PieceColor currentPieceColor, int passCount, List<ModelFeatures> listeners,
-                     Map<Posn, Optional<PieceColor>> board) {
+                        PieceColor currentPieceColor, int passCount, List<ModelFeatures> listeners,
+                        Map<Posn, Optional<PieceColor>> board) {
     super(numRings, pieceColor1, pieceColor2, currentPieceColor, passCount, listeners, board);
   }
   

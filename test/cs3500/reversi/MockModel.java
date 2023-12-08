@@ -7,6 +7,8 @@ import java.util.Map;
 
 import cs3500.reversi.model.*;
 import cs3500.reversi.model.Posn;
+import cs3500.reversi.model.hex.HexDirection;
+import cs3500.reversi.model.hex.HexPosn;
 
 /**
  * Represents a mock model that appends to the given log and returns based

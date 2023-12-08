@@ -1,6 +1,6 @@
 package cs3500.reversi.adapter;
 
-import cs3500.reversi.model.HexPosn;
+import cs3500.reversi.model.hex.HexPosn;
 import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.provider.model.Color;
 

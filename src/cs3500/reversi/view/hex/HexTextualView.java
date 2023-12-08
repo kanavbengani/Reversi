@@ -1,6 +1,6 @@
-package cs3500.reversi.view;
+package cs3500.reversi.view.hex;
 
-import cs3500.reversi.model.HexPosn;
+import cs3500.reversi.model.hex.HexPosn;
 import java.util.Optional;
 
 import cs3500.reversi.model.IROModel;

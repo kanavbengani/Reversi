@@ -28,6 +28,7 @@ import cs3500.reversi.strategy.MinimaxStrategyDepth;
 
 import cs3500.reversi.view.IView;
 import cs3500.reversi.view.View;
+import cs3500.reversi.view.hex.HexPanel;
 
 /**
  * The ReversiFactory class is responsible for creating instances of the Reversi game,
@@ -66,7 +67,7 @@ public final class ReversiFactory {
     // Using type HexModelAdapter to allow for passing between provider and our implementation.
     // This is because HexModelAdapter implements both IModel (Ours) and ReversiModel (Provider).
     HexModelAdapter model = new HexModelAdapter(numRings);
-    IView viewBlack = new View(model, PieceColor.BLACK);
+    IView viewBlack = new View(new HexPanel(model, PieceColor.BLACK));
     IView viewWhite = ReversiFactory.getView2(gt2, model);
     
     Player player1 = ReversiFactory.getPlayer(gt1, gt1Depth, viewBlack, model);
@@ -88,7 +89,7 @@ public final class ReversiFactory {
         v.display(true);
         return v;
       default:
-        return new View(model, PieceColor.WHITE); // Second player is always WHITE
+        return new View(new HexPanel(model, PieceColor.WHITE)); // Second player is always WHITE
     }
   }
   

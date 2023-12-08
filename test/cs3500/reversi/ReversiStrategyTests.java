@@ -1,6 +1,8 @@
 package cs3500.reversi;
 
 import cs3500.reversi.model.*;
+import cs3500.reversi.model.hex.HexModel;
+import cs3500.reversi.model.hex.HexPosn;
 import cs3500.reversi.strategy.AndStrategy;
 import cs3500.reversi.strategy.AvoidEdgesStrategy;
 import cs3500.reversi.strategy.CaptureMostStrategy;

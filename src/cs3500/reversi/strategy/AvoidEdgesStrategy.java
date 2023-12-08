@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import cs3500.reversi.model.Direction;
-import cs3500.reversi.model.HexDirection;
 import cs3500.reversi.model.Posn;
 import cs3500.reversi.model.IROModel;
 
@@ -27,7 +26,7 @@ public class AvoidEdgesStrategy implements ReversiStrategy {
       }
     }
 
-    moves.sort(Comparator.comparingInt(Posn::getFirst).thenComparingInt(Posn::getSecond));
+    moves.sort(Comparator.comparingInt(Posn::getSecondCoord).thenComparingInt(Posn::getFirstCoord));
 
     return moves;
   }

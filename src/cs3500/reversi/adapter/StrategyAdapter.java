@@ -1,6 +1,5 @@
 package cs3500.reversi.adapter;
 
-import cs3500.reversi.model.HexPosn;
 import cs3500.reversi.model.IModel;
 import cs3500.reversi.model.IROModel;
 import cs3500.reversi.model.Posn;

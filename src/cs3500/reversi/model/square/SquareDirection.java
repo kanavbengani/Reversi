@@ -1,7 +1,10 @@
-package cs3500.reversi.model;
+package cs3500.reversi.model.square;
+
+import cs3500.reversi.model.Direction;
+import cs3500.reversi.model.hex.HexPosn;
 
 /**
- * An enum of six predefined `HexPosn` directional offsets representing the six neighboring
+ * An enum of eight predefined `SquarePosn` directional offsets representing the six neighboring
  * positions in a hexagonal grid.
  */
 public enum SquareDirection implements Direction {
