@@ -1,6 +1,6 @@
 package cs3500.reversi.adapter;
 
-import cs3500.reversi.model.AxialPosn;
+import cs3500.reversi.model.hex.HexPosn;
 import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.provider.model.Color;
 
@@ -19,11 +19,11 @@ class Utils {
    * @param row      The row index.
    * @param col      The column index.
    * @param numRings The number of rings in the Reversi game board.
-   * @return An AxialPosn representing the axial coordinates.
+   * @return An HexPosn representing the axial coordinates.
    * @throws IllegalArgumentException if the row or col is negative, or if the row and
    *                                  col combination is invalid.
    */
-  static AxialPosn convertRowColToAxial(int row, int col, int numRings) {
+  static HexPosn convertRowColToAxial(int row, int col, int numRings) {
     if (row < 0 || col < 0) {
       throw new IllegalArgumentException("Invalid row, col.");
     }
@@ -40,7 +40,7 @@ class Utils {
     } else {
       throw new IllegalArgumentException("Invalid row, col");
     }
-    return new AxialPosn(q, r);
+    return new HexPosn(q, r);
   }
   
   /**

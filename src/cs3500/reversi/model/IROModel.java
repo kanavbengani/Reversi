@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * The `Model` interface defines the read-only cs3500.reversi.model for a Reversi game. This
+ * The `HexModel` interface defines the read-only cs3500.reversi.model for a Reversi game. This
  * interface specifies methods for querying the state and status of the game.
  */
 public interface IROModel {
@@ -12,10 +12,10 @@ public interface IROModel {
    * Checks if a move is valid for a specific piece color at a given position on the Reversi board.
    *
    * @param pieceColor The piece color attempting the move.
-   * @param ap The position on the Reversi board where the move is to be made.
+   * @param posn The position on the Reversi board where the move is to be made.
    * @return `true` if the move is valid, `false` otherwise.
    */
-  boolean isMoveValid(PieceColor pieceColor, AxialPosn ap);
+  boolean isMoveValid(PieceColor pieceColor, Posn posn);
 
   /**
    * Returns whether the Reversi game is over. The game is considered over when no more legal moves
@@ -30,11 +30,11 @@ public interface IROModel {
    * Reversi board.
    *
    * @param pieceColor The piece color attempting the move.
-   * @param ap The position on the Reversi board where the move is to be made.
+   * @param posn The position on the Reversi board where the move is to be made.
    * @return List of captured pieces.
    * @throws IllegalStateException If the move is not valid.
    */
-  List<AxialPosn> getAllCapturedPieces(PieceColor pieceColor, AxialPosn ap)
+  List<Posn> getAllCapturedPieces(PieceColor pieceColor, Posn posn)
           throws IllegalStateException;
 
   /**
@@ -50,13 +50,13 @@ public interface IROModel {
   /**
    * Gets an optional representing the piece color at a specific cell position on the Reversi board.
    *
-   * @param axialPosn The position of the cell on the Reversi board.
+   * @param posn The position of the cell on the Reversi board.
    * @return An `Optional` containing the piece color at the specified cell position, or an empty
    *         `Optional` if the position is empty.
-   * @throws IllegalArgumentException if the provided `AxialPosn` is not a valid position on the
+   * @throws IllegalArgumentException if the provided `Posn` is not a valid position on the
    *         board.
    */
-  Optional<PieceColor> getPieceAt(AxialPosn axialPosn) throws IllegalArgumentException;
+  Optional<PieceColor> getPieceAt(Posn posn) throws IllegalArgumentException;
 
   /**
    * Gets the piece color whose turn it currently is in the Reversi game.
@@ -101,7 +101,21 @@ public interface IROModel {
    *
    * @return a list of all positions on the board.
    */
-  List<AxialPosn> getAllPosn();
+  List<Posn> getAllPosn();
+  
+  /**
+   * Returns a list of all corners on the board.
+   *
+   * @return a list of all corners on the board.
+   */
+  List<Posn> getAllCorners();
+  
+  /**
+   * Returns an array of directions of this model type.
+   *
+   * @return an array of directions of this model type.
+   */
+  Direction[] getDirections();
 
   /**
    * Returns a copy of this model.

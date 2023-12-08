@@ -1,15 +1,16 @@
 package cs3500.reversi;
 
 import cs3500.reversi.controller.Controller;
-import cs3500.reversi.model.AxialPosn;
+import cs3500.reversi.model.hex.HexPosn;
 import cs3500.reversi.model.IModel;
-import cs3500.reversi.model.Model;
+import cs3500.reversi.model.hex.HexModel;
 import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.player.AIPlayer;
 import cs3500.reversi.player.Player;
 import cs3500.reversi.strategy.CaptureMostStrategy;
 import cs3500.reversi.view.IView;
 import cs3500.reversi.view.View;
+import cs3500.reversi.view.hex.HexPanel;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +34,7 @@ public class ReversiControllerTests {
   public void initTest() {
     int numRings = 3;
     
-    this.model = new Model(numRings);
+    this.model = new HexModel(numRings);
     this.mockPlayerLogBlack = new StringBuilder();
     this.mockPlayerLogWhite = new StringBuilder();
     this.mockViewLogBlack = new StringBuilder();
@@ -45,7 +46,7 @@ public class ReversiControllerTests {
     
     this.mockModelLog = new StringBuilder();
     IModel mockModel = new MockModel(this.mockModelLog, new HashMap<>(), numRings);
-    IView view = new View(this.model.getReadOnlyModel(), PieceColor.BLACK);
+    IView view = new View(new HexPanel(this.model.getReadOnlyModel(), PieceColor.BLACK));
     this.player = new AIPlayer(this.model.getReadOnlyModel(), new CaptureMostStrategy());
     
     
@@ -111,7 +112,7 @@ public class ReversiControllerTests {
   @Test
   public void testControllerAllComponentsListenCorrectlyAfterPlayAMove() {
     this.model.startGame();
-    this.model.playMove(PieceColor.BLACK, new AxialPosn(2, -1));
+    this.model.playMove(PieceColor.BLACK, new HexPosn(2, -1));
     
     Assert.assertEquals(this.mockModelLog.toString(),
         "addListener called in MockModel.\n");

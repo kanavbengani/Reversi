@@ -8,10 +8,10 @@ import cs3500.reversi.provider.model.ReversiModel;
  */
 public interface ReversiController extends GUIFeatures, ModelFeatures {
   /**
-   * Execute a single game of Reversi given a Reversi Model. When the game is over,
+   * Execute a single game of Reversi given a Reversi HexModel. When the game is over,
    * the playGame method ends.
    *
-   * @param m a non-null Reversi Model
+   * @param m a non-null Reversi HexModel
    */
   void playGame(ReversiModel m);
 

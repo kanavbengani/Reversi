@@ -1,6 +1,6 @@
 package cs3500.reversi.strategy;
 
-import cs3500.reversi.model.AxialPosn;
+import cs3500.reversi.model.Posn;
 import cs3500.reversi.model.IModel;
 import cs3500.reversi.model.IROModel;
 import cs3500.reversi.model.PieceColor;
@@ -40,9 +40,9 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
   }
 
   @Override
-  public List<AxialPosn> chooseMove(List<AxialPosn> possibleMoves, IROModel model) {
+  public List<Posn> chooseMove(List<Posn> possibleMoves, IROModel model) {
     this.initializeColors(model);
-    Map<AxialPosn, Integer> moves = this.doMinimax(model, initialDepth);
+    Map<Posn, Integer> moves = this.doMinimax(model, initialDepth);
     return new ArrayList<>(moves.keySet());
   }
 
@@ -57,8 +57,8 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
 
   // Does minimax with the given depth and model. Positive scores are good for the opponent
   // while negative scores are good for us.
-  private Map<AxialPosn, Integer> doMinimax(IROModel model, int depth) {
-    Map<AxialPosn, Integer> result;
+  private Map<Posn, Integer> doMinimax(IROModel model, int depth) {
+    Map<Posn, Integer> result;
     if (depth == 1) {
       result = this.doBaseCase(model);
     }
@@ -74,9 +74,9 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
   }
 
   // Executes the opponent's perspective, hence maximizing each of their moves.
-  private Map<AxialPosn, Integer> doOpponentPerspective(IROModel model, int depth) {
-    Map<AxialPosn, Integer> result = new HashMap<>();
-    AxialPosn move;
+  private Map<Posn, Integer> doOpponentPerspective(IROModel model, int depth) {
+    Map<Posn, Integer> result = new HashMap<>();
+    Posn move;
     try {
       move = this.opponentStrategy.chooseMove(new ArrayList<>(), model).get(0);
     } catch (IndexOutOfBoundsException ib) {
@@ -111,9 +111,9 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
   }
 
   // Executes the 'my' (target) perspective, hence minimizing each of opponent's best moves.
-  private Map<AxialPosn, Integer> doMyPerspective(IROModel model, int depth) {
-    Map<AxialPosn, Integer> result = new HashMap<>();
-    for (AxialPosn move : model.getAllPosn()) {
+  private Map<Posn, Integer> doMyPerspective(IROModel model, int depth) {
+    Map<Posn, Integer> result = new HashMap<>();
+    for (Posn move : model.getAllPosn()) {
       if (model.isMoveValid(this.myColor, move)) {
         IModel copyModel = model.copy();
         copyModel.playMove(this.myColor, move);
@@ -146,9 +146,9 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
   }
   
   // Executes the base case moves with depth = 1.
-  private Map<AxialPosn, Integer> doBaseCase(IROModel model) {
-    Map<AxialPosn, Integer> result = new HashMap<>();
-    for (AxialPosn move : model.getAllPosn()) {
+  private Map<Posn, Integer> doBaseCase(IROModel model) {
+    Map<Posn, Integer> result = new HashMap<>();
+    for (Posn move : model.getAllPosn()) {
       if (model.isMoveValid(model.getTurnColor(), move)) {
         IModel copyModel = model.copy();
         copyModel.playMove(model.getTurnColor(), move);
@@ -184,7 +184,7 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
     if (model.isGameOver()) {
       throw new IllegalStateException("Game is over, move cannot be chosen.");
     }
-    List<AxialPosn> it;
+    List<Posn> it;
     PieceColor turn = model.getTurnColor();
 
     if (turn.equals(this.opponentColor)) {
@@ -196,7 +196,7 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
     }
     else {
       // If end is my turn, go through all possible moves.
-      List<AxialPosn> validMoves = model.getAllPosn();
+      List<Posn> validMoves = model.getAllPosn();
       validMoves.removeIf(move -> !model.isMoveValid(this.myColor, move));
       it = validMoves;
       if (it.isEmpty()) {
@@ -204,7 +204,7 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
       }
     }
     
-    Map<AxialPosn, Integer> result = computeResult(model, it);
+    Map<Posn, Integer> result = computeResult(model, it);
     
     return turn.equals(this.opponentColor)
             ? Collections.max(result.values())
@@ -213,10 +213,10 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
   
   // Computes the base case result hashmap by making a copy of the model and playing all the
   // moves passed in
-  private Map<AxialPosn, Integer> computeResult(IROModel model, List<AxialPosn> it) {
+  private Map<Posn, Integer> computeResult(IROModel model, List<Posn> it) {
     PieceColor turn = model.getTurnColor();
-    Map<AxialPosn, Integer> result = new HashMap<>();
-    for (AxialPosn move : it) {
+    Map<Posn, Integer> result = new HashMap<>();
+    for (Posn move : it) {
       IModel copyModel = model.copy();
       copyModel.playMove(turn, move);
       if (copyModel.isGameOver()) {
@@ -240,22 +240,22 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
   
   // Sorts the passed in Map in the order of score
   // followed by the axial position (topmost leftmost).
-  private Map<AxialPosn, Integer> sortAscending(Map<AxialPosn, Integer> result, boolean ascending) {
-    List<Map.Entry<AxialPosn, Integer>> entryList = new ArrayList<>(result.entrySet());
+  private Map<Posn, Integer> sortAscending(Map<Posn, Integer> result, boolean ascending) {
+    List<Map.Entry<Posn, Integer>> entryList = new ArrayList<>(result.entrySet());
 
-    Comparator<Map.Entry<AxialPosn, Integer>> comparator;
+    Comparator<Map.Entry<Posn, Integer>> comparator;
     if (ascending) {
       comparator = Comparator
-              .comparingInt((Map.Entry<AxialPosn, Integer> entry) -> entry.getValue())
-              .thenComparingInt(entry -> entry.getKey().r)
-              .thenComparingInt(entry -> entry.getKey().q);
+              .comparingInt((Map.Entry<Posn, Integer> entry) -> entry.getValue())
+              .thenComparingInt(entry -> entry.getKey().getSecondCoord())
+              .thenComparingInt(entry -> entry.getKey().getFirstCoord());
     }
     else {
       comparator = Comparator
-              .comparingInt((Map.Entry<AxialPosn, Integer> entry) -> entry.getValue())
+              .comparingInt((Map.Entry<Posn, Integer> entry) -> entry.getValue())
               .reversed()
-              .thenComparingInt(entry -> entry.getKey().r)
-              .thenComparingInt(entry -> entry.getKey().q);
+              .thenComparingInt(entry -> entry.getKey().getSecondCoord())
+              .thenComparingInt(entry -> entry.getKey().getFirstCoord());
     }
 
     entryList.sort(comparator);

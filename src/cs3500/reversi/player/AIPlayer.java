@@ -1,7 +1,7 @@
 package cs3500.reversi.player;
 
-import cs3500.reversi.model.AxialPosn;
 import cs3500.reversi.model.IROModel;
+import cs3500.reversi.model.Posn;
 import cs3500.reversi.strategy.ReversiStrategy;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public final class AIPlayer implements Player {
       return;
     }
     
-    List<AxialPosn> moves = this.strategy.chooseMove(new ArrayList<>(), this.model);
+    List<Posn> moves = this.strategy.chooseMove(new ArrayList<>(), this.model);
     
     if (!moves.isEmpty()) {
       for (PlayerFeatures f : this.listeners) {

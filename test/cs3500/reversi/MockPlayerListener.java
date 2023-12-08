@@ -1,6 +1,6 @@
 package cs3500.reversi;
 
-import cs3500.reversi.model.AxialPosn;
+import cs3500.reversi.model.Posn;
 import cs3500.reversi.player.PlayerFeatures;
 
 /**
@@ -24,8 +24,8 @@ public class MockPlayerListener implements PlayerFeatures {
   }
   
   @Override
-  public void move(AxialPosn axialPosn) {
-    String result = "Move was called with axial position " + axialPosn + ".\n";
+  public void move(Posn posn) {
+    String result = "Move was called with axial position " + posn + ".\n";
     this.log.append(result);
   }
 }

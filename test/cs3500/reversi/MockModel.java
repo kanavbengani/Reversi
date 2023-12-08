@@ -5,11 +5,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Map;
 
-import cs3500.reversi.model.AxialPosn;
-import cs3500.reversi.model.IModel;
-import cs3500.reversi.model.IROModel;
-import cs3500.reversi.model.ModelFeatures;
-import cs3500.reversi.model.PieceColor;
+import cs3500.reversi.model.*;
+import cs3500.reversi.model.Posn;
+import cs3500.reversi.model.hex.HexDirection;
+import cs3500.reversi.model.hex.HexPosn;
 
 /**
  * Represents a mock model that appends to the given log and returns based
@@ -17,9 +16,9 @@ import cs3500.reversi.model.PieceColor;
  */
 public class MockModel implements IModel {
   private final StringBuilder log;
-  private final Map<AxialPosn, Integer> posnCaptures;
+  private final Map<Posn, Integer> posnCaptures;
   private final int numRings;
-  private final List<AxialPosn> listOfPosn = new ArrayList<>();
+  private final List<Posn> listOfPosn = new ArrayList<>();
   private PieceColor currentPieceColor;
   
   /**
@@ -30,7 +29,7 @@ public class MockModel implements IModel {
    * @param numRings     number of rings in the game
    */
   public MockModel(StringBuilder log,
-                   Map<AxialPosn, Integer> posnCaptures,
+                   Map<Posn, Integer> posnCaptures,
                    int numRings) {
     this.log = log;
     this.posnCaptures = posnCaptures;
@@ -45,7 +44,7 @@ public class MockModel implements IModel {
 
     for (int r = -this.numRings; r <= this.numRings; r++) {
       for (int q = start; q <= end; q++) {
-        listOfPosn.add(new AxialPosn(q, r));
+        listOfPosn.add(new HexPosn(q, r));
       }
 
       if (start == -this.numRings) {
@@ -57,10 +56,10 @@ public class MockModel implements IModel {
   }
 
   @Override
-  public void playMove(PieceColor pc, AxialPosn ap)
+  public void playMove(PieceColor pieceColor, Posn posn)
           throws IllegalStateException, IllegalArgumentException {
-    this.log.append(pc).append(" wants to play ").append(ap).append("\n");
-    if (pc.equals(this.currentPieceColor)) {
+    this.log.append(pieceColor).append(" wants to play ").append(posn).append("\n");
+    if (pieceColor.equals(this.currentPieceColor)) {
       this.currentPieceColor = this.currentPieceColor.equals(PieceColor.BLACK)
           ? PieceColor.WHITE : PieceColor.BLACK;
     }
@@ -99,11 +98,11 @@ public class MockModel implements IModel {
   }
 
   @Override
-  public boolean isMoveValid(PieceColor pieceColor, AxialPosn ap) {
+  public boolean isMoveValid(PieceColor pieceColor, Posn posn) {
     this.log.append("Calling isMoveValid to check if ").append(pieceColor)
-            .append(" can play on ").append(ap).append(".\n");
+            .append(" can play on ").append(posn).append(".\n");
 
-    return this.posnCaptures.containsKey(ap);
+    return this.posnCaptures.containsKey(posn);
   }
 
   @Override
@@ -113,16 +112,16 @@ public class MockModel implements IModel {
   }
 
   @Override
-  public List<AxialPosn> getAllCapturedPieces(PieceColor pieceColor, AxialPosn ap)
+  public List<Posn> getAllCapturedPieces(PieceColor pieceColor, Posn posn)
           throws IllegalStateException, IllegalArgumentException {
     this.log.append("Calling getAllCapturedPieces if ").append(pieceColor)
-            .append(" plays on ").append(ap).append(".\n");
+            .append(" plays on ").append(posn).append(".\n");
 
-    List<AxialPosn> result = new ArrayList<>();
-    int size = this.posnCaptures.getOrDefault(ap, 0);
+    List<Posn> result = new ArrayList<>();
+    int size = this.posnCaptures.getOrDefault(posn, 0);
 
     for (int i = 0; i < size; i++) {
-      result.add(new AxialPosn(0, 0)); // Don't care about the actual locations
+      result.add(new HexPosn(0, 0)); // Don't care about the actual locations
     }
 
     return result;
@@ -136,9 +135,9 @@ public class MockModel implements IModel {
   }
 
   @Override
-  public Optional<PieceColor> getPieceAt(AxialPosn axialPosn)
+  public Optional<PieceColor> getPieceAt(Posn posn)
           throws IllegalArgumentException {
-    this.log.append("Calling getPieceAt on ").append(axialPosn).append(".\n");
+    this.log.append("Calling getPieceAt on ").append(posn).append(".\n");
     return Optional.empty();
   }
 
@@ -172,9 +171,26 @@ public class MockModel implements IModel {
   }
 
   @Override
-  public List<AxialPosn> getAllPosn() {
+  public List<Posn> getAllPosn() {
     this.log.append("getAllPosn is called.\n");
 
     return this.listOfPosn;
+  }
+  
+  @Override
+  public List<Posn> getAllCorners() {
+    this.log.append("getAllCorners is called.\n");
+    int n = this.getNumRings();
+    
+    return new ArrayList<>(List.of(
+        new HexPosn(n, 0), new HexPosn(0, n),
+        new HexPosn(n, -n), new HexPosn(0, -n),
+        new HexPosn(-n, 0), new HexPosn(-n, n)));
+  }
+  
+  @Override
+  public Direction[] getDirections() {
+    this.log.append("getDirections is called.\n");
+    return HexDirection.values();
   }
 }

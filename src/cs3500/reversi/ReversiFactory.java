@@ -1,7 +1,7 @@
 package cs3500.reversi;
 
 import cs3500.reversi.adapter.ControllerAdapter;
-import cs3500.reversi.adapter.ModelAdapter;
+import cs3500.reversi.adapter.HexModelAdapter;
 import cs3500.reversi.adapter.StrategyAdapter;
 import cs3500.reversi.adapter.ViewAdapter;
 import cs3500.reversi.controller.Controller;
@@ -28,6 +28,7 @@ import cs3500.reversi.strategy.MinimaxStrategyDepth;
 
 import cs3500.reversi.view.IView;
 import cs3500.reversi.view.View;
+import cs3500.reversi.view.hex.HexPanel;
 
 /**
  * The ReversiFactory class is responsible for creating instances of the Reversi game,
@@ -63,10 +64,10 @@ public final class ReversiFactory {
    */
   public static IModel makeModel(int numRings, ReversiFactory.GameType gt1, int gt1Depth,
                                  ReversiFactory.GameType gt2, int gt2Depth) {
-    // Using type ModelAdapter to allow for passing between provider and our implementation.
-    // This is because ModelAdapter implements both IModel (Ours) and ReversiModel (Provider).
-    ModelAdapter model = new ModelAdapter(numRings);
-    IView viewBlack = new View(model, PieceColor.BLACK);
+    // Using type HexModelAdapter to allow for passing between provider and our implementation.
+    // This is because HexModelAdapter implements both IModel (Ours) and ReversiModel (Provider).
+    HexModelAdapter model = new HexModelAdapter(numRings);
+    IView viewBlack = new View(new HexPanel(model, PieceColor.BLACK));
     IView viewWhite = ReversiFactory.getView2(gt2, model);
     
     Player player1 = ReversiFactory.getPlayer(gt1, gt1Depth, viewBlack, model);
@@ -78,7 +79,7 @@ public final class ReversiFactory {
     return model;
   }
   
-  private static IView getView2(ReversiFactory.GameType gt, ModelAdapter model) {
+  private static IView getView2(ReversiFactory.GameType gt, HexModelAdapter model) {
     switch (gt) {
       case PROVIDER_HUMAN:
       case PROVIDER_STRATEGY1:
@@ -88,7 +89,7 @@ public final class ReversiFactory {
         v.display(true);
         return v;
       default:
-        return new View(model, PieceColor.WHITE); // Second player is always WHITE
+        return new View(new HexPanel(model, PieceColor.WHITE)); // Second player is always WHITE
     }
   }
   

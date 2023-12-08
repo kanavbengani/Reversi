@@ -3,7 +3,7 @@ package cs3500.reversi.controller;
 import cs3500.reversi.MockModel;
 import cs3500.reversi.MockPlayer;
 import cs3500.reversi.MockView;
-import cs3500.reversi.model.AxialPosn;
+import cs3500.reversi.model.hex.HexPosn;
 import cs3500.reversi.model.IModel;
 import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.player.Player;
@@ -95,7 +95,7 @@ public class PackagePrivateControllerTests {
   
   @Test
   public void testPFIPublishesForMove() {
-    this.pfi.move(new AxialPosn(0, 0));
+    this.pfi.move(new HexPosn(0, 0));
     
     Assert.assertEquals(this.mockModelLog.toString(), "BLACK wants to play (0, 0)\n");
     Assert.assertEquals(this.mockViewLog.toString(), "refresh called\n");
@@ -103,8 +103,8 @@ public class PackagePrivateControllerTests {
   
   @Test
   public void testPFIPublishesForMoveInvalid() {
-    this.pfi.move(new AxialPosn(0, 0));
-    this.pfi.move(new AxialPosn(1, 1));
+    this.pfi.move(new HexPosn(0, 0));
+    this.pfi.move(new HexPosn(1, 1));
     
     Assert.assertEquals(this.mockModelLog.toString(), "BLACK wants to play (0, 0)\n"
         + "BLACK wants to play (1, 1)\n");

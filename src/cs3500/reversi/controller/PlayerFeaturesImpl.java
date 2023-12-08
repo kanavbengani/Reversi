@@ -1,8 +1,8 @@
 package cs3500.reversi.controller;
 
-import cs3500.reversi.model.AxialPosn;
 import cs3500.reversi.model.IModel;
 import cs3500.reversi.model.PieceColor;
+import cs3500.reversi.model.Posn;
 import cs3500.reversi.view.IView;
 import cs3500.reversi.player.PlayerFeatures;
 
@@ -39,9 +39,9 @@ public class PlayerFeaturesImpl implements PlayerFeatures {
   }
   
   @Override
-  public void move(AxialPosn axialPosn) {
+  public void move(Posn posn) {
     try {
-      this.model.playMove(this.color, axialPosn);
+      this.model.playMove(this.color, posn);
       this.view.refresh();
     } catch (IllegalStateException | IllegalArgumentException e) {
       this.view.promptMessage(e.getMessage());

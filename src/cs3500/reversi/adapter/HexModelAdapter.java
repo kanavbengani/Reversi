@@ -1,6 +1,6 @@
 package cs3500.reversi.adapter;
 
-import cs3500.reversi.model.Model;
+import cs3500.reversi.model.hex.HexModel;
 import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.provider.controller.ReversiController;
 import cs3500.reversi.provider.model.Color;
@@ -11,26 +11,26 @@ import java.util.HashMap;
 import java.util.Optional;
 
 /**
- * The ModelAdapter class serves as an adapter between our Model and our providers' ReversiModel
- * It allows the integration of the Model with external components that expect a ReversiModel.
+ * The HexModelAdapter class serves as an adapter between our HexModel and our providers' ReversiModel
+ * It allows the integration of the HexModel with external components that expect a ReversiModel.
  */
-public class ModelAdapter extends Model implements ReversiModel {
+public class HexModelAdapter extends HexModel implements ReversiModel {
   
   /**
-   * Constructs a new ModelAdapter with the specified number of rings.
+   * Constructs a new HexModelAdapter with the specified number of rings.
    *
    * @param numRings The number of rings for the Reversi board.
    */
-  public ModelAdapter(int numRings) {
+  public HexModelAdapter(int numRings) {
     super(numRings);
   }
   
   /**
-   * Constructs a new ModelAdapter that is a copy of the given ModelAdapter.
+   * Constructs a new HexModelAdapter that is a copy of the given HexModelAdapter.
    *
-   * @param model The ModelAdapter to copy.
+   * @param model The HexModelAdapter to copy.
    */
-  public ModelAdapter(ModelAdapter model) {
+  public HexModelAdapter(HexModelAdapter model) {
     super(model.numRings, model.pieceColor1, model.pieceColor2,
         model.currentPieceColor, model.passCount, new ArrayList<>(), new HashMap<>(model.board));
   }
@@ -119,7 +119,7 @@ public class ModelAdapter extends Model implements ReversiModel {
   
   @Override
   public ReversiModel copyGame() {
-    return new ModelAdapter(this);
+    return new HexModelAdapter(this);
   }
   
   @Override

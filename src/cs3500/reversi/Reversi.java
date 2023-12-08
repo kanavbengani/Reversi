@@ -9,7 +9,7 @@ public final class Reversi {
   private static final int NUM_RINGS = 5;
   
   /**
-   * Runs the main program using the Model and the View.
+   * Runs the main program using the HexModel and the View.
    * @param args String command line arguments
    */
   public static void main(String[] args) {
