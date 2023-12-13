@@ -19,7 +19,6 @@ public class SquarePosn implements Posn {
    */
   public final int y;
   
-  
   /**
    * Constructs a new `SquarePosn` object with the specified axial coordinates (x, y).
    *
@@ -37,12 +36,12 @@ public class SquarePosn implements Posn {
   }
   
   @Override
-  public int getSecondCoord() {
+  public int getSecondCoordinate() {
     return this.y;
   }
   
   @Override
-  public int getFirstCoord() {
+  public int getFirstCoordinate() {
     return this.x;
   }
   

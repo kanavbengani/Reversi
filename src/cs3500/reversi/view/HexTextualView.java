@@ -1,4 +1,4 @@
-package cs3500.reversi.view.hex;
+package cs3500.reversi.view;
 
 import cs3500.reversi.model.hex.HexPosn;
 import java.util.Optional;

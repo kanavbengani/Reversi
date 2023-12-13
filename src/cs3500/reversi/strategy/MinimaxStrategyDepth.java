@@ -247,15 +247,15 @@ public class MinimaxStrategyDepth implements ReversiStrategy {
     if (ascending) {
       comparator = Comparator
               .comparingInt((Map.Entry<Posn, Integer> entry) -> entry.getValue())
-              .thenComparingInt(entry -> entry.getKey().getSecondCoord())
-              .thenComparingInt(entry -> entry.getKey().getFirstCoord());
+              .thenComparingInt(entry -> entry.getKey().getSecondCoordinate())
+              .thenComparingInt(entry -> entry.getKey().getFirstCoordinate());
     }
     else {
       comparator = Comparator
               .comparingInt((Map.Entry<Posn, Integer> entry) -> entry.getValue())
               .reversed()
-              .thenComparingInt(entry -> entry.getKey().getSecondCoord())
-              .thenComparingInt(entry -> entry.getKey().getFirstCoord());
+              .thenComparingInt(entry -> entry.getKey().getSecondCoordinate())
+              .thenComparingInt(entry -> entry.getKey().getFirstCoordinate());
     }
 
     entryList.sort(comparator);

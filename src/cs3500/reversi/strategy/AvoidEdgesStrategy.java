@@ -26,7 +26,7 @@ public class AvoidEdgesStrategy implements ReversiStrategy {
       }
     }
 
-    moves.sort(Comparator.comparingInt(Posn::getSecondCoord).thenComparingInt(Posn::getFirstCoord));
+    moves.sort(Comparator.comparingInt(Posn::getSecondCoordinate).thenComparingInt(Posn::getFirstCoordinate));
 
     return moves;
   }

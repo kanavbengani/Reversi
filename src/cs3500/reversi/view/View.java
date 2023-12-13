@@ -3,10 +3,10 @@ package cs3500.reversi.view;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import cs3500.reversi.model.IModel;
 import cs3500.reversi.model.IROModel;
 import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.player.PlayerFeatures;
-import cs3500.reversi.view.hex.HexPanel;
 
 /**
  * The View class represents a Swing-based graphical user interface for the Reversi game.
@@ -19,11 +19,22 @@ public class View extends JFrame implements IView {
   /**
    * Constructs a View for the Reversi game with the specified panel.
    */
-  public View(AbstractPanel panel) {
+  public View(ViewType vt, IROModel model, PieceColor pieceColor) {
     super("Reversi");
     
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    this.panel = panel;
+    
+    switch (vt) {
+      case SQUARE:
+        this.panel = new SquarePanel(model, pieceColor);
+        break;
+      case HEX:
+        this.panel = new HexPanel(model, pieceColor);
+        break;
+      default:
+        throw new IllegalArgumentException("Invalid view type.");
+    }
+    
     this.add(this.panel);
     
     this.setResizable(false);

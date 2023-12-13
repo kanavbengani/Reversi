@@ -47,12 +47,12 @@ public class HexPosn implements Posn {
   }
   
   @Override
-  public int getSecondCoord() {
+  public int getSecondCoordinate() {
     return this.r;
   }
   
   @Override
-  public int getFirstCoord() {
+  public int getFirstCoordinate() {
     return this.q;
   }
   

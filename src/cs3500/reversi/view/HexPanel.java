@@ -1,4 +1,4 @@
-package cs3500.reversi.view.hex;
+package cs3500.reversi.view;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -11,14 +11,13 @@ import cs3500.reversi.model.IROModel;
 import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.model.Posn;
 import cs3500.reversi.model.hex.HexPosn;
-import cs3500.reversi.view.AbstractPanel;
 
 /**
  * A HexPanel is a JPanel that draws the Reversi game board and allows users to interact with
  * the game. It implements ModelFeatures to receive updates from the game model and repaints
  * itself accordingly.
  */
-public class HexPanel extends AbstractPanel {
+class HexPanel extends AbstractPanel {
 
   /**
    * Constructs a HexPanel with the specified Reversi game model and player color.
@@ -26,7 +25,7 @@ public class HexPanel extends AbstractPanel {
    * @param model      The Reversi game model.
    * @param pieceColor The color of the player using this panel.
    */
-  public HexPanel(IROModel model, PieceColor pieceColor) {
+  HexPanel(IROModel model, PieceColor pieceColor) {
     super(model, pieceColor);
   }
   
@@ -104,8 +103,8 @@ public class HexPanel extends AbstractPanel {
   @Override
   protected Point transformLogicalToPhysical(Posn posn) {
     double x = super.cellRadius *
-        (Math.sqrt(3) * posn.getFirstCoord() + Math.sqrt(3) / 2 * posn.getSecondCoord());
-    double y = super.cellRadius * (3.0 / 2.0 * posn.getSecondCoord());
+        (Math.sqrt(3) * posn.getFirstCoordinate() + Math.sqrt(3) / 2 * posn.getSecondCoordinate());
+    double y = super.cellRadius * (3.0 / 2.0 * posn.getSecondCoordinate());
 
     return new Point((int) x, (int) -y);
   }

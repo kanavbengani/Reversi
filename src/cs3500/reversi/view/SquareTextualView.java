@@ -1,4 +1,4 @@
-package cs3500.reversi.view.square;
+package cs3500.reversi.view;
 
 import cs3500.reversi.model.*;
 import cs3500.reversi.model.square.SquarePosn;

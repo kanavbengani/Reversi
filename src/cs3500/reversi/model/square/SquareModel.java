@@ -14,7 +14,6 @@ import java.util.*;
  * the `AbstractModel` class and provides methods specific to a square board.
  */
 public class SquareModel extends AbstractModel {
-  // TODO: Write Tests.
   /**
    * Constructs a new Reversi game board with a specified number of rings.
    *
@@ -69,7 +68,7 @@ public class SquareModel extends AbstractModel {
   @Override
   protected int validateBoard(Map<Posn, Optional<PieceColor>> board) throws IllegalArgumentException {
     int posnCount = board.keySet().size();
-    double numRingsDouble = Math.sqrt(posnCount) - 1;
+    double numRingsDouble = Math.sqrt(posnCount) / 2;
     if (numRingsDouble % 1 != 0) {
       throw new IllegalArgumentException("Illegal board passed in.");
     }

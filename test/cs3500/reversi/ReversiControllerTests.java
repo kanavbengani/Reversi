@@ -5,12 +5,13 @@ import cs3500.reversi.model.hex.HexPosn;
 import cs3500.reversi.model.IModel;
 import cs3500.reversi.model.hex.HexModel;
 import cs3500.reversi.model.PieceColor;
+import cs3500.reversi.model.hex.MockModel;
 import cs3500.reversi.player.AIPlayer;
 import cs3500.reversi.player.Player;
 import cs3500.reversi.strategy.CaptureMostStrategy;
 import cs3500.reversi.view.IView;
 import cs3500.reversi.view.View;
-import cs3500.reversi.view.hex.HexPanel;
+import cs3500.reversi.view.ViewType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +47,7 @@ public class ReversiControllerTests {
     
     this.mockModelLog = new StringBuilder();
     IModel mockModel = new MockModel(this.mockModelLog, new HashMap<>(), numRings);
-    IView view = new View(new HexPanel(this.model.getReadOnlyModel(), PieceColor.BLACK));
+    IView view = new View(ViewType.HEX, this.model.getReadOnlyModel(), PieceColor.BLACK);
     this.player = new AIPlayer(this.model.getReadOnlyModel(), new CaptureMostStrategy());
     
     

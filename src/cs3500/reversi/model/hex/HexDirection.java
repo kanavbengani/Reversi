@@ -1,13 +1,14 @@
 package cs3500.reversi.model.hex;
 
 import cs3500.reversi.model.Direction;
+import cs3500.reversi.model.Posn;
 import cs3500.reversi.model.square.SquarePosn;
 
 /**
  * An enum of six predefined `HexPosn` directional offsets representing the six neighboring
  * positions in a hexagonal grid.
  */
-public enum HexDirection implements Direction {
+enum HexDirection implements Direction {
   UPLEFT(0, -1), UPRIGHT(1, -1),
   RIGHT(1, 0), DOWNRIGHT(0, 1),
   DOWNLEFT(-1, 1), LEFT(-1, 0);
@@ -22,12 +23,12 @@ public enum HexDirection implements Direction {
   }
   
   @Override
-  public HexPosn compute(HexPosn hexPosn) throws IllegalArgumentException {
+  public Posn compute(HexPosn hexPosn) throws IllegalArgumentException {
     return new HexPosn(hexPosn.q + this.deltaQ, hexPosn.r + this.deltaR);
   }
   
   @Override
-  public SquarePosn compute(SquarePosn squarePosn) throws IllegalArgumentException {
+  public Posn compute(SquarePosn squarePosn) throws IllegalArgumentException {
     throw new IllegalArgumentException("Trying to add hexagonal direction to square position.");
   }
 }

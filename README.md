@@ -6,6 +6,9 @@ against each other or even the possibility of implementing AI players in future 
 iteration of the homework, we have implemented a `Model`, a `View` and a `ReversiStrategy` pattern to develop certain
 strategies for the game. We have also implemented a `Controller` that synchronizes the `Model` and the `View`.
 
+## Implemented Extra Credit for Assignment 9
+We were able to implement all the levels (0 through 4).
+
 ## Implemented Features For Assignment 8
 We were able to successfully implement all the features using our provider's code.
 
@@ -16,36 +19,41 @@ view did not offer us functionality to change these dimensions.
 
 ## Quick start
 ### Command Line Arguments
+
+#### Board Type
+- "hex" -- Hexagonal Board
+- "square" -- Square Board
+
+#### Number Of Rings
+- Must be greater than 1.
+  - In the case of a square, the number of rings is half of the side length 
+  (Note: side length must be even).
+
+#### Players
 - "human" -- Allows you to create a human player
 - "strategy1" -- Minimax
   - Required argument: `depth` -- Must be passed in as a number greater than 0 right after "strategy1".
 - "strategy2" -- Go Corners Strategy (no additional arguments needed)
 - "strategy3" -- Avoid Edges Strategy (no additional arguments needed)
 - "strategy4" -- Capture Most Strategy (no additional arguments needed)
-- "providerHuman" -- Provider's Human Strategy (no additional arguments needed) (Only allowed as second player)
-- "providerStrategy1" -- Provider's **Easy** Strategy (no additional arguments needed) (Only allowed as second player)
-- "providerStrategy2" -- Provider's **Medium** Strategy (no additional arguments needed) (Only allowed as second player)
-- "providerStrategy3" -- Provider's **Hard** Strategy (no additional arguments needed) (Only allowed as second player)
 
 For all of the above strategies, refer to the `strategy` package.
 
 **Note:** A depth of 0 can optionally be passed in for non-strategy1 arguments, denoting no depth to be taken into
 consideration.
 
+### Format
+`java -jar Reversi.jar [BoardType] [NumRings] [Player 1] (Player 1 Args) [Player 2] (Player 2 Args)`
+
+**Reference:** "[]" is a required parameter, "()" is an optional parameter.
+
 Example usage:
-- `human human` -- Human (Black) vs. Human (White)
-- `human strategy1 3` -- Human (Black) vs. Minimax w/Depth 3 (White)
-- `strategy4 human` -- Capture Most Strategy (Black) vs. Human (White)
-- `strategy1 2 strategy1 4` -- Minimax w/Depth 2 (Black) vs. Minimax w/Depth 4 (White)
-- `strategy2 0 strategy3` -- Go Corners (Black) vs. AvoidEdges (White)
-
-Including providers code:
-
-- `human providerHuman` -- Our Human (Black) vs. Provider's Human (White)
-- `strategy2 providerHuman` -- Go Corners (Black) vs/  vs. Provider's Human (White)
-- `human providerStrategy1` -- Our Human (Black) vs. Provider's Easy Strategy (White)
-- `strategy1 4 providerStrategy2` -- Minimax w/Depth 4 (Black) vs. Provider's Medium Strategy (White)
-- `strategy3 providerStrategy3` -- AvoidEdges (Black) vs. Provider's Hard Strategy (White)
+- `hex 6 human human` -- Human (Black) vs. Human (White) on a Hexagonal Board with 6 rings
+- `square 5 human strategy1 3` -- Human (Black) vs. Minimax w/Depth 3 (White) on a Square Board with 5 rings
+- `hex 4 strategy4 human` -- Capture Most Strategy (Black) vs. Human (White) on a Hexagonal Board with 4 rings
+- `square 2 strategy1 2 strategy1 4` -- Minimax w/Depth 2 (Black) vs. Minimax w/Depth 4 (White) on a Square Board with
+2 rings
+- `hex 12 strategy2 0 strategy3` -- Go Corners (Black) vs. AvoidEdges (White) on a Hexagonal Board with 12 rings
 
 ## Extra Credit
 - Strategy 2 -- See `strategy/AvoidEdgesStrategy.java`.
@@ -101,6 +109,17 @@ can use these implementations as well.
 - Changed the method name of `getTurn()` in `IROModel` to `getTurnColor()` to mitigate naming collisions.
 
 No changes were made for the code that was sent to our customers. 
+
+### Changes for Part 5
+- Changed model package to include `AbstractModel`
+  - `SquareModel` and `HexModel` extend this abstract class and all behavior is abstracted.
+- Similar to above model, there is a `Posn` and `Direction` interface, which `SquarePosn`, `HexPosn`,
+`SquareDirection`, and `HexDirection` respectively implement. This helps in allowing for delegation throughout
+the code rather that relying on implementation specific details (such as which board it is). 
+- Added a `ViewType` in the view package to be able to parametrize the view with the type of game
+to create (square or hex).
+  - Changes possible command line arguments to allow added customizability for the user. 
+
 
 ## Invariant
 - The number of key-value pairs in `board` is equal to `3 * numRings * (numRings + 1) + 1`. This is a class variant

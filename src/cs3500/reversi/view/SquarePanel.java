@@ -1,22 +1,22 @@
-package cs3500.reversi.view.square;
+package cs3500.reversi.view;
 
 import cs3500.reversi.model.IROModel;
 import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.model.Posn;
 import cs3500.reversi.model.square.SquarePosn;
-import cs3500.reversi.view.AbstractPanel;
 
 import java.awt.*;
 import java.awt.geom.Path2D;
 
-public class SquarePanel extends AbstractPanel {
+// Represents a panel for a square Reversi board.
+class SquarePanel extends AbstractPanel {
   /**
    * Constructs a AbstractPanel with the specified Reversi game model and player color.
    *
    * @param model      The Reversi game model.
    * @param pieceColor The color of the player using this panel.
    */
-  public SquarePanel(IROModel model, PieceColor pieceColor) {
+  SquarePanel(IROModel model, PieceColor pieceColor) {
     super(model, pieceColor);
   }
   
@@ -66,7 +66,7 @@ public class SquarePanel extends AbstractPanel {
 
   @Override
   protected Point transformLogicalToPhysical(Posn posn) {
-    return new Point(posn.getFirstCoord() * (int) super.cellRadius * 2 - (int) super.cellRadius,
-        -posn.getSecondCoord() * (int) super.cellRadius * 2 + (int) super.cellRadius);
+    return new Point(posn.getFirstCoordinate() * (int) super.cellRadius * 2 - (int) super.cellRadius,
+        -posn.getSecondCoordinate() * (int) super.cellRadius * 2 + (int) super.cellRadius);
   }
 }

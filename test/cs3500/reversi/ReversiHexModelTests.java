@@ -1,11 +1,8 @@
 package cs3500.reversi;
 
-import cs3500.reversi.model.IModel;
-import cs3500.reversi.model.IROModel;
-import cs3500.reversi.model.PieceColor;
-import cs3500.reversi.model.Posn;
+import cs3500.reversi.model.*;
 import cs3500.reversi.model.hex.HexModel;
-import cs3500.reversi.view.hex.HexTextualView;
+import cs3500.reversi.view.HexTextualView;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +35,18 @@ public class ReversiHexModelTests {
     this.model.addListener(new MockModelListener(this.logBlack));
     this.model.addListener(new MockModelListener(this.logWhite));
     this.model.startGame();
+  }
+  
+  // Constructor
+  @Test
+  public void testMConstructorInvalidRingsNumberTooLow() {
+    Assert.assertThrows(IllegalArgumentException.class, () -> new HexModel(0));
+  }
+  
+  @Test
+  public void testMConstructorWorks() {
+    Assert.assertEquals(this.model.getNumRings(), this.numRings);
+    Assert.assertEquals(this.model.getTurnColor(), PieceColor.BLACK);
   }
 
   // IROModel Tests (Observation Methods)
@@ -140,6 +149,18 @@ public class ReversiHexModelTests {
         new HexPosn(-1, 0), new HexPosn(0, 1), new HexPosn(-1, 1),
         new HexPosn(1, -1))));
   }
+  
+  // GetAllCorners
+  @Test
+  public void testGetAllCorners() {
+    Assert.assertEquals(this.model.getAllCorners(), new ArrayList<>(List.of(
+        new HexPosn(2, 0), new HexPosn(0, 2),
+        new HexPosn(2, -2), new HexPosn(0, -2),
+        new HexPosn(-2, 0), new HexPosn(-2, 2)
+    )));
+  }
+  
+  // GetDirections -- Tested in PackagePrivateTests
   
   // Copy
   @Test
@@ -258,7 +279,7 @@ public class ReversiHexModelTests {
     Assert.assertEquals(PieceColor.WHITE, this.roModel.getTurnColor());
   }
 
-  // GetRings
+  // GetNumRings
   @Test
   public void testROMGetRingsCorrectReturnValue() {
     Assert.assertEquals(this.numRings, this.roModel.getNumRings());
@@ -291,18 +312,6 @@ public class ReversiHexModelTests {
     Assert.assertThrows(IllegalStateException.class, () -> this.model.startGame());
     this.model.addListener(new MockModelListener(new StringBuilder()));
     this.model.startGame();
-  }
-
-  // Constructor
-  @Test
-  public void testMConstructorInvalidRingsNumberTooLow() {
-    Assert.assertThrows(IllegalArgumentException.class, () -> new HexModel(0));
-  }
-
-  @Test
-  public void testMConstructorWorks() {
-    Assert.assertEquals(this.model.getNumRings(), this.numRings);
-    Assert.assertEquals(this.model.getTurnColor(), PieceColor.BLACK);
   }
   
   // IModel Tests (Operation Methods)
@@ -488,7 +497,7 @@ public class ReversiHexModelTests {
   // HexPosn Tests
   // Add
   @Test
-  public void testAxialPosnAdd() {
+  public void testHexPosnAdd() {
     Assert.assertEquals(new HexPosn(0, 0).add(this.roModel.getDirections()[5]),
         new HexPosn(-1, 0));
     Assert.assertEquals(new HexPosn(-1, 0).add(this.roModel.getDirections()[3]),
@@ -497,7 +506,7 @@ public class ReversiHexModelTests {
 
   // Equals
   @Test
-  public void testAxialPosnEquals() {
+  public void testHexPosnEquals() {
     Assert.assertNotEquals("(0, 0)", new HexPosn(0, 0));
     Assert.assertNotEquals(new HexPosn(0, 1), new HexPosn(1, 0));
     Assert.assertEquals(new HexPosn(0, 0), new HexPosn(0, 0));
@@ -505,21 +514,8 @@ public class ReversiHexModelTests {
 
   // toString
   @Test
-  public void testAxialPosnToString() {
+  public void testHexPosnToString() {
     Assert.assertEquals(new HexPosn(0, 0).toString(), "(0, 0)");
     Assert.assertEquals(new HexPosn(0, 1).toString(), "(0, 1)");
-  }
-
-  // HexTextualView
-  @Test
-  public void testTextualView() {
-    HexTextualView view = new HexTextualView(this.roModel);
-
-    Assert.assertEquals(view.toString(),
-            "  _ _ _ \n"
-            + " _ X O _ \n"
-            + "_ O _ X _ \n"
-            + " _ X O _ \n"
-            + "  _ _ _");
   }
 }

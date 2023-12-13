@@ -3,6 +3,7 @@ package cs3500.reversi;
 import cs3500.reversi.model.*;
 import cs3500.reversi.model.hex.HexModel;
 import cs3500.reversi.model.hex.HexPosn;
+import cs3500.reversi.model.hex.MockModel;
 import cs3500.reversi.strategy.AndStrategy;
 import cs3500.reversi.strategy.AvoidEdgesStrategy;
 import cs3500.reversi.strategy.CaptureMostStrategy;
@@ -110,7 +111,7 @@ public class ReversiStrategyTests {
     this.avoidEdgesStrategy.chooseMove(new ArrayList<>(), this.mockModel);
 
     int n = this.numRings;
-    List<HexPosn> edges = new ArrayList<>(List.of(
+    List<Posn> edges = new ArrayList<>(List.of(
             new HexPosn(-1, -n + 1), new HexPosn(0, -n + 1), new HexPosn(1, -n),
             new HexPosn(n - 1, -n), new HexPosn(n - 1, -n + 1), new HexPosn(n, -n + 1),
             new HexPosn(n, -1), new HexPosn(n - 1, 0), new HexPosn(n - 1, 1),
@@ -119,9 +120,9 @@ public class ReversiStrategyTests {
             new HexPosn(-n, 1), new HexPosn(-n + 1, 0), new HexPosn(-n + 1, -1)
     ));
 
-    for (HexPosn hp : edges) {
+    for (Posn posn : edges) {
       Assert.assertTrue(this.log.toString().contains("Calling isMoveValid to check if BLACK can "
-              + "play on " + hp.toString()));
+              + "play on " + posn.toString()));
     }
   }
 
@@ -357,5 +358,4 @@ public class ReversiStrategyTests {
                     new HexPosn(-1, 0),
                     new HexPosn(0, 1))));
   }
-
 }

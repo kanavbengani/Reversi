@@ -1,24 +1,15 @@
 package cs3500.reversi;
 
-import cs3500.reversi.adapter.ControllerAdapter;
-import cs3500.reversi.adapter.HexModelAdapter;
-import cs3500.reversi.adapter.StrategyAdapter;
-import cs3500.reversi.adapter.ViewAdapter;
 import cs3500.reversi.controller.Controller;
 
 import cs3500.reversi.model.IModel;
 import cs3500.reversi.model.PieceColor;
 
+import cs3500.reversi.model.hex.HexModel;
+import cs3500.reversi.model.square.SquareModel;
 import cs3500.reversi.player.AIPlayer;
 import cs3500.reversi.player.HumanPlayer;
 import cs3500.reversi.player.Player;
-
-import cs3500.reversi.provider.strategies.ChooseBestStrategy;
-import cs3500.reversi.provider.strategies.MakeZeroOpponentTurnZero;
-import cs3500.reversi.provider.strategies.MaximizeScore;
-import cs3500.reversi.provider.strategies.PlayCorner;
-import cs3500.reversi.provider.strategies.PlaySide;
-import cs3500.reversi.provider.strategies.PlayThreeFrom;
 
 import cs3500.reversi.strategy.AndStrategy;
 import cs3500.reversi.strategy.AvoidEdgesStrategy;
@@ -28,7 +19,8 @@ import cs3500.reversi.strategy.MinimaxStrategyDepth;
 
 import cs3500.reversi.view.IView;
 import cs3500.reversi.view.View;
-import cs3500.reversi.view.hex.HexPanel;
+import cs3500.reversi.view.ViewType;
+
 
 /**
  * The ReversiFactory class is responsible for creating instances of the Reversi game,
@@ -45,11 +37,7 @@ public final class ReversiFactory {
     OUR_STRATEGY1,
     OUR_STRATEGY2,
     OUR_STRATEGY3,
-    OUR_STRATEGY4,
-    PROVIDER_HUMAN,
-    PROVIDER_STRATEGY1,
-    PROVIDER_STRATEGY2,
-    PROVIDER_STRATEGY3
+    OUR_STRATEGY4
   }
   
   /**
@@ -62,49 +50,36 @@ public final class ReversiFactory {
    * @param gt2Depth  The depth parameter for the strategy of player 2.
    * @return A new Reversi model configured with the specified parameters.
    */
-  public static IModel makeModel(int numRings, ReversiFactory.GameType gt1, int gt1Depth,
-                                 ReversiFactory.GameType gt2, int gt2Depth) {
+  public static IModel makeModel(int numRings, ViewType type, ReversiFactory.GameType gt1,
+                                 int gt1Depth, ReversiFactory.GameType gt2, int gt2Depth) {
     // Using type HexModelAdapter to allow for passing between provider and our implementation.
     // This is because HexModelAdapter implements both IModel (Ours) and ReversiModel (Provider).
-    HexModelAdapter model = new HexModelAdapter(numRings);
-    IView viewBlack = new View(new HexPanel(model, PieceColor.BLACK));
-    IView viewWhite = ReversiFactory.getView2(gt2, model);
+    IModel model;
     
-    Player player1 = ReversiFactory.getPlayer(gt1, gt1Depth, viewBlack, model);
-    Player player2 = ReversiFactory.getPlayer2(gt2, gt2Depth, viewWhite, model);
-    
-    new Controller(model, player1, viewBlack, PieceColor.BLACK);
-    ReversiFactory.initializeController2(gt2, model, player2, viewWhite);
-    
-    return model;
-  }
-  
-  private static IView getView2(ReversiFactory.GameType gt, HexModelAdapter model) {
-    switch (gt) {
-      case PROVIDER_HUMAN:
-      case PROVIDER_STRATEGY1:
-      case PROVIDER_STRATEGY2:
-      case PROVIDER_STRATEGY3:
-        IView v =  new ViewAdapter(model);
-        v.display(true);
-        return v;
-      default:
-        return new View(new HexPanel(model, PieceColor.WHITE)); // Second player is always WHITE
-    }
-  }
-  
-  private static void initializeController2(ReversiFactory.GameType gt, IModel model,
-                                            Player player2, IView viewWhite) {
-    switch (gt) {
-      case PROVIDER_HUMAN:
-      case PROVIDER_STRATEGY1:
-      case PROVIDER_STRATEGY2:
-      case PROVIDER_STRATEGY3:
-        new ControllerAdapter(model, player2, viewWhite, PieceColor.WHITE);
+    switch (type) {
+      case SQUARE:
+        model = new SquareModel(numRings * 2);
+        break;
+      case HEX:
+        model = new HexModel(numRings);
         break;
       default:
-        new Controller(model, player2, viewWhite, PieceColor.WHITE);
+        System.err.println("Unsupported view type: " + type);
+        System.exit(-1);
+        // The below statement will never be reached. This is only for type-checker.
+        return null;
     }
+    
+    IView viewBlack = new View(type, model, PieceColor.BLACK);
+    IView viewWhite = new View(type, model, PieceColor.WHITE);
+    
+    Player player1 = ReversiFactory.getPlayer(gt1, gt1Depth, viewBlack, model);
+    Player player2 = ReversiFactory.getPlayer(gt2, gt2Depth, viewWhite, model);
+    
+    new Controller(model, player1, viewBlack, PieceColor.BLACK);
+    new Controller(model, player2, viewWhite, PieceColor.WHITE);
+    
+    return model;
   }
   
   /**
@@ -120,7 +95,7 @@ public final class ReversiFactory {
                                   IModel model) {
     if (gtDepth != 0 && !gt.equals(ReversiFactory.GameType.OUR_STRATEGY1)) {
       System.err.println("Depth must not be outlined for non-minimax strategies.");
-      System.exit(0);
+      System.exit(-1);
       // The below statement will never be reached. This is only for type-checker.
       return null;
     }
@@ -135,7 +110,7 @@ public final class ReversiFactory {
       case OUR_STRATEGY1:
         if (gtDepth <= 0) {
           System.err.println("Depth of Minimax must exist and be at least 1.");
-          System.exit(0);
+          System.exit(-1);
           // The below statement will never be reached. This is only for type-checker.
           return null;
         }
@@ -155,44 +130,9 @@ public final class ReversiFactory {
         return new AIPlayer(model, new CaptureMostStrategy());
       default:
         System.err.println("Invalid game type");
-        System.exit(0);
+        System.exit(-1);
         // The below statement will never be reached. This is only for type-checker.
         return null;
-    }
-  }
-  
-  /**
-   * Helper method to create a player 2 based on the specified game type, depth, view, and model.
-   *
-   * @param gt      The game type for the player.
-   * @param gtDepth The depth parameter for the strategy of the player.
-   * @param view    The view associated with the player.
-   * @param model   The Reversi model associated with the player.
-   * @return A new Player instance configured based on the specified parameters.
-   */
-  private static Player getPlayer2(ReversiFactory.GameType gt, int gtDepth, IView view,
-                                   IModel model) {
-    if (gtDepth != 0 && !gt.equals(ReversiFactory.GameType.OUR_STRATEGY1)) {
-      System.err.println("Depth must not be outlined for non-minimax strategies.");
-      System.exit(0);
-      // The below statement will never be reached. This is only for type-checker.
-      return null;
-    }
-    
-    switch (gt) {
-      case PROVIDER_HUMAN:
-        return new HumanPlayer();
-      case PROVIDER_STRATEGY1:
-        return new AIPlayer(model, new StrategyAdapter(
-            new ChooseBestStrategy(new MaximizeScore())));
-      case PROVIDER_STRATEGY2:
-        return new AIPlayer(model, new StrategyAdapter(new ChooseBestStrategy(new PlayCorner(),
-            new PlayThreeFrom(), new MaximizeScore())));
-      case PROVIDER_STRATEGY3:
-        return new AIPlayer(model, new StrategyAdapter(new MakeZeroOpponentTurnZero(),
-            new PlayCorner(), new PlayThreeFrom(), new PlaySide(), new MaximizeScore()));
-      default:
-        return ReversiFactory.getPlayer(gt, gtDepth, view, model);
     }
   }
 }

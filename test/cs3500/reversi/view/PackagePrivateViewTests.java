@@ -3,7 +3,6 @@ package cs3500.reversi.view;
 import cs3500.reversi.MockPlayerListener;
 import cs3500.reversi.model.hex.HexModel;
 import cs3500.reversi.model.PieceColor;
-import cs3500.reversi.view.hex.HexPanel;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -104,5 +103,18 @@ public class PackagePrivateViewTests {
     
     Assert.assertEquals(this.log.toString(),
         "Move was called with axial position (0, 0).\n");
+  }
+  
+  // HexTextualView
+  @Test
+  public void testTextualView() {
+    HexTextualView view = new HexTextualView(new HexModel(2).getReadOnlyModel());
+    
+    Assert.assertEquals(view.toString(),
+        "  _ _ _ \n"
+            + " _ X O _ \n"
+            + "_ O _ X _ \n"
+            + " _ X O _ \n"
+            + "  _ _ _");
   }
 }

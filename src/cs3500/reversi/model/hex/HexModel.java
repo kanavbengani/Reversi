@@ -111,7 +111,6 @@ public class HexModel extends AbstractModel {
   // Operational Methods
   @Override
   public List<Posn> getAllCorners() {
-    // TODO: Write Tests.
     int n = super.getNumRings();
     
     return new ArrayList<>(List.of(
@@ -122,7 +121,6 @@ public class HexModel extends AbstractModel {
   
   @Override
   public Direction[] getDirections() {
-    // TODO: Write Tests.
     return HexDirection.values();
   }
   

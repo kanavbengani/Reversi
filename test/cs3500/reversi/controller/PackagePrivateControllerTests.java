@@ -1,6 +1,6 @@
 package cs3500.reversi.controller;
 
-import cs3500.reversi.MockModel;
+import cs3500.reversi.model.hex.MockModel;
 import cs3500.reversi.MockPlayer;
 import cs3500.reversi.MockView;
 import cs3500.reversi.model.hex.HexPosn;

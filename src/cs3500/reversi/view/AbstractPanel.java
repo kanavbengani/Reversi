@@ -31,7 +31,7 @@ import java.util.Optional;
  * the game. It implements ModelFeatures to receive updates from the game model and repaints
  * itself accordingly.
  */
-public abstract class AbstractPanel extends JPanel implements IReversiPanel {
+abstract class AbstractPanel extends JPanel {
   protected static final int PADDING = 50;
   protected static final int HEIGHT = 700;
   protected static final int WIDTH = 700;
@@ -44,6 +44,7 @@ public abstract class AbstractPanel extends JPanel implements IReversiPanel {
   protected final double cellRadius;
   protected Optional<Posn> highlightedCell = Optional.empty();
   protected boolean isMyMove = false;
+  protected boolean hintsOn = false;
   
   /**
    * Constructs a AbstractPanel with the specified Reversi game model and player color.
@@ -103,28 +104,11 @@ public abstract class AbstractPanel extends JPanel implements IReversiPanel {
     this.drawBoard(g2d);
     this.displayTurn(g2d);
     this.displayPlayerColor(g2d);
-    
-    if (this.highlightedCell.isPresent()) {
-      Posn posn = this.highlightedCell.get();
-      Color color;
-      int howManyCaptured;
-      
-      if (this.model.isMoveValid(this.pieceColor, posn)) {
-        color = Color.GREEN;
-        howManyCaptured = this.model.getAllCapturedPieces(this.pieceColor,
-            this.highlightedCell.get()).size();
-      } else {
-        color = Color.RED;
-        howManyCaptured = 0;
-      }
-      this.makeCell(g2d, this.transformLogicalToPhysical(posn), color);
-      this.writeHowManyCaptured(g2d, this.transformLogicalToPhysical(posn),
-          howManyCaptured);
-    }
+    this.displayHints(g2d);
   }
   
   // Draws the board with the given Graphics2D object.
-  protected void drawBoard(Graphics2D g2d) {
+  private void drawBoard(Graphics2D g2d) {
     Color oldColor = g2d.getColor();
     
     for (Posn posn : this.model.getAllPosn()) {
@@ -184,6 +168,31 @@ public abstract class AbstractPanel extends JPanel implements IReversiPanel {
     g2d.setTransform(oldTransform);
   }
   
+  private void displayHints(Graphics2D g2d) {
+    if (this.highlightedCell.isPresent()) {
+      Posn posn = this.highlightedCell.get();
+      Color color;
+      int howManyCaptured;
+      
+      if (this.hintsOn) {
+        if (this.model.isMoveValid(this.pieceColor, posn)) {
+          color = Color.GREEN;
+          howManyCaptured = this.model.getAllCapturedPieces(this.pieceColor,
+              this.highlightedCell.get()).size();
+        } else {
+          color = Color.RED;
+          howManyCaptured = 0;
+        }
+        this.makeCell(g2d, this.transformLogicalToPhysical(posn), color);
+        this.writeHowManyCaptured(g2d, this.transformLogicalToPhysical(posn),
+            howManyCaptured);
+      }
+      else {
+        this.makeCell(g2d, this.transformLogicalToPhysical(posn), Color.CYAN);
+      }
+    }
+  }
+  
   // Creates a circle with the given center (in cartesian coordinates) and radius with the given
   // Graphics2D object.
   protected void makeCircle(Graphics2D g2d, Point p, double r, Color c) {
@@ -195,7 +204,7 @@ public abstract class AbstractPanel extends JPanel implements IReversiPanel {
     g2d.setColor(oldColor);
   }
   
-  // Creates a hexagon with the given center (in cartesian coordinates) with the given
+  // Creates a cell with the given center (in cartesian coordinates) with the given
   // Graphics2D object.
   protected abstract void makeCell(Graphics2D g2d, Point p, Color fillColor);
   
@@ -213,15 +222,15 @@ public abstract class AbstractPanel extends JPanel implements IReversiPanel {
     int fontSize = 24;
     g2d.setFont(g2d.getFont().deriveFont((float) fontSize));
     
-    // Calculate the center of the hexagon
-    double hexagonCenterX = p.x;
-    double hexagonCenterY = p.y;
+    // Calculate the center of the cell
+    double centerX = p.x;
+    double centerY = p.y;
     
-    // Calculate the position to center the text within the hexagon
+    // Calculate the position to center the text within the cell
     int textWidth = g2d.getFontMetrics().stringWidth(String.valueOf(numCaptures));
     int textHeight = g2d.getFontMetrics().getHeight();
-    int xText = (int) (hexagonCenterX - textWidth / 2);
-    int yText = (int) (hexagonCenterY + textHeight / 4); // Adjust based on font metrics
+    int xText = (int) (centerX - textWidth / 2);
+    int yText = (int) (centerY + textHeight / 4); // Adjust based on font metrics
     
     g2d.drawString(String.valueOf(numCaptures), xText, yText);
     
@@ -247,7 +256,7 @@ public abstract class AbstractPanel extends JPanel implements IReversiPanel {
   protected abstract Posn transformPhysicalToLogical(Point physicalP);
   
   // Transforms logical axial coordinates to the cartesian coordinate of the center of the
-  // hexagon in the view.
+  // cell in the view.
   protected abstract Point transformLogicalToPhysical(Posn axial);
   
   /**
@@ -282,6 +291,10 @@ public abstract class AbstractPanel extends JPanel implements IReversiPanel {
         }
         AbstractPanel.this.highlightedCell = Optional.empty();
       }
+      if (e.getKeyCode() == KeyEvent.VK_H) {
+        AbstractPanel.this.hintsOn = !AbstractPanel.this.hintsOn;
+        AbstractPanel.this.repaint();
+      }
     }
   }
   
@@ -294,21 +307,21 @@ public abstract class AbstractPanel extends JPanel implements IReversiPanel {
       physicalP.x -= AbstractPanel.WIDTH / 2;
       physicalP.y -= AbstractPanel.HEIGHT / 2;
       
-      Posn hexPosn =
+      Posn cellPosn =
           AbstractPanel.this.transformPhysicalToLogical(new Point(physicalP));
       
       // Showing axial coordinate that has been clicked to System.out
       try {
-        Optional<PieceColor> pieceColor = AbstractPanel.this.model.getPieceAt(hexPosn);
+        Optional<PieceColor> pieceColor = AbstractPanel.this.model.getPieceAt(cellPosn);
         
         // Highlight/De-highlight logic
         if (pieceColor.isEmpty()) {
           if (AbstractPanel.this.highlightedCell.isPresent()
-              && hexPosn.equals(AbstractPanel.this.highlightedCell.get())) {
+              && cellPosn.equals(AbstractPanel.this.highlightedCell.get())) {
             throw new IllegalArgumentException("Cell is already highlighted.");
           }
           AbstractPanel.this.highlightedCell =
-              Optional.of(hexPosn);
+              Optional.of(cellPosn);
         } else {
           throw new IllegalArgumentException("There is already a chip there.");
         }

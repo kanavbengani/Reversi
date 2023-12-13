@@ -1,4 +1,4 @@
-package cs3500.reversi;
+package cs3500.reversi.model.hex;
 
 import java.util.ArrayList;
 import java.util.List;
