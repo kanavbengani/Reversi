@@ -7,13 +7,19 @@ import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.model.Posn;
 import cs3500.reversi.model.square.SquareModel;
 import cs3500.reversi.model.square.SquarePosn;
-import cs3500.reversi.view.SquareTextualView;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
+/**
+ * Represents a set of JUnit tests that tests the functionality of the cs3500.reversi.model
+ */
 public class ReversiSquareModelTests {
   
   private IModel model;
@@ -132,7 +138,6 @@ public class ReversiSquareModelTests {
   
   @Test
   public void testGetAllCapturedPiecesValidMove() {
-    System.out.println(new SquareTextualView(this.roModel));
     Assert.assertEquals(this.model.getAllCapturedPieces(PieceColor.BLACK,
         new SquarePosn(2, 0)), new ArrayList<>(List.of(new SquarePosn(1, 0))));
   }

@@ -1,9 +1,11 @@
 package cs3500.reversi;
 
-import cs3500.reversi.model.*;
+import cs3500.reversi.model.IModel;
+import cs3500.reversi.model.PieceColor;
+import cs3500.reversi.model.Posn;
 import cs3500.reversi.model.hex.HexModel;
 import cs3500.reversi.model.hex.HexPosn;
-import cs3500.reversi.model.hex.MockModel;
+import cs3500.reversi.model.hex.MockHexModel;
 import cs3500.reversi.strategy.AndStrategy;
 import cs3500.reversi.strategy.AvoidEdgesStrategy;
 import cs3500.reversi.strategy.CaptureMostStrategy;
@@ -24,7 +26,7 @@ import java.util.Optional;
 /**
  * Represents a set of JUnit tests that tests the functionality of the cs3500.reversi.strategy.
  */
-public class ReversiStrategyTests {
+public class ReversiStrategyHexTests {
   private StringBuilder log;
   private final Map<Posn, Integer> validPosn = new HashMap<>();
   private int numRings;
@@ -43,7 +45,7 @@ public class ReversiStrategyTests {
     this.validPosn.put(new HexPosn(1, 1), 1);
     this.numRings = 3;
 
-    this.mockModel = new MockModel(this.log, this.validPosn, this.numRings);
+    this.mockModel = new MockHexModel(this.log, this.validPosn, this.numRings);
     this.fullModel = new HexModel(this.numRings);
     this.captureMostStrategy = new CaptureMostStrategy();
     this.avoidEdgesStrategy = new AvoidEdgesStrategy();

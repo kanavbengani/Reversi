@@ -37,7 +37,8 @@ public class CaptureMostStrategy implements ReversiStrategy {
       }
     }
 
-    ties.sort(Comparator.comparingInt(Posn::getSecondCoordinate).thenComparingInt(Posn::getFirstCoordinate));
+    ties.sort(Comparator.comparingInt(Posn::getSecondCoordinate)
+        .thenComparingInt(Posn::getFirstCoordinate));
 
     return ties;
   }

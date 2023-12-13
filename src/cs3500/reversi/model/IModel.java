@@ -14,7 +14,8 @@ public interface IModel extends IROModel {
    * @throws IllegalStateException if a wrong piece is being placed out of turn
    * @throws IllegalArgumentException if the passed in hexagonal position is out of bounds
    */
-  void playMove(PieceColor pieceColor, Posn posn) throws IllegalStateException, IllegalArgumentException;
+  void playMove(PieceColor pieceColor, Posn posn) throws IllegalStateException,
+      IllegalArgumentException;
 
   /**
    * Switches the current turn to the next cs3500.reversi.player, allowing for the progression

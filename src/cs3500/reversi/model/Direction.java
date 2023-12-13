@@ -3,6 +3,9 @@ package cs3500.reversi.model;
 import cs3500.reversi.model.hex.HexPosn;
 import cs3500.reversi.model.square.SquarePosn;
 
+/**
+ * Represents a Direction in the game of Reversi -- both hexagonal and square.
+ */
 public interface Direction {
   /**
    * Computes the hexagonal position for the given position added to this direction.

@@ -70,7 +70,7 @@ public class PackagePrivateViewTests {
     );
     
     Assert.assertEquals(this.log.toString(),
-        "Move was called with axial position (0, 0).\n");
+        "Move was called with position (0, 0).\n");
   }
   
   @Test
@@ -102,7 +102,7 @@ public class PackagePrivateViewTests {
     );
     
     Assert.assertEquals(this.log.toString(),
-        "Move was called with axial position (0, 0).\n");
+        "Move was called with position (0, 0).\n");
   }
   
   // HexTextualView

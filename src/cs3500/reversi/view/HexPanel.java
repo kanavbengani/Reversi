@@ -102,8 +102,9 @@ class HexPanel extends AbstractPanel {
   // hexagon in the view.
   @Override
   protected Point transformLogicalToPhysical(Posn posn) {
-    double x = super.cellRadius *
-        (Math.sqrt(3) * posn.getFirstCoordinate() + Math.sqrt(3) / 2 * posn.getSecondCoordinate());
+    double x = super.cellRadius
+        * (Math.sqrt(3) * posn.getFirstCoordinate() + Math.sqrt(3) / 2
+        * posn.getSecondCoordinate());
     double y = super.cellRadius * (3.0 / 2.0 * posn.getSecondCoordinate());
 
     return new Point((int) x, (int) -y);

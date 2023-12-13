@@ -9,7 +9,7 @@ import cs3500.reversi.model.PieceColor;
 /**
  * The HexTextualView class provides a textual representation of a read-only Reversi model.
  */
-public class HexTextualView {
+class HexTextualView {
   private final IROModel model;
 
   /**
@@ -17,7 +17,7 @@ public class HexTextualView {
    *
    * @param model The read-only cs3500.reversi.model to be displayed.
    */
-  public HexTextualView(IROModel model) {
+  HexTextualView(IROModel model) {
     this.model = model;
   }
 

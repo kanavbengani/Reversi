@@ -1,8 +1,11 @@
 package cs3500.reversi;
 
-import cs3500.reversi.model.*;
+import cs3500.reversi.model.IModel;
+import cs3500.reversi.model.IROModel;
+import cs3500.reversi.model.PieceColor;
+import cs3500.reversi.model.Posn;
 import cs3500.reversi.model.hex.HexModel;
-import cs3500.reversi.view.HexTextualView;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

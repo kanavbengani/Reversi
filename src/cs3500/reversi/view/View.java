@@ -3,7 +3,6 @@ package cs3500.reversi.view;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import cs3500.reversi.model.IModel;
 import cs3500.reversi.model.IROModel;
 import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.player.PlayerFeatures;

@@ -7,7 +7,11 @@ import cs3500.reversi.model.ModelFeatures;
 import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.model.Posn;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * The `SquareModel` class represents the game board and logic for a Reversi game. It extends
@@ -66,7 +70,8 @@ public class SquareModel extends AbstractModel {
   }
   
   @Override
-  protected int validateBoard(Map<Posn, Optional<PieceColor>> board) throws IllegalArgumentException {
+  protected int validateBoard(Map<Posn, Optional<PieceColor>> board)
+      throws IllegalArgumentException {
     int posnCount = board.keySet().size();
     double numRingsDouble = Math.sqrt(posnCount) / 2;
     if (numRingsDouble % 1 != 0) {

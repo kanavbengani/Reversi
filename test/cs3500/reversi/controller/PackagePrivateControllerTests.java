@@ -1,6 +1,6 @@
 package cs3500.reversi.controller;
 
-import cs3500.reversi.model.hex.MockModel;
+import cs3500.reversi.model.hex.MockHexModel;
 import cs3500.reversi.MockPlayer;
 import cs3500.reversi.MockView;
 import cs3500.reversi.model.hex.HexPosn;
@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Optional;
 
 /**
- * Represents a set of JUnit tests that NeedToDeleteTests the package-private functionality of the
+ * Represents a set of JUnit tests that tests the package-private functionality of the
  * cs3500.reversi.controller.
  */
 public class PackagePrivateControllerTests {
@@ -36,7 +36,7 @@ public class PackagePrivateControllerTests {
     IView mockView = new MockView(this.mockViewLog);
     
     this.mockModelLog = new StringBuilder();
-    IModel mockModel = new MockModel(this.mockModelLog, new HashMap<>(), numRings);
+    IModel mockModel = new MockHexModel(this.mockModelLog, new HashMap<>(), numRings);
     
     this.mfi = new ModelFeaturesImpl(mockPlayer, mockView, PieceColor.BLACK);
     this.pfi = new PlayerFeaturesImpl(mockModel, mockView, PieceColor.BLACK);

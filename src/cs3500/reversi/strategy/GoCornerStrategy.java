@@ -27,7 +27,8 @@ public class GoCornerStrategy implements ReversiStrategy {
     }
 
     // sorting moves list top most and then left most.
-    moves.sort(Comparator.comparingInt(Posn::getSecondCoordinate).thenComparingInt(Posn::getFirstCoordinate));
+    moves.sort(Comparator.comparingInt(Posn::getSecondCoordinate)
+        .thenComparingInt(Posn::getFirstCoordinate));
 
     return moves;
   }

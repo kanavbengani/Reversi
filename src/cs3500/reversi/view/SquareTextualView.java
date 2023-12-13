@@ -1,15 +1,16 @@
 package cs3500.reversi.view;
 
-import cs3500.reversi.model.*;
+import cs3500.reversi.model.IROModel;
+import cs3500.reversi.model.PieceColor;
+
 import cs3500.reversi.model.square.SquarePosn;
-import cs3500.reversi.view.ITextualView;
 
 import java.util.Optional;
 
 /**
  * The HexTextualView class provides a textual representation of a read-only Reversi model.
  */
-public class SquareTextualView implements ITextualView {
+class SquareTextualView implements ITextualView {
   
   /**
    * Constructs a SquareTextualView with a given read-only cs3500.reversi.model.
@@ -18,7 +19,7 @@ public class SquareTextualView implements ITextualView {
    */
   private final IROModel model;
   
-  public SquareTextualView(IROModel model) {
+  SquareTextualView(IROModel model) {
     this.model = model;
   }
   

@@ -5,7 +5,11 @@ import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.model.Posn;
 import cs3500.reversi.model.square.SquarePosn;
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Point;
+
 import java.awt.geom.Path2D;
 
 // Represents a panel for a square Reversi board.
@@ -66,7 +70,8 @@ class SquarePanel extends AbstractPanel {
 
   @Override
   protected Point transformLogicalToPhysical(Posn posn) {
-    return new Point(posn.getFirstCoordinate() * (int) super.cellRadius * 2 - (int) super.cellRadius,
+    return new Point(
+        posn.getFirstCoordinate() * (int) super.cellRadius * 2 - (int) super.cellRadius,
         -posn.getSecondCoordinate() * (int) super.cellRadius * 2 + (int) super.cellRadius);
   }
 }

@@ -5,16 +5,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Map;
 
-import cs3500.reversi.model.*;
+import cs3500.reversi.model.Direction;
+import cs3500.reversi.model.IModel;
+import cs3500.reversi.model.IROModel;
+import cs3500.reversi.model.ModelFeatures;
+import cs3500.reversi.model.PieceColor;
 import cs3500.reversi.model.Posn;
-import cs3500.reversi.model.hex.HexDirection;
-import cs3500.reversi.model.hex.HexPosn;
 
 /**
  * Represents a mock model that appends to the given log and returns based
  * on the given parameters in the constructor.
  */
-public class MockModel implements IModel {
+public class MockHexModel implements IModel {
   private final StringBuilder log;
   private final Map<Posn, Integer> posnCaptures;
   private final int numRings;
@@ -22,15 +24,15 @@ public class MockModel implements IModel {
   private PieceColor currentPieceColor;
   
   /**
-   * Constructs a MockModel with the given parameters.
+   * Constructs a MockHexModel with the given parameters.
    *
    * @param log          StringBuilder to store method call logs
    * @param posnCaptures map representing the captures at each axial position
    * @param numRings     number of rings in the game
    */
-  public MockModel(StringBuilder log,
-                   Map<Posn, Integer> posnCaptures,
-                   int numRings) {
+  public MockHexModel(StringBuilder log,
+                      Map<Posn, Integer> posnCaptures,
+                      int numRings) {
     this.log = log;
     this.posnCaptures = posnCaptures;
     this.numRings = numRings;
@@ -44,7 +46,7 @@ public class MockModel implements IModel {
 
     for (int r = -this.numRings; r <= this.numRings; r++) {
       for (int q = start; q <= end; q++) {
-        listOfPosn.add(new HexPosn(q, r));
+        this.listOfPosn.add(new HexPosn(q, r));
       }
 
       if (start == -this.numRings) {
@@ -167,7 +169,7 @@ public class MockModel implements IModel {
 
   @Override
   public void addListener(ModelFeatures modelFeatures) {
-    this.log.append("addListener called in MockModel.\n");
+    this.log.append("addListener called in MockHexModel.\n");
   }
 
   @Override

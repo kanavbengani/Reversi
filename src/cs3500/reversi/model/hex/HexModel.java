@@ -1,6 +1,11 @@
 package cs3500.reversi.model.hex;
 
-import cs3500.reversi.model.*;
+import cs3500.reversi.model.AbstractModel;
+import cs3500.reversi.model.Direction;
+import cs3500.reversi.model.IModel;
+import cs3500.reversi.model.ModelFeatures;
+import cs3500.reversi.model.PieceColor;
+import cs3500.reversi.model.Posn;
 
 import java.util.ArrayList;
 import java.util.HashMap;
